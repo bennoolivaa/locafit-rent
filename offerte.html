@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offerte · LocaFit Rent</title>
+  <meta name="description" content="Promozioni e codici sconto sul noleggio auto LocaFit Rent.">
+  <meta name="theme-color" content="#060709">
+  <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="offerte">
+<header id="site-header"></header>
+<main>
+  <section class="section" style="padding:40px 0 0">
+    <div class="wrap">
+      <div class="crumbs" style="margin-bottom:22px"><a href="index.html">Home</a> / Offerte</div>
+      <div class="promo-hero">
+        <img class="bg" data-photo="roma" alt="">
+        <div class="copy">
+          <span class="badge badge-red">Black November · ultimi giorni</span>
+          <h1 style="margin-top:22px;font-size:clamp(44px,5.6vw,88px)">Fino al −20%<br><span class="dim">per tutto il contratto.</span></h1>
+          <p class="lead" style="margin-top:18px">Lo sconto non vale solo il primo mese: resta bloccato fino all’ultima rata. In più anticipo zero e consegna gratuita in tutta Italia.</p>
+          <div class="countdown" data-countdown></div>
+          <div style="display:flex;gap:10px;margin-top:30px;flex-wrap:wrap"><a class="btn btn-primary" href="#offerte">Scopri i modelli <span data-icon="arrow"></span></a><button class="btn btn-line" data-copy="BLACK26">Copia BLACK26</button></div>
+        </div>
+        <div class="stage" style="padding:0 32px 40px" id="promo-car"></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="offerte" style="scroll-margin-top:90px">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">Modelli in promozione</span><h2>Prezzo pieno barrato,<br><span class="dim">sconto per 36 mesi.</span></h2></div><p>Canoni mensili IVA inclusa, 36 mesi, 15.000 km/anno, anticipo zero. Lo sconto è già applicato.</p></div>
+      <div class="offers" id="offers"></div>
+    </div>
+  </section>
+  <section class="section raise">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">Codici attivi</span><h2>Altri modi per risparmiare.</h2></div><p>Copia il codice e inseriscilo nel passaggio “Pagamento”: lo sconto compare subito nel riepilogo.</p></div>
+      <div class="bento" id="codes" style="grid-auto-rows:minmax(240px,auto)"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">Breve termine</span><h2>Weekend in partenza.</h2></div><a class="link" href="flotta.html?tipo=breve">Tutte le auto per il weekend <span data-icon="arrow"></span></a></div>
+      <div class="car-grid" data-grid="cheap" data-tipo="breve" data-n="4"></div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <img data-photo="stelvio" alt="" loading="lazy">
+        <span class="kicker">Iscriviti alle offerte</span>
+        <h2 style="margin-top:18px">Le promozioni migliori<br><span class="dim">arrivano prima via email.</span></h2>
+        <p>Una email al mese, solo quando c’è davvero qualcosa da dire. Ti cancelli con un clic.</p>
+        <form class="newsletter" style="max-width:480px;margin-top:30px" onsubmit="event.preventDefault();LF.toast('Iscrizione confermata');this.reset()"><input type="email" required placeholder="La tua email" aria-label="Email" style="height:52px"><button class="btn btn-primary">Iscriviti</button></form>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Noleggio lungo termine · LocaFit Rent</title>
+  <meta name="description" content="Da 24 a 60 mesi con un canone fisso che comprende tutto. Anticipo zero, nessuna svalutazione, nessuna spesa imprevista. Per privati, professionisti e aziende.">
+  <meta name="theme-color" content="#060709">
+  <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="noleggio" data-tipo="lungo" data-nav="lungo">
+<header id="site-header"></header>
+<main>
+  <section class="page-hero">
+    <img class="bg" data-photo="stelvio" alt="">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / Lungo termine</div>
+      <h1>L’auto nuova,<br><span class="dim">senza comprarla.</span></h1>
+      <p class="lead">Da 24 a 60 mesi con un canone fisso che comprende tutto. Anticipo zero, nessuna svalutazione, nessuna spesa imprevista. Per privati, professionisti e aziende.</p>
+      <div class="actions"><a class="btn btn-primary" href="flotta.html?tipo=lungo">Vedi le auto · da <b data-from="lungo" style="font-weight:500;margin-left:4px"></b></a><a class="btn btn-line" data-wa="Ciao LocaFit Rent! Vorrei informazioni sul noleggio lungo termine." href="#"><span data-icon="wa"></span>WhatsApp</a></div>
+    </div>
+  </section>
+  <section class="section-sm" style="padding-top:8px"><div class="wrap"><div class="kv"><div><small>Durata</small><b>24 · 36 · 48 · 60 mesi</b></div><div><small>Km</small><b>10.000 – 30.000 l’anno</b></div><div><small>Anticipo</small><b>Zero, o scegli tu</b></div><div><small>A fine contratto</small><b>Restituisci o rinnovi</b></div></div></div></section>
+  <section class="section" style="padding-top:48px">
+    <div class="wrap split" id="mini-calc" data-default="bmw-x5">
+      <div>
+        <span class="kicker">Calcola in 10 secondi</span>
+        <h2 style="margin-top:18px">Quanto costa<br><span class="dim">davvero.</span></h2>
+        <form class="form" style="margin-top:28px" onsubmit="return false">
+          <label>Modello<select id="mc-car"></select></label>
+          <label><span>Durata · <span id="mc-n" style="color:var(--text)"></span></span><input type="range" id="mc-r" min="24" max="60" step="12" value="36"></label>
+        </form>
+        <div style="margin-top:22px;font-size:56px;font-weight:500;letter-spacing:-.05em;line-height:1" id="mc-o"></div>
+        <p class="muted" id="mc-tot" style="margin-top:10px"></p>
+        <a class="btn btn-primary" id="mc-go" href="#" style="margin-top:24px">Noleggia online <span data-icon="arrow"></span></a>
+      </div>
+      <div class="panel stage" style="aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;padding:40px"><div id="mc-car-img" style="width:100%"></div></div>
+    </div>
+  </section>
+  <section class="section raise">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">Selezione lungo termine</span><h2>Un modello per ogni esigenza.</h2></div><a class="link" href="flotta.html?tipo=lungo">Tutte le auto <span data-icon="arrow"></span></a></div>
+      <div class="car-grid" id="tipo-grid"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">Per chi è</span><h2>Pensato per come ti muovi.</h2></div></div>
+      <div class="values"><div class="value"><span class="n">01</span><span class="ico" data-icon="user"></span><h3>Privati</h3><p>Un canone fisso e nessun pensiero: assicurazione, tagliandi e gomme li gestiamo noi.</p></div><div class="value"><span class="n">02</span><span class="ico" data-icon="doc"></span><h3>Professionisti e P.IVA</h3><p>Canone deducibile e IVA detraibile secondo normativa: nessun bene da ammortizzare.</p></div><div class="value"><span class="n">03</span><span class="ico" data-icon="building"></span><h3>Aziende e flotte</h3><p>Da una a cento auto, un referente, una fattura. Sostitutiva in 24 ore.</p></div></div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap"><div class="section-head"><div><span class="kicker">Incluso nel prezzo</span><h2>Nessun extra alla consegna.</h2></div></div><div class="inclusi" data-inclusi></div></div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px 96px">
+      <div><span class="kicker">Domande</span><h2 style="margin-top:18px">Sul lungo termine.</h2></div>
+      <div class="faq" data-faq="Prezzi"></div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <img data-photo="interni2" alt="" loading="lazy">
+        <span class="kicker">Lungo termine</span>
+        <h2 style="margin-top:18px">Pronto a partire?</h2>
+        <p>Scegli il modello e chiudi tutto online in pochi minuti. Se preferisci, un consulente ti guida su WhatsApp.</p>
+        <div class="actions"><a class="btn btn-primary" href="flotta.html?tipo=lungo">Scegli l’auto <span data-icon="arrow"></span></a><a class="btn btn-line" data-wa="Ciao LocaFit Rent!" href="#"><span data-icon="wa"></span>Scrivici su WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

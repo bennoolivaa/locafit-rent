@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flotta · LocaFit Rent</title>
+  <meta name="description" content="Tutte le auto a noleggio LocaFit Rent con prezzi chiari e pronta consegna.">
+  <meta name="theme-color" content="#060709">
+  <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="flotta">
+<header id="site-header"></header>
+<main>
+  <section class="page-hero compact">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / Flotta</div>
+      <h1><span data-count="all"></span> veicoli. <span class="dim">Tutti pronti.</span></h1>
+      <p class="lead">Cambia formula e i prezzi si aggiornano su tutta la flotta. Le auto con il badge verde le ritiri oggi stesso.</p>
+    </div>
+  </section>
+  <div class="toolbar"><div class="wrap"><div class="seg" id="fleet-seg" role="group" aria-label="Formula"></div><div class="chips" id="fleet-chips" role="group" aria-label="Categoria"></div></div></div>
+  <section style="padding:28px 0 120px">
+    <div class="wrap fleet-layout">
+      <aside class="fleet-side" aria-label="Filtri">
+        <div><h4>Disponibilità</h4><div style="display:grid;gap:2px">
+          <label class="toggle"><input type="checkbox" id="fleet-pronta"><span class="sw"></span><span>Pronte oggi</span></label>
+          <label class="toggle"><input type="checkbox" id="fleet-promo"><span class="sw"></span><span>In offerta</span></label>
+          <label class="toggle"><input type="checkbox" id="fleet-3d"><span class="sw"></span><span>Con tour 3D</span></label></div></div>
+        <div><h4>Prezzo massimo</h4><input class="range" type="range" id="f-max" aria-label="Prezzo massimo"><div class="mono dim" id="f-max-o" style="margin-top:6px;font-size:11px"></div></div>
+        <div><h4>Sede</h4><div class="opts" id="f-sede"></div></div>
+        <div><h4>Alimentazione</h4><div class="opts" id="f-alim"></div></div>
+        <div><h4>Cambio</h4><div class="opts" id="f-cambio"></div></div>
+        <a class="side-promo" href="offerte.html"><img data-photo="notte" alt="" loading="lazy"><span class="badge badge-red" style="align-self:flex-start">Black November</span><h3>Fino al −20% sul canone</h3><span class="link" style="margin-top:12px;align-self:flex-start">Vedi le offerte <span data-icon="arrow"></span></span></a>
+      </aside>
+      <div>
+        <div class="results-info" style="margin-top:0"><div><b id="fleet-count"></b> <span class="muted" id="fleet-note" style="font-size:13px;margin-left:10px"></span></div>
+          <select class="select" id="fleet-ord" aria-label="Ordina"><option value="prezzo">Prezzo crescente</option><option value="prezzo-desc">Prezzo decrescente</option><option value="consegna">Consegna più rapida</option><option value="potenza">Più potenti</option></select></div>
+        <div class="car-grid" id="fleet-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))"></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <img data-photo="eur2" alt="" loading="lazy">
+        <span class="kicker">Non trovi il modello?</span>
+        <h2 style="margin-top:18px">Lo troviamo noi,<br><span class="dim">anche su misura.</span></h2>
+        <p>Furgoni attrezzati, flotte, allestimenti speciali: dicci cosa ti serve e prepariamo una proposta in giornata.</p>
+        <div class="actions"><a class="btn btn-primary" href="contatti.html">Parla con un consulente <span data-icon="arrow"></span></a><a class="btn btn-line" data-wa="Ciao LocaFit Rent!" href="#"><span data-icon="wa"></span>Scrivici su WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

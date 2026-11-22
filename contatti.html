@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contatti · LocaFit Rent</title>
+  <meta name="description" content="Contatta LocaFit Rent: sedi a Roma, Caserta e Benevento, WhatsApp, telefono ed email.">
+  <meta name="theme-color" content="#060709">
+  <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="contatti">
+<header id="site-header"></header>
+<main>
+  <section class="page-hero compact">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / Contatti</div>
+      <h1>Parliamone.</h1>
+      <p class="lead">WhatsApp, telefono, email o di persona. Rispondiamo in pochi minuti dal lunedì al sabato.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:40px">
+    <div class="wrap contact-grid">
+      <div class="contact-list">
+        <a class="contact-item" data-wa="Ciao LocaFit Rent!" href="#"><span class="ic wa" data-icon="wa"></span><div><small>Il più veloce</small><b>Scrivici su WhatsApp</b></div></a>
+        <a class="contact-item" href="tel:+390645217780"><span class="ic" data-icon="phone"></span><div><small>Lun–Sab 8:30–19:30</small><b>+39 06 4521 7780</b></div></a>
+        <a class="contact-item" href="mailto:info@locafitrent.it"><span class="ic" data-icon="mail"></span><div><small>Risposta entro un’ora</small><b>info@locafitrent.it</b></div></a>
+        <a class="contact-item" href="area.html"><span class="ic" data-icon="user"></span><div><small>Sei già cliente?</small><b>Area personale</b></div></a>
+        <div class="split-media" style="aspect-ratio:16/10;margin-top:10px"><img data-photo="roma2" alt="Roma" loading="lazy"><div class="float"><div><span class="mono dim">Sede legale</span><br><b style="font-weight:500">Via Salaria 1024, Roma</b></div><a class="btn btn-sm btn-primary" href="https://www.google.com/maps/search/?api=1&amp;query=Via%20Salaria%201024%20Roma" target="_blank" rel="noopener">Mappa</a></div></div>
+      </div>
+      <div class="contact-card">
+        <span class="kicker">Modulo</span>
+        <h2 style="margin-top:14px;font-size:36px">Scrivici.</h2>
+        <p class="muted" style="margin:8px 0 24px">Ti richiamiamo entro 30 minuti in orario d’ufficio.</p>
+        <form class="form" data-lead>
+          <div class="row2"><label>Nome e cognome<input required name="nome" autocomplete="name"></label><label>Telefono<input required type="tel" name="tel" autocomplete="tel"></label></div>
+          <label>Email<input required type="email" name="email" autocomplete="email"></label>
+          <div class="row2"><label>Formula<select name="tipo"><option>Breve termine</option><option>Medio termine</option><option selected>Lungo termine</option><option>Flotta aziendale</option></select></label>
+          <label>Sede<select name="sede"><option>Roma</option><option>Caserta</option><option>Benevento</option><option>Altra città</option></select></label></div>
+          <label>Messaggio<textarea name="msg" placeholder="Che auto cerchi, per quanto tempo…"></textarea></label>
+          <label class="check"><input type="checkbox" required> Acconsento a essere ricontattato secondo l’informativa privacy.</label>
+          <button class="btn btn-primary btn-block btn-lg" type="submit">Invia messaggio</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <section class="section raise">
+    <div class="wrap"><div class="section-head"><div><span class="kicker">Sedi</span><h2>Passa a trovarci.</h2></div></div><div class="sedi-grid" data-sedi></div></div>
+  </section>
+
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

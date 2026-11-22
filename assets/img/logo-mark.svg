@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" fill="none">
+  <!-- Marchio provvisorio LocaFit Rent: doppio chevron + punto, ispirato al logo di riferimento -->
+  <path d="M30 6 L52 24 L30 42" stroke="#D62839" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15 6 L37 24 L15 42" stroke="#1B2A6B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="8" cy="24" r="5" fill="#2BA84A"/>
+</svg>

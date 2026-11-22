@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocaFit Rent · Noleggio auto breve, medio e lungo termine</title>
+  <meta name="description" content="Noleggio auto 100% online a breve, medio e lungo termine con pronta consegna. Sedi a Roma, Caserta e Benevento, consegna in tutta Italia.">
+  <meta name="theme-color" content="#060709">
+  <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home">
+<header id="site-header"></header>
+<main>
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="wrap" style="display:flex;flex-direction:column;flex:1;width:100%">
+      <div class="hero-top">
+        <div class="rise-in">
+          <span class="kicker">Noleggio auto · Roma · Caserta · Benevento</span>
+          <h1 style="margin-top:22px">L’auto giusta,<br><span class="dim">pronta oggi.</span></h1>
+          <p class="lead">Breve, medio e lungo termine, dalla city car alla 911. Scegli, carica i documenti, firma dal telefono: la consegniamo noi, anche in giornata.</p>
+          <div class="hero-trust"><span class="badge badge-ok"><span class="dot"></span>Noleggio 100% online</span><span class="muted" style="font-size:14px"><span class="stars">★★★★★</span>&nbsp; 4,9 su 1.240 recensioni</span></div>
+        </div>
+      </div>
+      <div class="hero-stage">
+        <div class="hero-name" id="hero-name" aria-hidden="true"></div>
+        <div class="readouts" id="hero-readouts"></div>
+        <div class="hero-car stage" id="hero-car"></div>
+        <div class="hero-car-info" id="hero-info"></div>
+      </div>
+      <form class="finder" id="finder" aria-label="Cerca un’auto">
+        <div class="seg" id="finder-seg" role="group" aria-label="Formula"></div>
+        <div class="field"><label for="finder-sede">Ritiro</label><select id="finder-sede"></select></div>
+        <div class="field"><label for="finder-data">Dal</label><input type="date" id="finder-data"></div>
+        <div class="field"><label for="finder-cat">Categoria</label><select id="finder-cat"></select></div>
+        <button class="btn btn-primary" type="submit">Mostra le auto <span data-icon="arrow"></span></button>
+      </form>
+      <div class="hero-thumbs" id="hero-thumbs" aria-label="Modelli in evidenza"></div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-label="Marchi in flotta"><div class="track">
+    <span>Porsche</span><span>Mercedes-Benz</span><span>BMW</span><span>Audi</span><span>Tesla</span><span>Volvo</span><span>Land Rover</span><span>Cupra</span><span>Alfa Romeo</span><span>Volkswagen</span><span>Fiat</span><span>Toyota</span><span>Jeep</span><span>Mini</span>
+    <span>Porsche</span><span>Mercedes-Benz</span><span>BMW</span><span>Audi</span><span>Tesla</span><span>Volvo</span><span>Land Rover</span><span>Cupra</span><span>Alfa Romeo</span><span>Volkswagen</span><span>Fiat</span><span>Toyota</span><span>Jeep</span><span>Mini</span>
+  </div></div>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">01 — Flotta</span><h2><span data-count="all"></span> modelli in pronta consegna.<br><span class="dim">Prezzi chiari, tutto incluso.</span></h2></div>
+        <a class="link" id="home-all" href="flotta.html">Tutta la flotta <span data-icon="arrow"></span></a>
+      </div>
+      <div class="chips" id="home-chips" style="margin-bottom:18px" role="group" aria-label="Categoria"></div>
+      <div class="car-grid" id="home-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="promo-hero">
+        <img class="bg" data-photo="notte" alt="">
+        <div class="copy">
+          <span class="badge badge-red">Black November · fino al 30/11</span>
+          <h2 style="margin-top:22px">Fino al −20%<br><span class="dim">sul canone.</span></h2>
+          <p class="lead" style="margin-top:18px">Sconto bloccato per tutta la durata del contratto, anticipo zero e consegna gratuita. Con il codice <span class="mono" style="color:var(--text)">BLACK26</span>.</p>
+          <div class="countdown" data-countdown></div>
+          <div style="display:flex;gap:10px;margin-top:30px;flex-wrap:wrap"><a class="btn btn-primary" href="offerte.html">Vedi le offerte <span data-icon="arrow"></span></a><button class="btn btn-line" data-copy="BLACK26">Copia il codice</button></div>
+        </div>
+        <div class="stage" style="padding:0 32px 32px"><div data-car="mercedes-glc"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section raise">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">02 — 100% online</span><h2>Dal divano alle chiavi,<br><span class="dim">senza passare da uno sportello.</span></h2></div>
+        <p>Tutta la pratica si chiude dal telefono in meno di dieci minuti. Nessuna fotocopia, nessun appuntamento.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><span class="n">01</span><span class="ico" data-icon="car"></span><h3>Scegli e configura</h3><p>Formula, durata, chilometri, anticipo. Il prezzo si aggiorna mentre scegli.</p><span class="t">≈ 2 min</span></div>
+        <div class="flow-step"><span class="n">02</span><span class="ico" data-icon="scan"></span><h3>Carica i documenti</h3><p>Patente e documento con la fotocamera: i dati si compilano da soli.</p><span class="t">≈ 2 min</span></div>
+        <div class="flow-step"><span class="n">03</span><span class="ico" data-icon="id"></span><h3>Verifica l’identità</h3><p>Un selfie o SPID. Valutazione automatica in pochi secondi.</p><span class="t">≈ 1 min</span></div>
+        <div class="flow-step"><span class="n">04</span><span class="ico" data-icon="pen"></span><h3>Firma e paga</h3><p>Firma digitale con codice SMS, pagamento con carta, Apple Pay o SEPA.</p><span class="t">≈ 2 min</span></div>
+        <div class="flow-step"><span class="n">05</span><span class="ico" data-icon="pin"></span><h3>Ricevi l’auto</h3><p>In sede o a domicilio, nel giorno e nell’orario che scegli tu.</p><span class="t">da oggi</span></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap"><a class="btn btn-primary" href="prenota.html?id=mercedes-a&amp;tipo=medio">Prova la procedura <span data-icon="arrow"></span></a><a class="btn btn-line" href="come-funziona.html">Come funziona nel dettaglio</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="kicker">03 — Formule</span><h2>Un weekend o cinque anni.<br><span class="dim">Stesso servizio.</span></h2></div>
+        <p>Cambia solo quanto a lungo tieni l’auto. Assicurazione, manutenzione e assistenza sono sempre comprese.</p>
+      </div>
+      <div class="formule">
+        <a class="formula" href="breve-termine.html"><img data-photo="costiera" alt="" loading="lazy">
+          <div class="top"><span class="badge">Da 1 a 30 giorni</span><span class="mono" style="color:rgba(255,255,255,.6)">01</span></div>
+          <h3>Breve termine</h3><p class="per">Weekend, viaggi, auto sostitutiva.</p>
+          <ul><li>Ritiro in giornata</li><li>250 km al giorno inclusi</li><li>Sconto dal 3° giorno</li></ul>
+          <div class="from"><div><small class="muted">da</small><br><b data-from="breve"></b> <span class="muted">/giorno</span></div><span class="arrow" data-icon="arrowUR"></span></div></a>
+        <a class="formula" href="medio-termine.html"><img data-photo="milano" alt="" loading="lazy">
+          <div class="top"><span class="badge">Da 1 a 12 mesi</span><span class="mono" style="color:rgba(255,255,255,.6)">02</span></div>
+          <h3>Medio termine</h3><p class="per">Trasferte, progetti, periodi di prova.</p>
+          <ul><li>Nessun anticipo</li><li>Cambio auto con 30 giorni</li><li>2.500 km al mese</li></ul>
+          <div class="from"><div><small class="muted">da</small><br><b data-from="medio"></b> <span class="muted">/mese</span></div><span class="arrow" data-icon="arrowUR"></span></div></a>
+        <a class="formula" href="lungo-termine.html"><img data-photo="stelvio" alt="" loading="lazy">
+          <div class="top"><span class="badge">Da 24 a 60 mesi</span><span class="mono" style="color:rgba(255,255,255,.6)">03</span></div>
+          <h3>Lungo termine</h3><p class="per">L’auto nuova, senza comprarla.</p>
+          <ul><li>Canone fisso, anticipo zero</li><li>Deducibile per P.IVA</li><li>Gomme e manutenzione</li></ul>
+          <div class="from"><div><small class="muted">da</small><br><b data-from="lungo"></b> <span class="muted">/mese</span></div><span class="arrow" data-icon="arrowUR"></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section raise">
+    <div class="wrap exp3d">
+      <div>
+        <span class="kicker">04 — Tour 3D</span>
+        <h2 style="margin-top:18px">Sali a bordo<br><span class="dim">prima di firmare.</span></h2>
+        <p class="lead" style="margin-top:18px">Gira intorno all’auto a 360°, avvicinati ai dettagli, siediti al posto di guida. Direttamente nel browser.</p>
+        <ul>
+          <li><b>01</b>Esterni a 360° con zoom sui dettagli</li>
+          <li><b>02</b>Abitacolo in 3D: plancia, volante, sedili</li>
+          <li><b>03</b>Disponibile sui modelli con il badge 3D</li>
+        </ul>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" id="home-3d-int" type="button"><span data-icon="seat"></span>Posto di guida</button><button class="btn btn-line" id="home-3d-ext" type="button"><span data-icon="rotate"></span>Ruota a 360°</button></div>
+      </div>
+      <div id="home-3d"></div>
+    </div>
+  </section>
+
+  <section class="photo-band">
+    <img data-photo="stelvio2" alt="Strada di montagna" loading="lazy">
+    <div class="wrap">
+      <span class="kicker" style="color:rgba(255,255,255,.75)">05 — LocaFit in numeri</span>
+      <h2 style="margin-top:18px">245 auto in sede,<br><span class="dim">consegnate in tutta Italia.</span></h2>
+      <div class="stats">
+        <div class="stat"><b>24h</b><small>tempo medio di consegna</small></div>
+        <div class="stat"><b>9 min</b><small>per chiudere la pratica online</small></div>
+        <div class="stat"><b>€0</b><small>di anticipo su tutte le formule</small></div>
+        <div class="stat"><b>4,9</b><small>valutazione media dei clienti</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">06 — Tutto incluso</span><h2>Il canone copre tutto.<br><span class="dim">Tu pensi a guidare.</span></h2></div><p>Nessun costo nascosto alla consegna: quello che vedi nel riepilogo è quello che paghi.</p></div>
+      <div class="inclusi" data-inclusi></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap split">
+      <div class="split-media"><img data-photo="eur" alt="Quartiere EUR di sera" loading="lazy">
+        <div class="float"><div><span class="mono dim">Codice FLOTTA2</span><br><b style="font-weight:500">2 mesi di canone gratuiti</b></div><span class="badge">Da 3 auto</span></div></div>
+      <div>
+        <span class="kicker">07 — Aziende e P.IVA</span>
+        <h2 style="margin-top:18px">La flotta aziendale,<br><span class="dim">gestita da noi.</span></h2>
+        <ul class="checks">
+          <li><span data-icon="checkCircle"></span>Canoni deducibili e IVA detraibile secondo normativa</li>
+          <li><span data-icon="checkCircle"></span>Un referente dedicato per tutte le auto</li>
+          <li><span data-icon="checkCircle"></span>Auto sostitutiva entro 24 ore in tutta Italia</li>
+          <li><span data-icon="checkCircle"></span>Fattura unica mensile e report per centro di costo</li>
+        </ul>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-primary" href="aziende.html">Soluzioni per aziende</a><button class="btn btn-line" data-lead-open="flotta" data-tipo="lungo" data-title="Offerta per la tua flotta" data-kicker="Aziende">Richiedi un’offerta</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section raise">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">08 — Recensioni</span><h2>Lo dicono i clienti.</h2></div><div class="rating"><b>4,9</b><div><span class="stars">★★★★★</span><br><span class="muted" style="font-size:14px">1.240 recensioni verificate</span></div></div></div>
+      <div class="reviews" data-reviews></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head"><div><span class="kicker">09 — Sedi</span><h2>Roma, Caserta, Benevento.<br><span class="dim">E consegna ovunque in Italia.</span></h2></div><a class="link" href="contatti.html">Contatti e orari <span data-icon="arrow"></span></a></div>
+      <div class="sedi-grid" data-sedi></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:40px 96px">
+      <div><span class="kicker">10 — Domande</span><h2 style="margin-top:18px">Prima di partire.</h2><p class="lead" style="margin-top:16px">Le risposte alle domande più comuni. Per tutto il resto, un consulente risponde su WhatsApp.</p><a class="link" href="faq.html" style="margin-top:28px">Tutte le domande <span data-icon="arrow"></span></a></div>
+      <div class="faq" data-faq="5"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="cta">
+        <img data-photo="interni" alt="" loading="lazy">
+        <span class="kicker">Pronta consegna</span>
+        <h2 style="margin-top:18px">Ti serve un’auto<br><span class="dim">già oggi?</span></h2>
+        <p>Scegli il modello, carica i documenti e firma dal telefono. Al resto pensiamo noi.</p>
+        <div class="actions"><a class="btn btn-primary" href="flotta.html">Noleggia online <span data-icon="arrow"></span></a><a class="btn btn-line" data-wa="Ciao LocaFit Rent!" href="#"><span data-icon="wa"></span>Scrivici su WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
