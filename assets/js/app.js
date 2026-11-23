@@ -234,7 +234,20 @@
   /* ---------- Blocchi ripetuti ---------- */
   $$('[data-inclusi]').forEach((el) => { el.innerHTML = LF.inclusi.map((x) => `<div class="incluso"><span class="ico">${I[x.i]}</span><b>${x.t}</b><small>${x.d}</small></div>`).join(''); });
   $$('[data-faq]').forEach((el) => { const c = el.dataset.faq; const l = c && isNaN(c) ? LF.faq.filter((f) => f.c === c) : LF.faq.slice(0, +c || LF.faq.length); el.innerHTML = l.map((f) => `<details><summary>${f.q}</summary><p>${f.a}</p></details>`).join(''); });
-  $$('[data-sedi]').forEach((el) => { el.innerHTML = LF.sedi.map((s) => `<div class="sede" id="${s.id}"><img src="${photo(s.foto)}" alt="${s.citta}" loading="lazy"><span class="tag">${s.tipo}</span><h3>${s.citta}</h3><p>${s.indirizzo}<br>${s.orari} · ${s.auto}+ auto in sede</p><div class="btns"><a class="btn btn-light btn-sm" href="flotta.html?sede=${s.id}">Auto a ${s.citta}</a><a class="btn btn-glass btn-sm" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.mappa)}" target="_blank" rel="noopener">Indicazioni</a></div></div>`).join(''); });
+  $$('[data-sedi]').forEach((el) => { el.innerHTML = LF.sedi.map((s) => `<article class="sede" id="${s.id}">
+      <div class="sede-img"><img src="${photo(s.foto)}" alt="${s.fotoAlt || s.citta}" loading="lazy"></div>
+      <div class="sede-body">
+        <span class="tag">${s.tipo}</span>
+        <h3>${s.citta}</h3>
+        <dl class="sede-info">
+          <div><dt>Indirizzo</dt><dd>${s.indirizzo}</dd></div>
+          <div><dt>Orari</dt><dd>${s.orari}</dd></div>
+          <div><dt>In sede</dt><dd>${s.auto}+ auto pronte</dd></div>
+          <div><dt>Telefono</dt><dd><a href="tel:${s.tel.replace(/\s/g, '')}">${s.tel}</a></dd></div>
+        </dl>
+        <div class="btns"><a class="btn btn-primary btn-sm" href="flotta.html?sede=${s.id}">Auto a ${s.citta}</a><a class="btn btn-outline btn-sm" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.mappa)}" target="_blank" rel="noopener">Indicazioni</a></div>
+      </div>
+    </article>`).join(''); });
   $$('[data-reviews]').forEach((el) => { el.innerHTML = LF.recensioni.map((r) => `<div class="review"><span class="stars">★★★★★</span><blockquote>“${r.q}”</blockquote><div class="who"><span class="av">${r.n.split(' ').map((x) => x[0]).join('')}</span><div><b style="font-weight:600">${r.n}</b><br><span class="muted" style="font-size:13px">${r.t}</span></div></div></div>`).join(''); });
   $$('[data-wa]').forEach((el) => { el.href = LF.waLink(el.dataset.wa || 'Ciao LocaFit Rent!'); el.target = '_blank'; el.rel = 'noopener'; });
   $$('[data-icon]').forEach((el) => { el.insertAdjacentHTML(el.dataset.iconPos === 'end' ? 'beforeend' : 'afterbegin', I[el.dataset.icon] || ''); });

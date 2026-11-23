@@ -11,9 +11,9 @@ LF.contatti = {
 };
 
 LF.sedi = [
-  { id: 'roma', citta: 'Roma', tipo: 'Sede legale e hub principale', indirizzo: 'Via Salaria 1024, 00138 Roma', orari: 'Lun–Sab 8:30–19:30', tel: '+39 06 4521 7780', mappa: 'Via Salaria 1024 Roma', foto: 'roma', auto: 140 },
-  { id: 'caserta', citta: 'Caserta', tipo: 'Sede operativa', indirizzo: 'Viale Carlo III 52, 81100 Caserta', orari: 'Lun–Sab 9:00–19:00', tel: '+39 0823 150 420', mappa: 'Viale Carlo III Caserta', foto: 'caserta', auto: 60 },
-  { id: 'benevento', citta: 'Benevento', tipo: 'Sede operativa', indirizzo: 'Viale Mellusi 118, 82100 Benevento', orari: 'Lun–Sab 9:00–19:00', tel: '+39 0824 180 315', mappa: 'Viale Mellusi Benevento', foto: 'benevento', auto: 45 },
+  { id: 'roma', citta: 'Roma', tipo: 'Sede legale e hub principale', indirizzo: 'Via Salaria 1024, 00138 Roma', orari: 'Lun–Sab 8:30–19:30', tel: '+39 06 4521 7780', mappa: 'Via Salaria 1024 Roma', foto: 'sede-roma', fotoAlt: 'Castel Sant’Angelo e il Tevere al tramonto', auto: 140 },
+  { id: 'caserta', citta: 'Caserta', tipo: 'Sede operativa', indirizzo: 'Viale Carlo III 52, 81100 Caserta', orari: 'Lun–Sab 9:00–19:00', tel: '+39 0823 150 420', mappa: 'Viale Carlo III Caserta', foto: 'sede-caserta', fotoAlt: 'La Reggia di Caserta vista dalle fontane del parco', auto: 60 },
+  { id: 'benevento', citta: 'Benevento', tipo: 'Sede operativa', indirizzo: 'Viale Mellusi 118, 82100 Benevento', orari: 'Lun–Sab 9:00–19:00', tel: '+39 0824 180 315', mappa: 'Viale Mellusi Benevento', foto: 'sede-benevento', fotoAlt: 'La Rocca dei Rettori a Benevento', auto: 45 },
 ];
 
 LF.categorie = [

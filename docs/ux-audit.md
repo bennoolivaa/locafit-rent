@@ -122,3 +122,4 @@ Corretto anche il menu su telefono: la prima voce finiva sotto l'header quando l
 | 41 | Telefono | Barra promo su tre righe | Una riga: "Fino al −20%. Scopri le offerte" |
 | 42 | Scheda auto (telefono) | Pulsante WhatsApp sopra la barra "Noleggia"; "24 mesi" spezzato su due righe; dati tecnici larghi solo tre quarti | WhatsApp nascosto (c'è già nel configuratore), testo su una riga, larghezza piena |
 | 43 | Galleria | Con due sole foto le miniature erano sparse sulla riga | Larghezza fissa, allineate a sinistra |
+| 44 | Sedi (home, Contatti, Chi siamo) | Testo bianco sulle foto, illeggibile; foto notturne e affollate | Foto sopra e testo su fondo bianco; nuove foto: Castel Sant’Angelo al tramonto, Reggia di Caserta dalle fontane, Rocca dei Rettori; indirizzo, orari, auto in sede e telefono in righe separate |

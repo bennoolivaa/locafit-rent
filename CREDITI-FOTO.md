@@ -67,6 +67,9 @@ Foto da Wikimedia Commons, licenze Creative Commons: per il sito pubblico vanno 
 - `notte2` — [City Hall at night with long exposure.jpg](https://commons.wikimedia.org/wiki/File%3ACity_Hall_at_night_with_long_exposure.jpg)
 - `roma` — [Colosseum at night 01.jpg](https://commons.wikimedia.org/wiki/File%3AColosseum_at_night_01.jpg)
 - `roma2` — [Colosseum at night 04.jpg](https://commons.wikimedia.org/wiki/File%3AColosseum_at_night_04.jpg)
+- `sede-benevento` — [Rocca dei Rettori, Benevento.jpg](https://commons.wikimedia.org/wiki/File:Rocca_dei_Rettori,_Benevento.jpg) · Antonio De Capua · CC BY-SA 4.0
+- `sede-caserta` — [Reggia di Caserta, prospettiva dalla fontana di Venere e Adone - panoramio.jpg](https://commons.wikimedia.org/wiki/File:Reggia_di_Caserta,_prospettiva_dalla_fontana_di_Venere_e_Adone_-_panoramio.jpg) · Carlo Pelagalli · CC BY-SA 3.0
+- `sede-roma` — [Castel sant'angelo al tramonto.jpg](https://commons.wikimedia.org/wiki/File:Castel_sant%27angelo_al_tramonto.jpg) · Matteo Pappadopoli · CC BY-SA 4.0
 - `stelvio` — [Strada statale 38 dello Stelvio - Bormio, Sondrio, Italia - 11 Agosto 2025.jpg](https://commons.wikimedia.org/wiki/File%3AStrada_statale_38_dello_Stelvio_-_Bormio%2C_Sondrio%2C_Italia_-_11_Agosto_2025.jpg)
 - `stelvio2` — [Strada statale 38 dello Stelvio - Bormio, Sondrio, Italia - 11 Agosto 2025 02.jpg](https://commons.wikimedia.org/wiki/File%3AStrada_statale_38_dello_Stelvio_-_Bormio%2C_Sondrio%2C_Italia_-_11_Agosto_2025_02.jpg)
 

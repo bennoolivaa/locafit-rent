@@ -1018,3 +1018,25 @@ h1, h2, h3, .big-quote { text-wrap: balance; }
 .gallery-thumbs { grid-auto-columns: minmax(48px, 112px); justify-content: start; }
 @media (max-width: 1023px) { .detail > div:first-child > * { width: 100%; } }
 @media (max-width: 360px) { .configurator { padding-left: 16px; padding-right: 16px; } .pill { font-size: 12px; padding: 0 2px; } }
+
+/* =========================================================
+   v5.2 — sedi: foto sopra, testo su fondo bianco (stile concessionari Mercedes)
+   ========================================================= */
+.sedi-grid { gap: 20px; }
+.sede { min-height: 0; padding: 0; display: flex; flex-direction: column; justify-content: flex-start; background: #fff; color: var(--text); border-radius: 8px; overflow: hidden; isolation: auto; }
+.sede::before { display: none; }
+.sede-img { aspect-ratio: 3 / 2; overflow: hidden; background: var(--alt-2); }
+.sede-img img, .sede > .sede-img img { position: static; width: 100%; height: 100%; object-fit: cover; z-index: auto; transition: transform .6s ease; }
+@media (hover: hover) { .sede:hover .sede-img img { transform: scale(1.03); } }
+.sede-body { display: flex; flex-direction: column; flex: 1; padding: 24px 26px 26px; }
+.sede .tag { font-size: 13px; color: var(--muted); }
+.sede h3 { font-family: var(--serif); font-weight: 400; font-size: 34px; letter-spacing: -.01em; line-height: 1.1; color: var(--ink); margin-top: 4px; }
+.sede-info { margin: 18px 0 0; display: grid; }
+.sede-info div { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line-2); font-size: 15px; }
+.sede-info div:last-child { border-bottom: 1px solid var(--line-2); }
+.sede-info dt { color: var(--muted); }
+.sede-info dd { margin: 0; color: var(--ink); }
+.sede-info a:hover { color: var(--blue); }
+.sede .btns { margin-top: auto; padding-top: 22px; gap: 10px; }
+@media (max-width: 1100px) { .sedi-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { .sedi-grid { grid-template-columns: 1fr; } .sede-body { padding: 20px; } }
