@@ -114,25 +114,35 @@
   }
   if (!document.body.dataset.noFloat) document.body.insertAdjacentHTML('beforeend', `<a class="wa-float" href="${LF.waLink('Ciao LocaFit Rent! Vorrei informazioni.')}" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">${I.wa}</a>`);
 
+  // WhatsApp flottante: si nasconde mentre scorri verso il basso, torna quando risali
+  { const wf = $('.wa-float'); let y0 = scrollY;
+    if (wf) addEventListener('scroll', () => { const y = scrollY; if (Math.abs(y - y0) < 8) return; wf.classList.toggle('away', y > y0 && y > 400); y0 = y; }, { passive: true }); }
+
   /* ---------- Card auto ---------- */
   LF.card = function (a, tipo) {
     const p = LF.prezzo(a, tipo);
     const href = `auto.html?id=${a.id}&tipo=${tipo}`;
+    const cat = (LF.categorie.find((c) => c.id === a.categoria) || {}).nome || '';
+    const flag = p.pct ? `<span class="cc-flag promo">${LF.promo.nome} −${Math.round(p.pct * 100)}%</span>` : `<span class="cc-flag">${cat}</span>`;
+    const label = tipo === 'lungo' ? 'Anticipo zero, IVA inclusa' : tipo === 'medio' ? 'Recesso con 30 giorni' : '250 km al giorno inclusi';
     return `<article class="car-card">
-      <div class="cc-top">${a.promo ? `<span class="badge badge-red">−${Math.round(a.promo * 100)}%</span>` : '<span></span>'}${LF.modelli3d[a.id] ? '<span class="badge">3D</span>' : ''}</div>
-      <div class="cc-stage">${LF.carShot(a, '-sm', { back: true })}</div>
-      <div class="cc-body">
-        <div class="cc-name"><small>${a.marca}</small><h3><a class="card-link" href="${href}">${a.modello}</a></h3><p>${a.versione}</p></div>
-        <div class="cc-foot">
-          <div class="cc-price"><div class="price"><div class="row">${p.pct ? `<s>€${eur(p.pieno)}</s>` : ''}<b class="${p.pct ? 'promo' : ''}">€${eur(p.unit)}</b><em>${LF.durate[tipo].unita}</em></div><small>${tipo === 'lungo' ? 'Anticipo zero, IVA inclusa' : tipo === 'medio' ? 'Recesso con 30 giorni' : '250 km al giorno inclusi'}</small></div>${LF.status(a)}</div>
-          <div class="cc-actions"><a class="btn btn-primary" href="prenota.html?id=${a.id}&tipo=${tipo}">Noleggia</a><a class="btn btn-outline" href="${href}">Scopri</a></div>
-        </div>
-      </div></article>`;
+      <div class="cc-head">
+        <div class="cc-line">${flag}${LF.status(a)}</div>
+        <h3><a class="card-link" href="${href}">${a.modello}</a></h3>
+        <p>${a.marca} · ${a.versione}</p>
+      </div>
+      <div class="cc-stage">${LF.carShot(a, '-sm', { back: true })}${LF.modelli3d[a.id] ? `<span class="cc-360">${I.rotate}360°</span>` : ''}</div>
+      <div class="cc-specs"><div><b>${a.cv} CV</b><small>Potenza</small></div><div><b>${a.alim}</b><small>Motore</small></div><div><b>${a.cambio}</b><small>Cambio</small></div></div>
+      <div class="cc-foot">
+        <div class="price"><div class="row"><b class="${p.pct ? 'promo' : ''}">€${eur(p.unit)}</b><em>${LF.durate[tipo].unita}</em>${p.pct ? `<s>€${eur(p.pieno)}</s>` : ''}</div><small>${label}</small></div>
+        <a class="btn btn-primary btn-sm cc-go" href="prenota.html?id=${a.id}&tipo=${tipo}">Noleggia</a>
+      </div>
+    </article>`;
   };
   const tiles = [
     { k: 'costiera', e: '100% online', t: 'Firmi dal telefono. Guidi in giornata.', d: 'Documenti, verifica, firma e pagamento in meno di dieci minuti.', href: 'come-funziona.html', l: 'Come funziona' },
     { k: 'notte', e: LF.promo.nome, t: 'Fino al −20% sul canone.', d: `Con il codice ${LF.promo.codice}, fino al 30 novembre.`, href: 'offerte.html', l: 'Vedi le offerte' },
-    { k: 'interni', e: 'Tour 3D', t: 'Siediti al posto di guida prima di noleggiare.', d: 'Sui modelli con il badge 3D.', href: 'auto.html?id=porsche-911', l: 'Prova sulla 911' },
+    { k: 'interni', e: 'Tour 3D', t: 'Siediti al posto di guida prima di noleggiare.', d: 'Sui modelli con il simbolo 360°.', href: 'auto.html?id=porsche-911', l: 'Prova sulla 911' },
   ];
   LF.renderGrid = function (el, list, tipo, opt = {}) {
     if (!list.length) { el.innerHTML = '<div class="empty"><b>Nessuna auto con questi filtri.</b><br>Prova a cambiare sede o categoria, oppure scrivici: la troviamo noi.</div>'; return; }
@@ -275,11 +285,11 @@
       chips.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; cat = b.dataset.v; $$('.chip', chips).forEach((c) => c.classList.toggle('on', c === b)); drawGrid(); });
       function drawGrid() {
         let l = cat === 'top' ? LF.auto.filter((a) => a.top) : cat === 'promo' ? LF.auto.filter((a) => a.promo) : LF.auto.filter((a) => a.categoria === cat);
-        LF.renderGrid($('#home-grid'), l.sort((x, y) => x.prezzi.lungo - y.prezzi.lungo).slice(0, 8), tipo);
-        $('#home-all').href = `flotta.html?tipo=${tipo}${cat !== 'top' && cat !== 'promo' ? '&cat=' + cat : ''}`;
+        LF.renderGrid($('#home-grid'), l.sort((x, y) => x.prezzi.lungo - y.prezzi.lungo).slice(0, 6), tipo);
+        $('#home-all').href = $('#home-all-2').href = `flotta.html?tipo=${tipo}${cat !== 'top' && cat !== 'promo' ? '&cat=' + cat : ''}`;
       }
       drawGrid();
-      const g = LF.gallery($('#home-3d'), byId('porsche-911'));
+      const g = LF.gallery($('#home-3d'), byId('bmw-x5'));
       $('#home-3d-int').addEventListener('click', () => g.open('int'));
       $('#home-3d-ext').addEventListener('click', () => g.open('ext'));
     },
@@ -366,7 +376,7 @@
       const bar = $('#order-bar'); const go = $('#cfg-go');
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { const show = !e.isIntersecting && innerWidth < 1024; bar.classList.toggle('show', show); document.body.classList.toggle('has-bar', show); }).observe(go);
       const sim = LF.auto.filter((x) => x.id !== a.id && x.categoria === a.categoria).slice(0, 4);
-      LF.renderGrid($('#simili'), sim.length >= 4 ? sim : LF.auto.filter((x) => x.id !== a.id && x.top).slice(0, 4), st.tipo);
+      LF.renderGrid($('#simili'), sim.length >= 3 ? sim.slice(0, 3) : LF.auto.filter((x) => x.id !== a.id && x.top).slice(0, 3), st.tipo);
     },
 
     offerte() {
@@ -380,7 +390,7 @@
       const l = [...LF.auto].filter((a) => a.categoria !== 'furgone' || t !== 'lungo').sort((x, y) => x.prezzi[t] - y.prezzi[t]);
       const pick = []; LF.categorie.forEach((c) => { const f = l.find((a) => a.categoria === c.id); if (f) pick.push(f); });
       l.forEach((a) => { if (pick.length < 8 && !pick.includes(a)) pick.push(a); });
-      LF.renderGrid($('#tipo-grid'), pick.slice(0, 8), t);
+      LF.renderGrid($('#tipo-grid'), pick.slice(0, 6), t);
       const calc = $('#mini-calc');
       if (calc) {
         const sel = $('#mc-car'); sel.innerHTML = LF.auto.map((a) => `<option value="${a.id}">${a.marca} ${a.modello}</option>`).join(''); sel.value = calc.dataset.default || LF.auto[0].id;

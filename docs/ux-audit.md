@@ -45,7 +45,7 @@ Gravità: **Alta** = blocca o fa perdere clienti · **Media** = rallenta o confo
 |---|---|---|
 | Header | Scegli l’auto | Account |
 | Hero home | Scegli l’auto | Come funziona |
-| Card auto | Noleggia | Scopri |
+| Card auto | Noleggia | Tutta la card apre la scheda |
 | Scheda auto (barra fissa) | Noleggia — €prezzo | Consulente · WhatsApp |
 | Flotta (telefono) | Filtri | Ordina |
 | Prenotazione | Continua | Indietro |
@@ -73,3 +73,18 @@ Gravità: **Alta** = blocca o fa perdere clienti · **Media** = rallenta o confo
 | 20 | Fondi neri | Pulsante contorno azzurro poco leggibile | Contorno bianco |
 | 21 | Passaggi | Cinque riquadri con icone, aspetto da modello pronto | Linea del tempo con numeri grandi |
 | 22 | Footer | Più stretto della griglia sopra | Stessa larghezza del contenuto |
+
+## Revisione critica v4.2 — inserzioni
+
+| # | Dove | Difetto | Correzione |
+|---|---|---|---|
+| 23 | Card auto | Auto piccola dentro un riquadro grigio, testo minuto, due pulsanti per card: in home 16 pillole blu una accanto all’altra | Card stile scheda prodotto: nome grande, auto più grande con ombra a terra, tre dati tecnici in colonna, prezzo in evidenza e un solo pulsante "Noleggia"; la card intera apre la scheda |
+| 24 | Card auto | Badge "−15%" e "3D" sovrapposti alla foto | Promozione scritta in rosso sopra il nome, "360°" discreto in grigio |
+| 25 | Card auto | Altezze della foto diverse tra card della stessa riga | Foto in un riquadro fisso, allineate in basso |
+| 26 | Home | 8 card su 4 colonne, strette | 6 card su 3 colonne e pulsante "Vedi tutte le 45 auto" in fondo |
+| 27 | Flotta | Griglia a 4 colonne forzata nel codice della pagina | Stessa griglia della home: 3, 2 o 1 colonna |
+| 28 | Home | Riquadro promozioni più stretto delle card sopra | Stessa larghezza |
+| 29 | Home | 911 in apertura e di nuovo nella sezione 3D | Sezione 3D con la BMW X5 |
+| 30 | Inclusi | Otto riquadri con icone, aspetto da modello pronto | Stesso stile a linee della sezione "Tutto online" |
+| 31 | Galleria | Miniature tagliate a destra (5 non entravano) | Miniature a larghezza uguale, sempre tutte visibili |
+| 32 | Telefono | Il pulsante WhatsApp copriva "Noleggia" nelle card | Si nasconde mentre scorri verso il basso e torna quando risali |
