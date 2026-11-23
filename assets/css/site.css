@@ -1182,3 +1182,54 @@ h1, h2, h3, .big-quote { text-wrap: balance; }
 #f-reset[hidden] { display: none; }
 .fleet-side input.range { height: 2px; min-height: 0; padding: 0; border: 0; }
 @media (max-width: 734px) { .catbar { padding-left: 10px; scroll-padding-left: 10px; } }
+
+/* =========================================================
+   v5.5 — righe da scorrere in orizzontale sul telefono
+   ========================================================= */
+.swipe-bar, .grid-all { display: none; }
+@media (min-width: 735px) { .car-row { display: contents; } }
+@media (max-width: 734px) {
+  .swipe { display: flex !important; gap: 12px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; margin-inline: -20px; padding-inline: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .swipe::-webkit-scrollbar { display: none; }
+  .swipe > * { flex: 0 0 84%; min-width: 0; scroll-snap-align: start; }
+  .swipe > .empty { flex-basis: 100%; }
+  .steps.swipe > *, .inclusi.swipe > * { flex-basis: 68%; }
+  .steps.swipe { gap: 24px; }
+  .inclusi.swipe { gap: 24px; }
+  .reviews.swipe > * { flex-basis: 86%; }
+  .tiles.swipe { margin-inline: 0; padding-inline: 12px; scroll-padding-inline: 12px; gap: 10px; }
+  .tiles.swipe > * { flex-basis: 88%; min-height: 470px; }
+  .swipe-bar { display: block; position: relative; height: 2px; margin: 24px 0 0; background: var(--line-2); border-radius: 2px; overflow: hidden; }
+  .swipe-bar[hidden] { display: none; }
+  .swipe-bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); border-radius: 2px; }
+  .tiles + .swipe-bar { margin: 6px 12px 18px; }
+  .bg-black .swipe-bar, .dark .swipe-bar { background: rgba(255,255,255,.2); }
+  .bg-black .swipe-bar i, .dark .swipe-bar i { background: #fff; }
+
+  /* Flotta con "Tutti": una riga per categoria */
+  #fleet-grid.rows { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  #fleet-grid.rows .grid-h { margin: 34px 0 14px; padding-top: 22px; }
+  #fleet-grid.rows .grid-h.first { margin-top: 0; padding-top: 0; }
+  .grid-all { display: inline; margin-left: auto; padding: 0; border: 0; background: none; font: 500 15px/1 var(--font); color: var(--blue); cursor: pointer; white-space: nowrap; }
+  .grid-all::after { content: ' ›'; }
+  .car-row.swipe > * { flex-basis: 82%; }
+  .car-row + .swipe-bar { margin-top: 16px; }
+
+  /* Flotta con una categoria: due colonne, schede compatte */
+  #fleet-grid:not(.rows) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #fleet-grid:not(.rows) > .tile-photo, #fleet-grid:not(.rows) > .empty, #fleet-grid:not(.rows) > .grid-h { grid-column: 1 / -1; }
+  #fleet-grid:not(.rows) > .tile-photo { min-height: 300px; }
+  #fleet-grid:not(.rows) .cc-head { padding: 12px 12px 0; }
+  #fleet-grid:not(.rows) .cc-line { flex-direction: column; align-items: flex-start; gap: 3px; min-height: 0; }
+  #fleet-grid:not(.rows) .cc-flag, #fleet-grid:not(.rows) .cc-eta { font-size: 11px; }
+  #fleet-grid:not(.rows) .cc-head h3 { font-size: 21px; margin-top: 6px; }
+  #fleet-grid:not(.rows) .cc-head p { font-size: 12px; }
+  #fleet-grid:not(.rows) .cc-360, #fleet-grid:not(.rows) .cc-specs, #fleet-grid:not(.rows) .cc-foot .price small { display: none; }
+  #fleet-grid:not(.rows) .cc-stage { margin-top: 0; }
+  #fleet-grid:not(.rows) .cc-foot { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 12px 12px; }
+  #fleet-grid:not(.rows) .cc-foot .price .row { gap: 4px; }
+  #fleet-grid:not(.rows) .cc-foot .price b { font-size: 19px; }
+  #fleet-grid:not(.rows) .cc-foot .price em { font-size: 12px; }
+  #fleet-grid:not(.rows) .cc-foot .price s { font-size: 11px; }
+  #fleet-grid:not(.rows) .cc-go { width: 100%; min-height: 36px; padding: 0 10px; font-size: 14px; }
+}

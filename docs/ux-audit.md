@@ -148,3 +148,11 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
 | 47 | Filtri come liste grigie senza struttura | Pannello bianco fisso con sezioni separate, righe a pallino, cursore sottile e "Azzera" quando un filtro è attivo |
 | 48 | Testo bianco del riquadro "Firmi dal telefono" su foto chiara | Velatura più scura e titolo in serif |
 | 49 | Numero di risultati piccolo | Conteggio grande in serif ("49 veicoli") |
+
+## v5.5 — Scorrimento orizzontale sul telefono
+
+| # | Difetto | Correzione |
+|---|---|---|
+| 50 | Sul telefono ogni sezione è una colonna lunga: home 18.500 px, Flotta 27.800 px | Fino a 734 px, riquadri, auto, passaggi, servizi inclusi, recensioni, sedi e codici sconto diventano righe da scorrere a destra e sinistra. La scheda successiva si vede in parte e una barra sottile indica il punto della riga. Home 10.600 px, Flotta 7.200 px |
+| 51 | Flotta su telefono: 49 schede una sotto l'altra | Con "Tutti", una riga per categoria con "Vedi elenco". Con una categoria scelta, griglia a due colonne con schede compatte (modello, foto, prezzo, Noleggia) |
+| 52 | Cambiando categoria dalla barra la pagina restava a metà elenco | Torna all'inizio dei risultati, sotto la barra fissa |

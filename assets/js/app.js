@@ -205,6 +205,23 @@
     { k: 'notte', e: LF.promo.nome, t: 'Fino al −20% sul canone.', d: `Con il codice ${LF.promo.codice}, fino al 30 novembre.`, href: 'offerte.html', l: 'Vedi le offerte' },
     { k: 'interni', e: 'Tour 3D', t: 'Siediti al posto di guida prima di noleggiare.', d: 'Sui modelli con il simbolo 360°.', href: 'auto.html?id=porsche-911', l: 'Prova sulla 911' },
   ];
+  const swUpd = (el) => {
+    const bar = el._bar, w = el.scrollWidth, c = el.clientWidth;
+    bar.hidden = w <= c + 2; if (bar.hidden) return;
+    bar.firstChild.style.width = (c / w * 100) + '%';
+    bar.firstChild.style.transform = `translateX(${el.scrollLeft / c * 100}%)`;
+  };
+  LF.swipe = function (el) {
+    if (!el) return;
+    el.classList.add('swipe');
+    if (!el._bar) {
+      const bar = document.createElement('div'); bar.className = 'swipe-bar'; bar.setAttribute('aria-hidden', 'true'); bar.innerHTML = '<i></i>';
+      el.after(bar); el._bar = bar;
+      el.addEventListener('scroll', () => swUpd(el), { passive: true });
+      if (window.ResizeObserver) new ResizeObserver(() => swUpd(el)).observe(el);
+    }
+    el.scrollLeft = 0; swUpd(el);
+  };
   LF.renderGrid = function (el, list, tipo, opt = {}) {
     if (!list.length) { el.innerHTML = '<div class="empty"><b>Nessuna auto con questi filtri.</b><br>Prova a cambiare sede o categoria, oppure scrivici: la troviamo noi.</div>'; return; }
     const cards = (l, withTiles) => {
@@ -214,10 +231,12 @@
     };
     if (opt.groups) {
       const gs = opt.groups.filter((g) => g[1].length);
-      el.innerHTML = gs.map(([t, l], i) => `${gs.length > 1 ? `<h2 class="grid-h${i ? '' : ' first'}">${t}<span>${l.length}</span></h2>` : ''}${cards(l, i === 0 && opt.tiles)}`).join('');
+      el.innerHTML = gs.map(([t, l, id], i) => `${gs.length > 1 ? `<h2 class="grid-h${i ? '' : ' first'}">${t}<span>${l.length}</span>${opt.rows && id ? `<button type="button" class="grid-all" data-cat="${id}">Vedi elenco</button>` : ''}</h2>` : ''}${opt.rows ? `<div class="car-row">${cards(l, false)}</div>` : cards(l, i === 0 && opt.tiles)}`).join('');
+      if (opt.rows) $$('.car-row', el).forEach((r) => LF.swipe(r));
       return;
     }
     el.innerHTML = cards(list, opt.tiles);
+    if (!opt.noSwipe) LF.swipe(el);
   };
   LF.segDurata = function (el, current, onChange) {
     el.innerHTML = Object.entries(LF.durate).map(([k, v]) => `<button type="button" data-v="${k}" class="${k === current ? 'on' : ''}" aria-pressed="${k === current}">${v.breve}</button>`).join('');
@@ -383,7 +402,7 @@
       const chips = $('#fleet-chips');
       chips.className = 'catbar';
       chips.innerHTML = `<button class="cb ${st.cat ? '' : 'on'}" data-v="" aria-pressed="${!st.cat}"><span class="cb-img cb-all">${LF.auto.length}</span><b>Tutti</b></button>` + catInfo().map((c) => `<button class="cb ${c.id === st.cat ? 'on' : ''}" data-v="${c.id}" aria-pressed="${c.id === st.cat}"><span class="cb-img"><img src="assets/img/car/${c.img}-sm.webp" alt="" loading="lazy"></span><b>${c.nome}</b><small>${c.n}</small></button>`).join('');
-      chips.addEventListener('click', (e) => { const b = e.target.closest('.cb'); if (!b) return; st.cat = b.dataset.v; $$('.cb', chips).forEach((c) => { c.classList.toggle('on', c === b); c.setAttribute('aria-pressed', c === b); }); draw(); scrollTo({ top: Math.min(scrollY, $('.toolbar').offsetTop - 60), behavior: 'smooth' }); });
+      chips.addEventListener('click', (e) => { const b = e.target.closest('.cb'); if (!b) return; st.cat = b.dataset.v; $$('.cb', chips).forEach((c) => { c.classList.toggle('on', c === b); c.setAttribute('aria-pressed', c === b); }); draw(); { const tb = $('.toolbar'), y = $('#fleet-grid').getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(tb).top) || 0) - tb.offsetHeight - 16; if (scrollY > y) scrollTo({ top: y, behavior: 'smooth' }); } });
       { const on = $('.cb.on', chips); if (on && on.offsetLeft > chips.clientWidth - 120) chips.scrollLeft = on.offsetLeft - 24; }
       const opts = (el, key, values) => {
         el.innerHTML = values.map(([v, t]) => `<div class="opt ${st[key] === v ? 'on' : ''}" data-v="${v}" role="button" tabindex="0">${t}<span class="n">${v ? LF.auto.filter((a) => (key === 'sede' ? a.sedi.includes(v) : a[key] === v)).length : LF.auto.length}</span></div>`).join('');
@@ -404,6 +423,9 @@
       const closeSheet = () => { side.classList.remove('sheet'); if (bg) bg.remove(); document.body.style.overflow = ''; };
       $('#filter-open').addEventListener('click', openSheet);
       $$('[data-sheet-close]').forEach((b) => b.addEventListener('click', closeSheet));
+      const phone = matchMedia('(max-width: 734px)');
+      phone.addEventListener('change', () => draw());
+      $('#fleet-grid').addEventListener('click', (e) => { const b = e.target.closest('.grid-all'); if (b) $(`.cb[data-v="${b.dataset.cat}"]`, chips).click(); });
       $('#f-reset').addEventListener('click', () => {
         Object.assign(st, { sede: '', pronta: false, promo: false, d3: false, alim: '', cambio: '' });
         ['#fleet-pronta', '#fleet-promo', '#fleet-3d'].forEach((s) => { $(s).checked = false; });
@@ -420,8 +442,12 @@
         const active = ['sede', 'alim', 'cambio', 'pronta', 'promo', 'd3', 'max'].filter((k) => st[k]).length;
         $('#filter-open').innerHTML = `${I.filter}Filtri${active ? ` (${active})` : ''}`;
         $('#fleet-note').textContent = st.tipo === 'lungo' ? 'Canoni IVA inclusa · 36 mesi · 15.000 km/anno · anticipo zero' : st.tipo === 'medio' ? 'Canoni IVA inclusa · 2.500 km/mese · tutto incluso' : 'Tariffe IVA inclusa · 250 km/giorno · tutto incluso';
-        const grp = [['Auto', l.filter((a) => !['furgone', 'moto'].includes(a.categoria))], ['Furgoni', l.filter((a) => a.categoria === 'furgone')], ['Moto e scooter', l.filter((a) => a.categoria === 'moto')]];
-        LF.renderGrid($('#fleet-grid'), l, st.tipo, { tiles: !st.cat && !active, groups: st.cat ? null : grp });
+        const grp = phone.matches
+          ? LF.categorie.map((c) => [c.nome, l.filter((a) => a.categoria === c.id), c.id])
+          : [['Auto', l.filter((a) => !['furgone', 'moto'].includes(a.categoria))], ['Furgoni', l.filter((a) => a.categoria === 'furgone')], ['Moto e scooter', l.filter((a) => a.categoria === 'moto')]];
+        const rows = phone.matches && !st.cat && grp.filter((g) => g[1].length).length > 1;
+        $('#fleet-grid').classList.toggle('rows', rows);
+        LF.renderGrid($('#fleet-grid'), l, st.tipo, { tiles: !st.cat && !active, groups: st.cat ? null : grp, rows, noSwipe: true });
         $('#f-reset').hidden = !active;
         const u = new URLSearchParams({ tipo: st.tipo }); if (st.cat) u.set('cat', st.cat); if (st.sede) u.set('sede', st.sede); if (st.pronta) u.set('pronta', '1'); if (st.promo) u.set('promo', '1');
         history.replaceState(null, '', '?' + u);
@@ -500,4 +526,5 @@
     },
   };
   (init[page] || (() => {}))();
+  $$('.tiles, .steps, .inclusi, .reviews, .sedi-grid, #codes').forEach((el) => LF.swipe(el));
 })();
