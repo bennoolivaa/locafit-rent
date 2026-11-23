@@ -1,4 +1,4 @@
-"""Marchio LocaFit: punto verde + due chevron a pennello (dal logo di Fausto), ridisegnati puliti.
+"""Marchio LOCAFIT: punto verde + due chevron a pennello (dal logo di Fausto), ridisegnati puliti.
 Ogni pennellata = linea centrale levigata + profilo di spessore -> contorno pieno."""
 import math, sys
 

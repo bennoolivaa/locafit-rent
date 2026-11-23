@@ -1,4 +1,4 @@
-/* LocaFit Rent — noleggio 100% online (simulazione) e area personale */
+/* LOCAFIT Rent — noleggio 100% online (simulazione) e area personale */
 (function () {
   const { $, $$, icons: I, eur, byId } = LF;
   const page = document.body.dataset.page;
@@ -224,15 +224,15 @@
 
     function contractHTML() {
       const a = car(); const d = o.d; const p = P();
-      return `<div class="hd"><div><b>LocaFit Rent S.r.l.</b><br><small>Via Salaria 1024, 00138 Roma · P.IVA 00000000000</small></div><div style="text-align:right"><b>Contratto di noleggio</b><br><small>N. ${o.numero || 'LF-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000)} · ${new Date().toLocaleDateString('it-IT')}</small></div></div>
-        <h4>1. Le parti</h4><p>Il <b>Locatore</b> LocaFit Rent S.r.l. e il <b>Cliente</b> ${esc(o.cliente === 'azienda' ? d.rag : `${d.nome} ${d.cognome}`)}${d.cf ? `, C.F. ${esc(d.cf.toUpperCase())}` : ''}${d.piva ? `, P.IVA ${esc(d.piva)}` : ''}, residente in ${esc([d.ind, d.cap, d.citta].filter(Boolean).join(', '))}.</p>
+      return `<div class="hd"><div><b>LOCAFIT Rent S.r.l.</b><br><small>Via Salaria 1024, 00138 Roma · P.IVA 00000000000</small></div><div style="text-align:right"><b>Contratto di noleggio</b><br><small>N. ${o.numero || 'LF-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 90000) + 10000)} · ${new Date().toLocaleDateString('it-IT')}</small></div></div>
+        <h4>1. Le parti</h4><p>Il <b>Locatore</b> LOCAFIT Rent S.r.l. e il <b>Cliente</b> ${esc(o.cliente === 'azienda' ? d.rag : `${d.nome} ${d.cognome}`)}${d.cf ? `, C.F. ${esc(d.cf.toUpperCase())}` : ''}${d.piva ? `, P.IVA ${esc(d.piva)}` : ''}, residente in ${esc([d.ind, d.cap, d.citta].filter(Boolean).join(', '))}.</p>
         <h4>2. Il veicolo</h4><table><tr><td>Modello</td><td>${a.marca} ${a.modello} ${a.versione}</td></tr><tr><td>Alimentazione · cambio</td><td>${a.alim} · ${a.cambio}</td></tr><tr><td>Formula</td><td>${LF.durate[o.tipo].nome} · ${durTxt()}</td></tr></table>
         <h4>3. Corrispettivo</h4><table><tr><td>${o.tipo === 'breve' ? 'Tariffa giornaliera' : 'Canone mensile'} IVA inclusa</td><td>€ ${eur(unitTot())}</td></tr>${o.tipo === 'lungo' ? `<tr><td>Anticipo</td><td>€ ${eur(o.anticipo)}</td></tr><tr><td>Chilometri inclusi</td><td>${o.km}.000 / anno</td></tr>` : ''}${p.pct ? `<tr><td>Promozione ${LF.promo.nome}</td><td>−${Math.round(p.pct * 100)}% per tutta la durata</td></tr>` : ''}</table>
         <h4>4. Servizi inclusi</h4><p>Assicurazione RCA e Kasko, furto e incendio, manutenzione ordinaria e straordinaria, assistenza stradale 24/7, pneumatici, tassa di proprietà, auto sostitutiva.</p>
         <h4>5. Obblighi del Cliente</h4><p>Il Cliente si impegna a custodire il veicolo con diligenza, a non sublocarlo e a restituirlo nelle condizioni in cui lo ha ricevuto, salvo la normale usura.</p>
         <h4>7. Recesso</h4><p>${o.tipo === 'medio' ? 'Il Cliente può recedere con preavviso di 30 giorni senza penali.' : o.tipo === 'lungo' ? 'In caso di recesso anticipato si applica una penale pari al 30% dei canoni residui.' : 'Il noleggio può essere prolungato o terminato anticipatamente senza penali.'}</p>
         <h4>9. Firma elettronica</h4><p>Le parti convengono che il presente contratto è sottoscritto con firma elettronica avanzata mediante codice OTP inviato al numero ${esc(d.tel || '—')}.</p>
-        <div class="sig"><div>Per LocaFit Rent S.r.l.<br><span style="font-family:cursive;font-size:22px;color:#1B2A6B">LocaFit</span></div><div>Il Cliente${o.firma ? `<img src="${o.firma}" alt="Firma">` : ''}</div></div>`;
+        <div class="sig"><div>Per LOCAFIT Rent S.r.l.<br><span style="font-family:cursive;font-size:22px;color:#1B2A6B">LOCAFIT</span></div><div>Il Cliente${o.firma ? `<img src="${o.firma}" alt="Firma">` : ''}</div></div>`;
     }
 
     function render() {
@@ -272,7 +272,7 @@
       if (o.pay.metodo === 'sepa') { const ib = ($('#iban').value || '').replace(/\s/g, ''); if (ib.length < 15) { $('#iban').style.borderColor = 'var(--red)'; return; } o.pay.iban = $('#iban').value; }
       const btn = $('#panel [data-next]'); btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;border-color:rgba(0,0,0,.2);border-top-color:#07080A"></span> Autorizzazione in corso';
       const sheet = document.createElement('div'); sheet.className = 'modal open';
-      sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:400px;text-align:center"><span class="tiny">${o.pay.metodo === 'apple' ? 'Apple Pay' : o.pay.metodo === 'sepa' ? 'Mandato SEPA' : '3D Secure · La tua banca'}</span><h2 style="font-size:26px;margin-top:14px">Conferma il pagamento</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())} a LocaFit Rent S.r.l.</p><div style="margin:26px auto 6px" class="spinner"></div><p class="tiny" style="font-size:11px;margin-top:14px">Demo · nessun addebito reale</p></div>`;
+      sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:400px;text-align:center"><span class="tiny">${o.pay.metodo === 'apple' ? 'Apple Pay' : o.pay.metodo === 'sepa' ? 'Mandato SEPA' : '3D Secure · La tua banca'}</span><h2 style="font-size:26px;margin-top:14px">Conferma il pagamento</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())} a LOCAFIT Rent S.r.l.</p><div style="margin:26px auto 6px" class="spinner"></div><p class="tiny" style="font-size:11px;margin-top:14px">Demo · nessun addebito reale</p></div>`;
       document.body.appendChild(sheet);
       setTimeout(() => { $('.modal-box', sheet).innerHTML = `<div class="done-hero" style="padding:8px 0"><span class="ok">${I.check}</span><h2 style="font-size:26px;margin-top:18px">Pagamento autorizzato</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())}</p></div>`; }, 1700);
       setTimeout(() => { sheet.remove(); o.pay.ok = true; o.step++; render(); scrollTo({ top: 0, behavior: 'smooth' }); }, 2700);
@@ -369,7 +369,7 @@
           if (!drawn) { LF.toast('Prima firma nel riquadro'); return; }
           if (!$('#acc1').checked || !$('#acc2').checked) { LF.toast('Accetta le condizioni per proseguire'); return; }
           const code = String(Math.floor(100000 + Math.random() * 900000));
-          $('#sms-zone').innerHTML = `<div class="sms"><span class="ic">${I.chat}</span><div><span class="tiny" style="font-size:10.5px">SMS · LocaFit · adesso</span><br>Il tuo codice per firmare il contratto è <b>${code}</b>. Non condividerlo con nessuno.</div></div>
+          $('#sms-zone').innerHTML = `<div class="sms"><span class="ic">${I.chat}</span><div><span class="tiny" style="font-size:10.5px">SMS · LOCAFIT · adesso</span><br>Il tuo codice per firmare il contratto è <b>${code}</b>. Non condividerlo con nessuno.</div></div>
             <div class="otp" id="otp">${Array.from({ length: 6 }, () => '<input inputmode="numeric" maxlength="1" aria-label="Cifra">').join('')}</div><span class="hint mono" style="font-size:11px;color:var(--muted-2);display:block;margin-top:8px">Demo: il codice è mostrato qui sopra</span>`;
           const ins = $$('#otp input'); ins[0].focus();
           ins.forEach((inp, i) => {
@@ -407,7 +407,7 @@
           const s = new Date(g); s.setHours(h, 0, 0); const e = new Date(s); e.setHours(h + 2);
           const f = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
           const a = car();
-          const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LocaFit Rent//IT\r\nBEGIN:VEVENT\r\nUID:${o.numero}@locafitrent.it\r\nDTSTAMP:${f(new Date())}\r\nDTSTART:${f(s)}\r\nDTEND:${f(e)}\r\nSUMMARY:${o.del.modo === 'sede' ? 'Ritiro' : 'Consegna'} ${a.marca} ${a.modello} · LocaFit\r\nLOCATION:${o.del.modo === 'sede' ? (LF.sedi.find((x) => x.id === o.del.sede) || {}).indirizzo : o.del.ind}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+          const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LOCAFIT Rent//IT\r\nBEGIN:VEVENT\r\nUID:${o.numero}@locafitrent.it\r\nDTSTAMP:${f(new Date())}\r\nDTSTART:${f(s)}\r\nDTEND:${f(e)}\r\nSUMMARY:${o.del.modo === 'sede' ? 'Ritiro' : 'Consegna'} ${a.marca} ${a.modello} · LOCAFIT\r\nLOCATION:${o.del.modo === 'sede' ? (LF.sedi.find((x) => x.id === o.del.sede) || {}).indirizzo : o.del.ind}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
           const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
           const l = document.createElement('a'); l.href = url; l.download = `locafit-${o.numero}.ics`; l.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
         });
@@ -455,7 +455,7 @@
             <div class="tl ${consegnata ? 'now' : ''}" style="padding-bottom:0"><small>${fmtDate(fine)}</small><b>Fine noleggio</b></div></div></div>
           <div class="acc-card span-acc-2"><h3>Chilometri ${I.gauge.replace('<svg', '<svg width="16" height="16"')}</h3><div class="big" style="font-size:40px;font-weight:500;letter-spacing:-.05em;margin-top:18px">${eur(kmFatti)}<span class="muted" style="font-size:16px;letter-spacing:0"> / ${eur(kmTot)} km</span></div><div class="meter"><div class="bar"><i style="width:${Math.max(2, (kmFatti / kmTot) * 100)}%"></i></div><div class="lbl" style="margin-top:8px"><span>In linea con il piano</span><span>${Math.round((kmFatti / kmTot) * 100)}%</span></div></div></div>
           <div class="acc-card span-acc-2"><h3>Prossimo addebito ${I.calendar.replace('<svg', '<svg width="16" height="16"')}</h3><div class="big" style="font-size:40px;font-weight:500;letter-spacing:-.05em;margin-top:18px">€${eur(o.unit || 0)}</div><p class="muted" style="margin-top:8px">${o.tipo === 'breve' ? 'Nessun addebito: noleggio già saldato' : 'Il ' + fmtDate(((d) => { d.setMonth(d.getMonth() + 1); return d; })(new Date(pagamenti[0]))) + ' · SEPA'}</p></div>
-          <div class="acc-card span-acc-2"><h3>Assistenza 24/7 ${I.phone.replace('<svg', '<svg width="16" height="16"')}</h3><p class="muted" style="margin-top:18px">Guasto, incidente o una domanda? Siamo raggiungibili sempre.</p><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><a class="btn btn-sm btn-primary" href="tel:+390645217780">Chiama</a><a class="btn btn-sm btn-grey" data-wa="Ciao LocaFit, sono ${esc(nome)} (contratto ${o.numero})." href="#">${I.wa}WhatsApp</a></div></div>
+          <div class="acc-card span-acc-2"><h3>Assistenza 24/7 ${I.phone.replace('<svg', '<svg width="16" height="16"')}</h3><p class="muted" style="margin-top:18px">Guasto, incidente o una domanda? Siamo raggiungibili sempre.</p><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><a class="btn btn-sm btn-primary" href="tel:+390645217780">Chiama</a><a class="btn btn-sm btn-grey" data-wa="Ciao LOCAFIT, sono ${esc(nome)} (contratto ${o.numero})." href="#">${I.wa}WhatsApp</a></div></div>
           <div class="acc-card span-acc-3" id="documenti"><h3>Documenti <span class="badge badge-grey">${docs.length + 1} verificati</span></h3><div class="list-rows">
             <div class="r"><div class="l"><span class="fi">${I.pen}</span><div>Contratto di noleggio<small>Firmato digitalmente · PDF</small></div></div><button class="icon-btn" data-dl aria-label="Scarica contratto">${I.download}</button></div>
             ${docs.map(([, t]) => `<div class="r"><div class="l"><span class="fi">${I.id}</span><div>${t}<small>Verificato il ${fmtDate(new Date(o.quando))}</small></div></div><span class="badge badge-grey">${I.check.replace('<svg', '<svg width="11" height="11"')}OK</span></div>`).join('')}</div></div>

@@ -1,4 +1,4 @@
-/* LocaFit Rent — logica condivisa (v4) */
+/* LOCAFIT Rent — logica condivisa (v4) */
 (function () {
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -66,7 +66,7 @@
     return { unit: unit * (1 - pct), tot: tot * (1 - pct), pieno: unit, pct };
   };
   LF.waLink = (msg) => `https://wa.me/${LF.contatti.whatsapp}?text=${encodeURIComponent(msg)}`;
-  LF.waCar = (a, tipo) => LF.waLink(`Ciao LocaFit Rent! Mi interessa ${a.marca} ${a.modello} (${a.versione}) a noleggio ${LF.durate[tipo].nome.toLowerCase()}. È disponibile?`);
+  LF.waCar = (a, tipo) => LF.waLink(`Ciao LOCAFIT Rent! Mi interessa ${a.marca} ${a.modello} (${a.versione}) a noleggio ${LF.durate[tipo].nome.toLowerCase()}. È disponibile?`);
   LF.toast = (msg) => { let t = $('.toast'); if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); } t.innerHTML = I.checkCircle + msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); };
   document.addEventListener('click', (e) => { const c = e.target.closest('[data-copy]'); if (!c) return; try { navigator.clipboard.writeText(c.dataset.copy); } catch (err) { /* ignora */ } LF.toast(`Codice ${c.dataset.copy} copiato`); });
   LF.countdown = (el, end) => { const tick = () => { let s = Math.max(0, Math.floor((new Date(end) - new Date()) / 1000)); const d = Math.floor(s / 86400); s -= d * 86400; const h = Math.floor(s / 3600); s -= h * 3600; const m = Math.floor(s / 60); s -= m * 60; el.innerHTML = [[d, 'giorni'], [h, 'ore'], [m, 'min'], [s, 'sec']].map(([v, l]) => `<div><b>${String(v).padStart(2, '0')}</b><small>${l}</small></div>`).join(''); }; tick(); setInterval(tick, 1000); };
@@ -136,7 +136,7 @@
     if (!document.body.dataset.noRibbon) header.insertAdjacentHTML('beforebegin', `<a class="ribbon" href="offerte.html"><b>${LF.promo.nome}.</b> Fino al −20%<span class="rb-long"> sul canone con il codice ${LF.promo.codice}, fino al 30 novembre</span>. <u>Scopri le offerte</u></a>`);
     header.className = 'site-header';
     header.innerHTML = `<div class="wrap-wide">
-      <a href="index.html" class="brand" aria-label="LocaFit Rent, home">${markSVG()}<span class="brand-name">LocaFit<span>Rent</span></span></a>
+      <a href="index.html" class="brand" aria-label="LOCAFIT Rent, home">${markSVG()}<span class="brand-name">LOCAFIT<span>Rent</span></span></a>
       <nav class="nav" aria-label="Principale">
         <button type="button" class="mm-t ${['flotta', 'auto'].includes(active) ? 'active' : ''}" data-mm="veicoli" aria-expanded="false" aria-controls="mm-veicoli">Veicoli</button>
         <button type="button" class="mm-t ${['breve', 'medio', 'lungo'].includes(active) ? 'active' : ''}" data-mm="noleggio" aria-expanded="false" aria-controls="mm-noleggio">Noleggio</button>
@@ -168,13 +168,13 @@
         <div><h4>Noleggio</h4><ul><li><a href="flotta.html">Flotta</a></li><li><a href="offerte.html">Offerte</a></li>${noleggio.map(([h, t]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
         <div><h4>Servizi</h4><ul><li><a href="come-funziona.html">Come funziona</a></li><li><a href="prenota.html">Noleggio online</a></li><li><a href="aziende.html">Aziende e P.IVA</a></li><li><a href="area.html">Area personale</a></li></ul></div>
         <div><h4>Sedi</h4><ul>${LF.sedi.map((s) => `<li><a href="contatti.html#${s.id}">${s.citta}</a></li>`).join('')}<li><a href="contatti.html">Consegna in tutta Italia</a></li></ul></div>
-        <div><h4>Assistenza</h4><ul><li><a href="contatti.html">Contatti</a></li><li><a href="faq.html">Domande frequenti</a></li><li><a href="${LF.contatti.telefonoHref}">${LF.contatti.telefono}</a></li><li><a href="${LF.waLink('Ciao LocaFit Rent!')}" target="_blank" rel="noopener">WhatsApp</a></li></ul></div>
-        <div><h4>LocaFit Rent</h4><ul><li><a href="chi-siamo.html">Chi siamo</a></li><li><a href="mailto:${LF.contatti.email}">${LF.contatti.email}</a></li></ul>
+        <div><h4>Assistenza</h4><ul><li><a href="contatti.html">Contatti</a></li><li><a href="faq.html">Domande frequenti</a></li><li><a href="${LF.contatti.telefonoHref}">${LF.contatti.telefono}</a></li><li><a href="${LF.waLink('Ciao LOCAFIT Rent!')}" target="_blank" rel="noopener">WhatsApp</a></li></ul></div>
+        <div><h4>LOCAFIT Rent</h4><ul><li><a href="chi-siamo.html">Chi siamo</a></li><li><a href="mailto:${LF.contatti.email}">${LF.contatti.email}</a></li></ul>
           <form class="newsletter" style="margin-top:14px" onsubmit="event.preventDefault();LF.toast('Iscrizione confermata');this.reset()"><input type="email" required placeholder="Email per le offerte" aria-label="Email"><button class="btn btn-dark btn-sm">Iscriviti</button></form></div>
       </div>
-      <div class="footer-bottom"><span>Copyright © 2026 LocaFit Rent S.r.l. · ${LF.contatti.piva}</span><span>Privacy · Cookie · Termini di noleggio</span><span>Italia</span></div></div>`;
+      <div class="footer-bottom"><span>Copyright © 2026 LOCAFIT Rent S.r.l. · ${LF.contatti.piva}</span><span>Privacy · Cookie · Termini di noleggio</span><span>Italia</span></div></div>`;
   }
-  if (!document.body.dataset.noFloat) document.body.insertAdjacentHTML('beforeend', `<a class="wa-float" href="${LF.waLink('Ciao LocaFit Rent! Vorrei informazioni.')}" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">${I.wa}</a>`);
+  if (!document.body.dataset.noFloat) document.body.insertAdjacentHTML('beforeend', `<a class="wa-float" href="${LF.waLink('Ciao LOCAFIT Rent! Vorrei informazioni.')}" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">${I.wa}</a>`);
 
   // WhatsApp flottante: si nasconde mentre scorri verso il basso, torna quando risali
   { const wf = $('.wa-float'); let y0 = scrollY;
@@ -342,7 +342,7 @@
       </div>
     </article>`).join(''); });
   $$('[data-reviews]').forEach((el) => { el.innerHTML = LF.recensioni.map((r) => `<div class="review"><span class="stars">★★★★★</span><blockquote>“${r.q}”</blockquote><div class="who"><span class="av">${r.n.split(' ').map((x) => x[0]).join('')}</span><div><b style="font-weight:600">${r.n}</b><br><span class="muted" style="font-size:13px">${r.t}</span></div></div></div>`).join(''); });
-  $$('[data-wa]').forEach((el) => { el.href = LF.waLink(el.dataset.wa || 'Ciao LocaFit Rent!'); el.target = '_blank'; el.rel = 'noopener'; });
+  $$('[data-wa]').forEach((el) => { el.href = LF.waLink(el.dataset.wa || 'Ciao LOCAFIT Rent!'); el.target = '_blank'; el.rel = 'noopener'; });
   $$('[data-icon]').forEach((el) => { el.insertAdjacentHTML(el.dataset.iconPos === 'end' ? 'beforeend' : 'afterbegin', I[el.dataset.icon] || ''); });
   $$('[data-from]').forEach((el) => { const t = el.dataset.from; el.textContent = '€' + eur(Math.min(...LF.auto.map((a) => LF.prezzo(a, t).unit))); });
   $$('[data-price]').forEach((el) => { const a = byId(el.dataset.price); const t = el.dataset.tipo || 'lungo'; if (a) el.textContent = `€${eur(LF.prezzo(a, t).unit)}${LF.durate[t].unita}`; });
@@ -467,7 +467,7 @@
 
     auto() {
       const a = byId(new URLSearchParams(location.search).get('id')) || byId('mercedes-c');
-      document.title = `${a.marca} ${a.modello} a noleggio · LocaFit Rent`;
+      document.title = `${a.marca} ${a.modello} a noleggio · LOCAFIT Rent`;
       $('#crumb-name').textContent = `${a.marca} ${a.modello}`;
       $('#d-marca').textContent = `${a.marca} · ${catNome(a.categoria)}`;
       $('#d-modello').textContent = a.modello; $('#d-versione').textContent = a.versione;
@@ -497,7 +497,7 @@
         const href = 'prenota.html?' + new URLSearchParams({ id: a.id, tipo: st.tipo, giorni: st.giorni, mesi: st.mesi, durata: st.durata, km: st.km, anticipo: st.anticipo });
         if (!a.arrivo) { $('#cfg-go').href = href; $('#bar-go').href = href; }
         $('#bar-price').innerHTML = `<b>€${eur(p.unit)}</b><span class="muted" style="font-size:14px">${d.unita}</span><small>${a.marca} ${a.modello} · ${d.nome}</small>`;
-        $('#cfg-wa').href = LF.waLink(`Ciao LocaFit Rent! Mi interessa ${a.marca} ${a.modello} a noleggio ${d.nome.toLowerCase()} a €${eur(p.unit)}${d.unita}. È disponibile?`);
+        $('#cfg-wa').href = LF.waLink(`Ciao LOCAFIT Rent! Mi interessa ${a.marca} ${a.modello} a noleggio ${d.nome.toLowerCase()} a €${eur(p.unit)}${d.unita}. È disponibile?`);
       }
       $('#cfg-lead').addEventListener('click', () => LF.openLead({ id: a.id, tipo: st.tipo, title: `${a.marca} ${a.modello}`, kicker: 'Parla con un consulente' }));
       opts(); calc();

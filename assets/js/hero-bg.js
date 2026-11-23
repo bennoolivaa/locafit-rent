@@ -1,5 +1,5 @@
 /* Sfondo animato della home: pennellate lente in WebGL (stessa tecnica dell'hero di Aedify),
-   con colori LocaFit: nero, grafite, argento e un filo di blu.
+   con colori LOCAFIT: nero, grafite, argento e un filo di blu.
    Se WebGL manca resta la foto sotto; con "riduci movimento" disegna un solo fotogramma. */
 (() => {
   const canvas = document.querySelector('.hero-bg');
@@ -20,7 +20,7 @@
     'vec2 w=vec2(fbm(p+3.4*q+vec2(1.7,9.2)+T*.8),fbm(p+3.4*q+vec2(8.3,2.8)-T*.6));',
     'float f=fbm(p+3.2*w);',
     'float st=n(vec2(p.x*1.2+w.x*2.,p.y*26.+w.y*9.));',
-    // nero, grafite, argento, riflesso freddo, blu LocaFit scurito
+    // nero, grafite, argento, riflesso freddo, blu LOCAFIT scurito
     'vec3 c0=vec3(.02,.025,.035),c1=vec3(.12,.13,.15),c2=vec3(.38,.39,.42),c3=vec3(.72,.76,.82),cg=vec3(0.,.34,.68);',
     'vec3 col=mix(c0,c1,smoothstep(.15,.65,f));',
     'col=mix(col,c2,smoothstep(.45,.85,f*w.y+.15)*.85);',

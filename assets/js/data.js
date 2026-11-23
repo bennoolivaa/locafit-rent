@@ -1,4 +1,4 @@
-/* LocaFit Rent — dati di esempio (finti) per il prototipo */
+/* LOCAFIT Rent — dati di esempio (finti) per il prototipo */
 
 window.LF = window.LF || {};
 
@@ -44,7 +44,7 @@ LF.codici = [
   { code: 'BLACK26', titolo: 'Black November', desc: 'Fino al −20% sul canone mensile dei modelli in promo, per tutta la durata del contratto.', scade: '30 nov 2026', tipo: 'lungo' },
   { code: 'WEEKEND20', titolo: 'Weekend lungo', desc: '−20% sul breve termine dal venerdì al lunedì. Ritiro dalle 15:00, riconsegna entro le 12:00.', scade: '31 dic 2026', tipo: 'breve' },
   { code: 'FLOTTA2', titolo: '2 mesi gratis per le aziende', desc: 'Per flotte da 3 auto in su: i primi due canoni sono a carico nostro.', scade: '31 gen 2027', tipo: 'lungo' },
-  { code: 'BENVENUTO', titolo: 'Primo noleggio', desc: 'Consegna a domicilio gratuita e 1.000 km extra sul tuo primo contratto LocaFit.', scade: 'sempre attivo', tipo: 'medio' },
+  { code: 'BENVENUTO', titolo: 'Primo noleggio', desc: 'Consegna a domicilio gratuita e 1.000 km extra sul tuo primo contratto LOCAFIT.', scade: 'sempre attivo', tipo: 'medio' },
 ];
 
 /*
