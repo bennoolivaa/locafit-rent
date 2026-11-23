@@ -48,13 +48,16 @@
     ];
     const EXTRA = [
       { k: 'kasko0', t: 'Kasko franchigia zero', d: 'Nessuna spesa in caso di danni', p: { breve: 9, medio: 39, lungo: 25 } },
-      { k: 'seggiolino', t: 'Seggiolino bimbo', d: 'Omologato i-Size, montato alla consegna', p: { breve: 5, medio: 19, lungo: 12 } },
-      { k: 'neve', t: 'Kit neve', d: 'Catene o pneumatici invernali', p: { breve: 6, medio: 15, lungo: 0 } },
+      { k: 'seggiolino', t: 'Seggiolino bimbo', d: 'Omologato i-Size, montato alla consegna', p: { breve: 5, medio: 19, lungo: 12 }, auto: true },
+      { k: 'neve', t: 'Kit neve', d: 'Catene o pneumatici invernali', p: { breve: 6, medio: 15, lungo: 0 }, auto: true },
+      { k: 'caschi', t: 'Due caschi omologati', d: 'Taglia su misura, igienizzati', p: { breve: 8, medio: 25, lungo: 15 }, moto: true },
+      { k: 'bauletto', t: 'Bauletto e borse', d: 'Montati alla consegna', p: { breve: 6, medio: 20, lungo: 12 }, moto: true },
       { k: 'guidatore', t: 'Secondo guidatore', d: 'Sempre incluso', p: { breve: 0, medio: 0, lungo: 0 } },
     ];
     const car = () => byId(o.id);
+    const extras = () => EXTRA.filter((x) => (car().categoria === 'moto' ? !x.auto : !x.moto));
     const P = () => LF.prezzo(car(), o.tipo, o);
-    const extraTot = () => EXTRA.filter((x) => o.extra[x.k]).reduce((s, x) => s + x.p[o.tipo], 0);
+    const extraTot = () => extras().filter((x) => o.extra[x.k]).reduce((s, x) => s + x.p[o.tipo], 0);
     const unitTot = () => P().unit + extraTot();
     const codici = { BLACK26: { t: 'Black November −5% aggiuntivo', pct: 0.05 }, WEEKEND20: { t: 'Weekend −20%', pct: 0.2, solo: 'breve' }, BENVENUTO: { t: 'Consegna gratuita + 1.000 km', pct: 0, consegna: true }, FLOTTA2: { t: '2 canoni gratuiti', pct: 0, solo: 'lungo' } };
     const codeInfo = () => { const c = codici[(o.pay.codice || '').toUpperCase()]; return c && (!c.solo || c.solo === o.tipo) ? c : null; };
@@ -107,7 +110,7 @@
           <div style="margin-top:20px"><div class="seg" id="w-seg" style="display:flex"></div></div>
           <div id="w-opts" style="display:grid;gap:18px;margin-top:22px"></div>
           <div class="opt-label" style="margin-top:28px">Servizi aggiuntivi</div>
-          <div class="choices" style="margin-top:0">${EXTRA.map((x) => `<label class="choice"><input type="checkbox" data-extra="${x.k}" ${o.extra[x.k] || x.k === 'guidatore' ? 'checked' : ''} ${x.k === 'guidatore' ? 'disabled' : ''}><b>${x.t}</b><small>${x.d}</small><small class="mono" style="color:var(--text)">${x.p[o.tipo] ? '+€' + x.p[o.tipo] + LF.durate[o.tipo].unita : 'Incluso'}</small></label>`).join('')}</div>` + nav();
+          <div class="choices" style="margin-top:0">${extras().map((x) => `<label class="choice"><input type="checkbox" data-extra="${x.k}" ${o.extra[x.k] || x.k === 'guidatore' ? 'checked' : ''} ${x.k === 'guidatore' ? 'disabled' : ''}><b>${x.t}</b><small>${x.d}</small><small class="mono" style="color:var(--text)">${x.p[o.tipo] ? '+€' + x.p[o.tipo] + LF.durate[o.tipo].unita : 'Incluso'}</small></label>`).join('')}</div>` + nav();
       },
       dati() {
         const d = o.d;

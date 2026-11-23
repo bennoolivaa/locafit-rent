@@ -1040,3 +1040,61 @@ h1, h2, h3, .big-quote { text-wrap: balance; }
 .sede .btns { margin-top: auto; padding-top: 22px; gap: 10px; }
 @media (max-width: 1100px) { .sedi-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { .sedi-grid { grid-template-columns: 1fr; } .sede-body { padding: 20px; } }
+
+/* =========================================================
+   v5.3 — menu grande (stile Mercedes): veicoli e formule
+   ========================================================= */
+.nav .mm-t { padding: 6px 12px; font-size: 14px; color: rgba(255,255,255,.78); display: inline-flex; align-items: center; border-radius: 0; }
+.nav .mm-t::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); margin: -3px 0 0 8px; opacity: .7; transition: transform .2s; }
+.nav .mm-t:hover, .nav .mm-t[aria-expanded="true"] { color: #fff; }
+.nav .mm-t[aria-expanded="true"]::after { transform: rotate(-135deg); margin-top: 3px; }
+.nav .mm-t.active { color: #fff; font-weight: 500; box-shadow: inset 0 -2px 0 #fff; }
+.mega { position: absolute; left: 0; right: 0; top: 100%; background: #fff; color: var(--text); border-top: 1px solid var(--line-2); box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); max-height: calc(100vh - var(--nav-h) - 24px); overflow-y: auto; animation: mm-in .22s ease; }
+.mega[hidden] { display: none; }
+@keyframes mm-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.mega-in { max-width: 1440px; margin: 0 auto; padding: 28px 40px 28px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px 56px; }
+.mm-h { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.mm-cats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.mm-cat { display: flex; flex-direction: column; padding: 12px 14px 14px; border-radius: 8px; transition: background .2s; }
+.mm-cat:hover { background: var(--alt); }
+.mm-img { aspect-ratio: 2 / 1; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 10px; }
+.mm-img img { max-width: 86%; max-height: 100%; object-fit: contain; transition: transform .3s ease; }
+.mm-cat:hover .mm-img img { transform: translateX(4px); }
+.mm-cat b { font-size: 16px; font-weight: 600; color: var(--ink); }
+.mm-cat small { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.mm-needs { display: flex; flex-direction: column; }
+.mm-needs a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line-2); font-size: 15px; color: var(--ink); }
+.mm-needs a:last-child { border-bottom: 1px solid var(--line-2); }
+.mm-needs a::after { content: '\203A'; font-size: 18px; line-height: 1; color: var(--muted); transition: transform .2s; }
+.mm-needs a:hover { color: var(--blue); }
+.mm-needs a:hover::after { color: var(--blue); transform: translateX(3px); }
+.mm-foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px 24px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--line-2); }
+.mega-in.plans { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.mm-plan { display: flex; flex-direction: column; gap: 6px; min-height: 230px; padding: 24px; border-radius: 8px; background: var(--alt); transition: background .2s; }
+.mm-plan:hover { background: var(--alt-2); }
+.mm-plan small { font-size: 13px; color: var(--muted); }
+.mm-plan b { font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; color: var(--ink); }
+.mm-plan p { font-size: 15px; color: var(--muted); margin-top: 4px; }
+.mm-from { margin-top: auto; font-size: 15px; color: var(--ink); display: inline-flex; gap: 4px; }
+.mm-from::after { content: '\203A'; }
+.mm-plan.dark { background: #000; }
+.mm-plan.dark:hover { background: #1A1A1A; }
+.mm-plan.dark b, .mm-plan.dark .mm-from { color: #fff; }
+.mm-plan.dark small, .mm-plan.dark p { color: var(--silver); }
+.mm-scrim { position: fixed; inset: 0; z-index: 55; background: rgba(0,0,0,.42); animation: mm-fade .2s ease; }
+.mm-scrim[hidden] { display: none; }
+@keyframes mm-fade { from { opacity: 0; } }
+@media (max-width: 1240px) { .mega-in { grid-template-columns: minmax(0, 1fr) 260px; gap: 20px 36px; } .mm-cat small { font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .mega, .mm-scrim { animation: none; } }
+/* La vecchia tendina "Noleggio" non serve più */
+.dd, .dd-menu { display: none !important; }
+
+/* Menu su telefono: categorie con foto in cima */
+.mn-h { font-size: 13px; color: var(--muted); margin: 10px 0 10px; }
+.mn-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid var(--line-2); }
+.mn-cats a { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px 12px; border-radius: 8px; background: var(--alt); font-size: 15px; color: var(--ink); }
+.mn-cats img { width: 100%; height: 56px; object-fit: contain; }
+.mobile-nav > a small.n { color: var(--muted); font-weight: 400; }
+.mm-img { aspect-ratio: auto; height: 92px; }
+.mm-img img { width: auto; height: auto; max-width: 86%; max-height: 92px; }
+@media (max-width: 1240px) { .mm-img { height: 76px; } .mm-img img { max-height: 76px; } }

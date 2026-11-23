@@ -20,6 +20,7 @@
     car: sv('<path d="M3 16h18v-3l-2.5-5h-13L3 13z"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/><path d="M6 11h12"/>'),
     suv: sv('<path d="M2.5 16h19v-4l-2-5h-15l-2 5z"/><circle cx="7" cy="16.5" r="2"/><circle cx="17" cy="16.5" r="2"/><path d="M4.5 11h15M10 7v4"/>'),
     star: sv('<path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'), bolt: sv('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'), plug: sv('<path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/>'),
+    moto: sv('<circle cx="5.5" cy="16.5" r="3.5"/><circle cx="18.5" cy="16.5" r="3.5"/><path d="M5.5 16.5 9 10h5l4.5 6.5M14 10l-1.5-4H10M9 10l3 6.5h6.5"/>'),
     van: sv('<path d="M2 17V7a1 1 0 0 1 1-1h11v11M14 9h4l4 4v4h-8"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/>'),
     shield: sv('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>'), wrench: sv('<path d="M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L4.4 12.4a4 4 0 0 1 5.3-5.3z"/>'),
     tire: sv('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/>'), doc: sv('<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/>'),
@@ -72,6 +73,63 @@
   /* ---------- Navigazione ---------- */
   const active = document.body.dataset.nav || page;
   const noleggio = [['breve-termine.html', 'Breve termine', 'Da 1 a 30 giorni', 'breve'], ['medio-termine.html', 'Medio termine', 'Da 1 a 12 mesi', 'medio'], ['lungo-termine.html', 'Lungo termine', 'Da 24 a 60 mesi', 'lungo']];
+  /* Menu grande (stile Mercedes): veicoli per tipo e per esigenza, formule di noleggio */
+  const catImg = { city: 'fiat-500', compatta: 'vw-golf', suv: 'vw-tiguan', premium: 'mercedes-e', sportiva: 'porsche-911', elettrica: 'tesla-model-y', furgone: 'ford-transit-custom', moto: 'bmw-r1300gs' };
+  const unita = () => LF.durate[LF.durata].unita;
+  const minPrezzo = (list, tipo = LF.durata) => Math.min(...list.map((a) => a.prezzi[tipo]));
+  const catInfo = () => LF.categorie.map((c) => {
+    const list = LF.auto.filter((a) => a.categoria === c.id);
+    const img = (list.find((a) => a.id === catImg[c.id]) || list[0] || {}).img;
+    return { ...c, n: list.length, da: list.length ? minPrezzo(list) : 0, img };
+  }).filter((c) => c.n);
+  const bisogni = [
+    ['flotta.html?tipo=breve', 'Un’auto per qualche giorno'],
+    ['flotta.html?tipo=medio', 'Un’auto per qualche mese'],
+    ['flotta.html?tipo=lungo', 'Un’auto nuova per anni'],
+    ['flotta.html?cat=furgone&tipo=breve', 'Un furgone per lavoro o trasloco'],
+    ['flotta.html?cat=moto', 'Una moto o uno scooter'],
+    ['flotta.html?pronta=1', 'Un veicolo pronto oggi'],
+    ['flotta.html?promo=1', 'Le auto in offerta'],
+    ['aziende.html', 'Una flotta per l’azienda'],
+  ];
+  const megaVeicoli = () => `<div class="mega" id="mm-veicoli" hidden><div class="mega-in">
+      <div><p class="mm-h">Scegli per tipo</p><div class="mm-cats">${catInfo().map((c) => `<a class="mm-cat" href="flotta.html?cat=${c.id}"><span class="mm-img"><img src="assets/img/car/${c.img}-sm.webp" alt="" loading="lazy"></span><b>${c.nome}</b><small>${c.n} ${c.n === 1 ? 'modello' : 'modelli'} · da €${c.da}${unita()}</small></a>`).join('')}</div></div>
+      <div class="mm-needs"><p class="mm-h">Cosa ti serve?</p>${bisogni.map(([h, t]) => `<a href="${h}">${t}</a>`).join('')}</div>
+      <div class="mm-foot"><a class="link" href="flotta.html">Vedi tutti i ${LF.auto.length} veicoli</a><span class="tiny">Prezzi ${LF.durate[LF.durata].nome.toLowerCase()}, IVA inclusa. Cambi formula nella Flotta.</span></div>
+    </div></div>`;
+  const piani = [
+    ['breve-termine.html', 'Breve termine', 'Da 1 a 30 giorni', 'Un viaggio, un weekend, un’auto sostitutiva.', 'breve'],
+    ['medio-termine.html', 'Medio termine', 'Da 1 a 12 mesi', 'Qualche mese senza vincoli. Recesso con 30 giorni.', 'medio'],
+    ['lungo-termine.html', 'Lungo termine', 'Da 24 a 60 mesi', 'L’auto nuova senza comprarla. Anticipo zero.', 'lungo'],
+  ];
+  const megaNoleggio = () => `<div class="mega" id="mm-noleggio" hidden><div class="mega-in plans">
+      ${piani.map(([h, t, s, d, k]) => `<a class="mm-plan" href="${h}"><small>${s}</small><b>${t}</b><p>${d}</p><span class="mm-from">da €${minPrezzo(LF.auto.filter((a) => a.categoria !== 'moto'), k)}${LF.durate[k].unita}</span></a>`).join('')}
+      <a class="mm-plan dark" href="aziende.html"><small>Aziende e P.IVA</small><b>Flotte aziendali</b><p>Un referente dedicato, canoni deducibili, auto sostitutiva in 24 ore.</p><span class="mm-from">Richiedi un’offerta</span></a>
+    </div></div>`;
+  function setupMega(h) {
+    const trig = $$('.mm-t', h), hover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const scrim = document.createElement('div'); scrim.className = 'mm-scrim'; scrim.hidden = true; document.body.appendChild(scrim);
+    let cur = null, at = 0, tm;
+    const set = (k) => {
+      if (k !== cur) at = Date.now();
+      cur = k; scrim.hidden = !k; h.classList.toggle('mm-open', !!k);
+      trig.forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.mm === k)));
+      $$('.mega', h).forEach((m) => { m.hidden = m.id !== 'mm-' + k; });
+    };
+    trig.forEach((b) => {
+      b.addEventListener('click', () => set(cur === b.dataset.mm && Date.now() - at > 400 ? null : b.dataset.mm));
+      if (hover) b.addEventListener('mouseenter', () => { clearTimeout(tm); tm = setTimeout(() => set(b.dataset.mm), cur ? 0 : 140); });
+    });
+    if (hover) {
+      $$('.nav > a', h).forEach((a) => a.addEventListener('mouseenter', () => { clearTimeout(tm); if (cur) tm = setTimeout(() => set(null), 120); }));
+      h.addEventListener('mouseleave', () => { clearTimeout(tm); tm = setTimeout(() => set(null), 260); });
+      h.addEventListener('mouseenter', () => { if (cur) clearTimeout(tm); });
+    }
+    scrim.addEventListener('click', () => set(null));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && cur) { const b = trig.find((x) => x.dataset.mm === cur); set(null); if (b) b.focus(); } });
+    addEventListener('resize', () => { if (cur && innerWidth < 1024) set(null); });
+  }
+
   const header = $('#site-header');
   if (header) {
     if (!document.body.dataset.noRibbon) header.insertAdjacentHTML('beforebegin', `<a class="ribbon" href="offerte.html"><b>${LF.promo.nome}.</b> Fino al −20%<span class="rb-long"> sul canone con il codice ${LF.promo.codice}, fino al 30 novembre</span>. <u>Scopri le offerte</u></a>`);
@@ -79,9 +137,9 @@
     header.innerHTML = `<div class="wrap-wide">
       <a href="index.html" class="brand" aria-label="LocaFit Rent, home">${markSVG()}<span class="brand-name">LocaFit<span>Rent</span></span></a>
       <nav class="nav" aria-label="Principale">
-        <a href="flotta.html" class="${active === 'flotta' ? 'active' : ''}">Flotta</a>
+        <button type="button" class="mm-t ${['flotta', 'auto'].includes(active) ? 'active' : ''}" data-mm="veicoli" aria-expanded="false" aria-controls="mm-veicoli">Veicoli</button>
+        <button type="button" class="mm-t ${['breve', 'medio', 'lungo'].includes(active) ? 'active' : ''}" data-mm="noleggio" aria-expanded="false" aria-controls="mm-noleggio">Noleggio</button>
         <a href="offerte.html" class="promo ${active === 'offerte' ? 'active' : ''}">Offerte</a>
-        <div class="dd ${['breve', 'medio', 'lungo'].includes(active) ? 'active' : ''}"><button type="button" aria-haspopup="true">Noleggio</button><div class="dd-menu"><div>${noleggio.map(([h, t, s]) => `<a href="${h}">${t}<small>${s}</small></a>`).join('')}</div></div></div>
         <a href="aziende.html" class="${active === 'aziende' ? 'active' : ''}">Aziende</a>
         <a href="come-funziona.html" class="${active === 'come' ? 'active' : ''}">Come funziona</a>
         <a href="contatti.html" class="${['contatti', 'faq', 'chi-siamo'].includes(active) ? 'active' : ''}">Assistenza</a>
@@ -90,9 +148,12 @@
         <a class="icon-link" href="area.html" aria-label="Area personale">${I.user}</a>
         <a class="btn btn-primary btn-sm" href="flotta.html">Scegli l’auto</a>
       </div>
-      <button class="menu-btn" aria-label="Apri menu" aria-expanded="false">${I.menu}</button></div>`;
+      <button class="menu-btn" aria-label="Apri menu" aria-expanded="false">${I.menu}</button></div>
+      ${megaVeicoli()}
+      ${megaNoleggio()}`;
+    setupMega(header);
     const mob = document.createElement('div'); mob.className = 'mobile-nav';
-    mob.innerHTML = `<a href="flotta.html">Flotta</a><a href="offerte.html">Offerte <small>${LF.promo.nome}</small></a><div class="sub-links">${noleggio.map(([h, t]) => `<a href="${h}">${t.split(' ')[0]}</a>`).join('')}</div><a href="aziende.html">Aziende</a><a href="come-funziona.html">Come funziona</a><a href="contatti.html">Assistenza</a><a href="faq.html">Domande frequenti</a><a href="area.html">Area personale</a><a class="btn btn-primary btn-lg" href="flotta.html">Scegli l’auto</a>`;
+    mob.innerHTML = `<p class="mn-h">Cosa cerchi?</p><div class="mn-cats">${catInfo().map((c) => `<a href="flotta.html?cat=${c.id}"><img src="assets/img/car/${c.img}-sm.webp" alt="" loading="lazy"><span>${c.nome}</span></a>`).join('')}</div><a href="flotta.html">Tutti i veicoli <small class="n">${LF.auto.length}</small></a><a href="offerte.html">Offerte <small>${LF.promo.nome}</small></a><div class="sub-links">${noleggio.map(([h, t]) => `<a href="${h}">${t.split(' ')[0]}</a>`).join('')}</div><a href="aziende.html">Aziende</a><a href="come-funziona.html">Come funziona</a><a href="contatti.html">Assistenza</a><a href="faq.html">Domande frequenti</a><a href="area.html">Area personale</a><a class="btn btn-primary btn-lg" href="flotta.html">Scegli l’auto</a>`;
     document.body.appendChild(mob);
     const mb = $('.menu-btn', header);
     mb.addEventListener('click', () => { mob.style.top = Math.max(0, header.getBoundingClientRect().bottom) + 'px'; const o = mob.classList.toggle('open'); mb.setAttribute('aria-expanded', o); mb.innerHTML = o ? I.close : I.menu; document.body.style.overflow = o ? 'hidden' : ''; });
@@ -256,7 +317,7 @@
   $$('[data-car]').forEach((el) => { const a = byId(el.dataset.car); if (a) el.innerHTML = LF.carShot(a, el.dataset.size || '', { view: el.dataset.view || '' }); });
   $$('[data-photo]').forEach((el) => { el.src = photo(el.dataset.photo); });
   $$('[data-countdown]').forEach((el) => LF.countdown(el, LF.promo.fine));
-  $$('[data-count]').forEach((el) => { const k = el.dataset.count; el.textContent = k === 'all' ? LF.auto.length : LF.auto.filter((a) => a.categoria === k).length; });
+  $$('[data-count]').forEach((el) => { const k = el.dataset.count; el.textContent = k === 'all' ? LF.auto.length : k === 'auto' ? LF.auto.filter((a) => a.categoria !== 'moto').length : LF.auto.filter((a) => a.categoria === k).length; });
   $$('[data-grid]').forEach((el) => {
     const [kind, val] = el.dataset.grid.split(':'); const tipo = el.dataset.tipo || LF.durata; const n = +el.dataset.n || 8;
     let l = LF.auto.slice();
@@ -337,7 +398,8 @@
         const l = LF.auto.filter((a) => (!st.cat || a.categoria === st.cat) && (!st.sede || a.sedi.includes(st.sede)) && (!st.pronta || a.consegna === 0) && (!st.promo || a.promo) && (!st.d3 || LF.modelli3d[a.id]) && (!st.alim || a.alim === st.alim) && (!st.cambio || a.cambio === st.cambio) && (!st.max || LF.prezzo(a, st.tipo).unit <= st.max));
         const P = (a) => LF.prezzo(a, st.tipo).unit;
         l.sort(st.ord === 'prezzo-desc' ? (x, y) => P(y) - P(x) : st.ord === 'consegna' ? (x, y) => x.consegna - y.consegna || P(x) - P(y) : st.ord === 'potenza' ? (x, y) => y.cv - x.cv : (x, y) => P(x) - P(y));
-        const n = `${l.length} ${l.length === 1 ? 'auto' : 'auto'}`;
+        const n = `${l.length} ${st.cat === 'moto' ? (l.length === 1 ? 'moto' : 'moto e scooter') : st.cat === 'furgone' ? (l.length === 1 ? 'furgone' : 'furgoni') : st.cat ? 'auto' : (l.length === 1 ? 'veicolo' : 'veicoli')}`;
+        const h1 = $('.page-head h1'); if (h1) h1.textContent = st.cat === 'moto' ? 'Scegli la tua moto.' : st.cat === 'furgone' ? 'Scegli il tuo furgone.' : st.cat ? 'Scegli la tua auto.' : 'Scegli il tuo veicolo.';
         $('#fleet-count').textContent = n; $('#sheet-count').textContent = `Mostra ${n}`;
         const active = ['sede', 'alim', 'cambio', 'pronta', 'promo', 'd3', 'max'].filter((k) => st[k]).length;
         $('#filter-open').innerHTML = `${I.filter}Filtri${active ? ` (${active})` : ''}`;
@@ -357,7 +419,7 @@
       $('#d-modello').textContent = a.modello; $('#d-versione').textContent = a.versione;
       $('#d-badges').innerHTML = `${a.promo ? `<span class="badge badge-red">${LF.promo.nome} −${Math.round(a.promo * 100)}%</span>` : ''}${LF.modelli3d[a.id] ? '<span class="badge badge-grey">Tour 3D</span>' : ''}`;
       $('.disp').innerHTML = `${LF.status(a)}<span>· ${a.consegna === 0 ? `in sede a ${a.sedi.map(sedeNome).join(', ')}` : 'consegna anche a domicilio'}</span>`;
-      $('#d-specs').innerHTML = [['Potenza', a.cv + ' CV'], ['0–100 km/h', String(a.acc).replace('.', ',') + ' s'], ['Alimentazione', a.alim], ['Cambio', a.cambio], ['Posti', a.posti], ['Disponibile a', a.sedi.map(sedeNome).join(', ')], ['Consegna', consegnaLabel(a.consegna)], ['Km inclusi', '15.000/anno']].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('');
+      $('#d-specs').innerHTML = [['Potenza', a.cv + ' CV'], (a.categoria === 'moto' ? ['Patente', a.patente] : ['0–100 km/h', String(a.acc).replace('.', ',') + ' s']), ['Alimentazione', a.alim], ['Cambio', a.cambio], ['Posti', a.posti], ['Disponibile a', a.sedi.map(sedeNome).join(', ')], ['Consegna', consegnaLabel(a.consegna)], ['Km inclusi', '15.000/anno']].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('');
       LF.gallery($('#d-gallery'), a);
       const st = { tipo: LF.durata, giorni: 3, mesi: 3, durata: 36, km: 15, anticipo: 0 };
       const box = $('#cfg-opts');

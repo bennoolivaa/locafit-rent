@@ -24,6 +24,7 @@ LF.categorie = [
   { id: 'sportiva', nome: 'Sportive', icon: 'bolt' },
   { id: 'elettrica', nome: 'Elettriche', icon: 'plug' },
   { id: 'furgone', nome: 'Furgoni', icon: 'van' },
+  { id: 'moto', nome: 'Moto e scooter', icon: 'moto' },
 ];
 
 LF.durate = {
@@ -107,6 +108,11 @@ LF.auto = [
   A('fiat-doblo', 'Fiat', 'Doblò', '1.6 Multijet', 'furgone', 'Diesel', 'Manuale', 100, 13.0, { breve: 55, medio: 650, lungo: 389 }, 0, ALL, { posti: 2 }),
   A('ford-transit-custom', 'Ford', 'Transit Custom', '2.0 EcoBlue Trend', 'furgone', 'Diesel', 'Manuale', 136, 12.5, { breve: 79, medio: 890, lungo: 529 }, 24, CB, { posti: 3 }),
   A('fiat-ducato', 'Fiat', 'Ducato', 'L2H2 2.2 Multijet', 'furgone', 'Diesel', 'Manuale', 140, 14.0, { breve: 89, medio: 990, lungo: 589 }, 0, ALL, { posti: 3 }),
+  // Moto e scooter
+  A('vespa-gts', 'Vespa', 'GTS 310', 'Super', 'moto', 'Benzina', 'Automatico', 25, null, { breve: 39, medio: 290, lungo: 139 }, 0, ALL, { posti: 2, patente: 'A2' }),
+  A('yamaha-tmax', 'Yamaha', 'TMAX', '560 Tech MAX', 'moto', 'Benzina', 'Automatico', 48, null, { breve: 69, medio: 520, lungo: 269 }, 24, ALL, { posti: 2, patente: 'A2', promo: .10 }),
+  A('honda-xadv', 'Honda', 'X-ADV', '750 DCT', 'moto', 'Benzina', 'Automatico', 59, null, { breve: 79, medio: 590, lungo: 299 }, 0, RC, { posti: 2, patente: 'A' }),
+  A('bmw-r1300gs', 'BMW', 'R 1300 GS', 'Trophy', 'moto', 'Benzina', 'Manuale', 145, null, { breve: 119, medio: 890, lungo: 449 }, 0, R, { posti: 2, patente: 'A' }),
 ];
 
 LF.inclusi = [
@@ -163,6 +169,7 @@ LF.modelli3d = {
 
 /* Foto disponibili per la galleria (oltre al frontale): retro scontornato e interni */
 LF.foto = {
+  "vespa-gts":{}, "yamaha-tmax":{}, "honda-xadv":{}, "bmw-r1300gs":{},
   "fiat-panda":{"rear":1},
   "fiat-500":{"interior":1},
   "fiat-600":{"rear":1},

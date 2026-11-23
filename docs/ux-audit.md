@@ -123,3 +123,18 @@ Corretto anche il menu su telefono: la prima voce finiva sotto l'header quando l
 | 42 | Scheda auto (telefono) | Pulsante WhatsApp sopra la barra "Noleggia"; "24 mesi" spezzato su due righe; dati tecnici larghi solo tre quarti | WhatsApp nascosto (c'è già nel configuratore), testo su una riga, larghezza piena |
 | 43 | Galleria | Con due sole foto le miniature erano sparse sulla riga | Larghezza fissa, allineate a sinistra |
 | 44 | Sedi (home, Contatti, Chi siamo) | Testo bianco sulle foto, illeggibile; foto notturne e affollate | Foto sopra e testo su fondo bianco; nuove foto: Castel Sant’Angelo al tramonto, Reggia di Caserta dalle fontane, Rocca dei Rettori; indirizzo, orari, auto in sede e telefono in righe separate |
+
+## v5.3 — menu grande e moto
+
+Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui scegliere subito cosa serve, compresi furgoni e moto.
+
+- **Veicoli** apre un pannello largo quanto la pagina (come "Modelli" su mercedes-benz.it):
+  - a sinistra le 8 categorie con foto, numero di modelli e prezzo di partenza;
+  - a destra "Cosa ti serve?", con 8 percorsi diretti (qualche giorno, qualche mese, anni, furgone per trasloco, moto, pronto oggi, offerte, azienda).
+- **Noleggio** apre le tre formule e Aziende, con il prezzo di partenza calcolato sulle auto.
+- **Apertura e chiusura:** il pannello si apre al passaggio del mouse o al clic. Si chiude con Esc, cliccando fuori o spostandosi su un'altra voce. Il fondo pagina si scurisce.
+- **Telefono:** il menu si apre con la griglia delle 8 categorie con foto, poi le altre voci.
+- **Flotta:** nuova categoria "Moto e scooter" con Vespa GTS 310, Yamaha TMAX, Honda X-ADV e BMW R 1300 GS.
+  - Nella scheda compare la patente richiesta al posto dello 0–100.
+  - Nella prenotazione, caschi e bauletto prendono il posto di seggiolino e kit neve.
+- **Testi della Flotta:** titolo e conteggio seguono la categoria scelta ("Scegli la tua moto", "4 moto e scooter").

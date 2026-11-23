@@ -50,6 +50,13 @@ Foto da Wikimedia Commons, licenze Creative Commons: per il sito pubblico vanno 
 - `vw-tiguan` — [VW Tiguan 1.5 eTSI ACT R-Line (III) – f 14022026.jpg](https://commons.wikimedia.org/wiki/File%3AVW_Tiguan_1.5_eTSI_ACT_R-Line_%28III%29_%E2%80%93_f_14022026.jpg)
 - `vw-troc` — [2020 Volkswagen T-Roc R TSi 4MOTION 2.0 Front.jpg](https://commons.wikimedia.org/wiki/File%3A2020_Volkswagen_T-Roc_R_TSi_4MOTION_2.0_Front.jpg)
 
+## Moto e scooter (scontornate)
+
+- `bmw-r1300gs` — [2024 BMW R1300GS Option 719 Tramuntana (1).jpg](https://commons.wikimedia.org/wiki/File:2024_BMW_R1300GS_Option_719_Tramuntana_(1).jpg) · Cjp24 · CC BY-SA 4.0
+- `honda-xadv` — [Honda X-ADV.jpg](https://commons.wikimedia.org/wiki/File:Honda_X-ADV.jpg) · Corvettec6r · CC BY-SA 4.0
+- `vespa-gts` — [Vespa GTS 300 white.jpg](https://commons.wikimedia.org/wiki/File:Vespa_GTS_300_white.jpg) · Michael Wahrlich · CC0
+- `yamaha-tmax` — [2025 Yamaha TMAX 560.jpg](https://commons.wikimedia.org/wiki/File:2025_Yamaha_TMAX_560.jpg) · Corvettec6r · CC BY 4.0
+
 ## Foto d’ambiente
 
 - `autostrada` — [Tramonto sull'Autostrada del sole.jpg](https://commons.wikimedia.org/wiki/File%3ATramonto_sull%27Autostrada_del_sole.jpg)
