@@ -10,7 +10,7 @@ P = [
      ['È la più semplice: si riconosce anche piccolissima, come icona sul telefono.',
       'Dice movimento in avanti e pronta consegna, senza disegnare un’auto.',
       'Resta uguale su fondo bianco e su fondo nero.'],
-     'È la più vicina allo spirito del logo di Fausto (freccia e punto verde).'),
+     'La freccia è un segno molto usato: a renderla nostra sono il pennello e il punto verde.'),
     ('L in avanti', c2,
      'La L di LOCAFIT, scritta a pennello. La base si allunga in avanti come una strada. Dentro, la freccia rossa indica la partenza e il punto verde è il cliente.',
      ['Contiene l’iniziale del nome: è il marchio più “nostro”.',
@@ -42,7 +42,7 @@ pages.append(f'''<section class="pg cover">
   <div class="cv-top"><span class="kick">LOCAFIT Rent · Noleggio auto breve, medio e lungo termine</span></div>
   <div class="cv-mid">
     <h1>Proposte di logo</h1>
-    <p>Tre marchi nuovi, disegnati da zero nello stile del logo di Fausto: pennellate a mano, blu, rosso e il punto verde, tutto in movimento in avanti.</p>
+    <p>Tre marchi nuovi, disegnati da zero: pennellate a mano, blu, rosso e il punto verde, tutto in movimento in avanti.</p>
   </div>
   <div class="cv-row">{''.join(f'<div><span>{i}</span>{s(f, "cvm")}<em>{t}</em></div>' for i, (t, f, *_) in enumerate(P, 1))}</div>
   <div class="cv-foot"><span>Novembre 2026</span><span>La scritta è la stessa per tutte: LOCAFIT in carattere con grazie, RENT spaziato.</span></div>

@@ -37,6 +37,6 @@ main{{max-width:1180px;margin:0 auto;padding:24px 20px 80px;display:grid;gap:28p
 .fav{{width:32px;height:32px;display:grid;place-items:center;border:1px solid #E8E8E8;border-radius:6px;background:#fff}} .fav .f{{width:26px;height:auto}} .fav.s{{width:20px;height:20px;border:0}} .fav.s .f{{width:16px}}
 @media (max-width:734px){{ .pr{{grid-template-columns:1fr;padding:18px}} header h1{{font-size:34px}} }}
 </style></head><body>
-<header><h1>Proposte logo</h1><p>Tre marchi nuovi, disegnati da zero nello stile del logo di Fausto: pennellate a mano, blu, rosso e il punto verde, tutto in movimento in avanti. Per ognuno: in grande, sulla barra nera del sito, su fondo bianco e come icona.</p></header>
+<header><h1>Proposte logo</h1><p>Tre marchi nuovi, disegnati da zero: pennellate a mano, blu, rosso e il punto verde, tutto in movimento in avanti. Per ognuno: in grande, sulla barra nera del sito, su fondo bianco e come icona.</p></header>
 <main>{cards}</main></body></html>'''
 open(sys.argv[1], 'w').write(html)
