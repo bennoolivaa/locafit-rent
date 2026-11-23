@@ -2,62 +2,56 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Offerte · LocaFit Rent</title>
   <meta name="description" content="Promozioni e codici sconto sul noleggio auto LocaFit Rent.">
-  <meta name="theme-color" content="#060709">
+  <meta name="theme-color" content="#F5F5F7">
   <link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body data-page="offerte">
 <header id="site-header"></header>
 <main>
-  <section class="section" style="padding:40px 0 0">
+  <section class="section" style="padding-top:40px">
     <div class="wrap">
-      <div class="crumbs" style="margin-bottom:22px"><a href="index.html">Home</a> / Offerte</div>
-      <div class="promo-hero">
-        <img class="bg" data-photo="roma" alt="">
+      <div class="promo-band">
         <div class="copy">
-          <span class="badge badge-red">Black November · ultimi giorni</span>
-          <h1 style="margin-top:22px;font-size:clamp(44px,5.6vw,88px)">Fino al −20%<br><span class="dim">per tutto il contratto.</span></h1>
-          <p class="lead" style="margin-top:18px">Lo sconto non vale solo il primo mese: resta bloccato fino all’ultima rata. In più anticipo zero e consegna gratuita in tutta Italia.</p>
+          <span class="eyebrow">Black November · ultimi giorni</span>
+          <h1 style="margin-top:8px;font-size:clamp(40px,5vw,72px)">Fino al −20%. Per tutto il contratto.</h1>
+          <p class="lead">Lo sconto non vale solo il primo mese: resta bloccato fino all’ultima rata. Anticipo zero e consegna gratuita in tutta Italia.</p>
           <div class="countdown" data-countdown></div>
-          <div style="display:flex;gap:10px;margin-top:30px;flex-wrap:wrap"><a class="btn btn-primary" href="#offerte">Scopri i modelli <span data-icon="arrow"></span></a><button class="btn btn-line" data-copy="BLACK26">Copia BLACK26</button></div>
+          <div class="btns"><a class="btn btn-primary" href="#offerte">Scegli l’auto in offerta</a><button class="btn btn-outline" style="border-color:#2997FF;color:#2997FF" data-copy="BLACK26">Copia BLACK26</button></div>
         </div>
-        <div class="stage" style="padding:0 32px 40px" id="promo-car"></div>
+        <div class="img" data-car="mercedes-a"></div>
       </div>
     </div>
   </section>
-  <section class="section" id="offerte" style="scroll-margin-top:90px">
-    <div class="wrap">
-      <div class="section-head"><div><span class="kicker">Modelli in promozione</span><h2>Prezzo pieno barrato,<br><span class="dim">sconto per 36 mesi.</span></h2></div><p>Canoni mensili IVA inclusa, 36 mesi, 15.000 km/anno, anticipo zero. Lo sconto è già applicato.</p></div>
-      <div class="offers" id="offers"></div>
-    </div>
-  </section>
-  <section class="section raise">
-    <div class="wrap">
-      <div class="section-head"><div><span class="kicker">Codici attivi</span><h2>Altri modi per risparmiare.</h2></div><p>Copia il codice e inseriscilo nel passaggio “Pagamento”: lo sconto compare subito nel riepilogo.</p></div>
-      <div class="bento" id="codes" style="grid-auto-rows:minmax(240px,auto)"></div>
+  <section class="section bg-alt" id="offerte" style="scroll-margin-top:60px">
+    <div class="wrap-wide">
+      <div class="section-head"><h2>Auto in offerta.</h2><p class="sub" style="color:var(--muted)">Prezzo pieno barrato, sconto già applicato. 36 mesi, 15.000 km l’anno, anticipo zero.</p></div>
+      <div class="car-grid" id="offers"></div>
     </div>
   </section>
   <section class="section">
     <div class="wrap">
-      <div class="section-head"><div><span class="kicker">Breve termine</span><h2>Weekend in partenza.</h2></div><a class="link" href="flotta.html?tipo=breve">Tutte le auto per il weekend <span data-icon="arrow"></span></a></div>
-      <div class="car-grid" data-grid="cheap" data-tipo="breve" data-n="4"></div>
+      <div class="section-head"><h2>Altri modi per risparmiare.</h2><p class="sub" style="color:var(--muted)">Inserisci il codice al pagamento: lo sconto compare subito nel riepilogo.</p></div>
+      <div class="codes" id="codes" style="--bg:var(--alt)"></div>
     </div>
   </section>
-  <section class="section" style="padding-top:0">
+  <section class="full">
+    <img data-photo="costiera" alt="Strada costiera" loading="lazy">
+    <div class="top"><h2>Weekend in costiera.</h2><p class="sub">Con WEEKEND20 il breve termine costa il 20% in meno, dal venerdì al lunedì.</p>
+      <div class="btns center" style="margin-top:22px"><a class="btn btn-light" href="flotta.html?tipo=breve">Scegli l’auto</a><button class="btn btn-glass" data-copy="WEEKEND20">Copia WEEKEND20</button></div></div>
+  </section>
+  <section class="section cta-final">
     <div class="wrap">
-      <div class="cta">
-        <img data-photo="stelvio" alt="" loading="lazy">
-        <span class="kicker">Iscriviti alle offerte</span>
-        <h2 style="margin-top:18px">Le promozioni migliori<br><span class="dim">arrivano prima via email.</span></h2>
-        <p>Una email al mese, solo quando c’è davvero qualcosa da dire. Ti cancelli con un clic.</p>
-        <form class="newsletter" style="max-width:480px;margin-top:30px" onsubmit="event.preventDefault();LF.toast('Iscrizione confermata');this.reset()"><input type="email" required placeholder="La tua email" aria-label="Email" style="height:52px"><button class="btn btn-primary">Iscriviti</button></form>
-      </div>
+      <h2>Le offerte migliori, prima.</h2>
+      <p class="sub" style="margin-top:10px;color:var(--muted)">Iscriviti dal fondo pagina: una email al mese, solo quando c’è qualcosa da dire.</p>
+      <div class="btns"><a class="btn btn-primary btn-lg" href="flotta.html">Scegli l’auto</a><a class="btn btn-outline btn-lg" href="#site-footer">Iscriviti</a></div>
+      <div class="img shadow" data-car="cupra-formentor"></div>
     </div>
   </section>
 </main>

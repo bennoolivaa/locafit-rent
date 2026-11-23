@@ -67,7 +67,7 @@
     const durTxt = () => (o.tipo === 'breve' ? `${o.giorni} ${o.giorni === 1 ? 'giorno' : 'giorni'}` : o.tipo === 'medio' ? `${o.mesi} ${o.mesi === 1 ? 'mese' : 'mesi'}` : `${o.durata} mesi · ${o.km}.000 km/anno`);
 
     const root = $('#wizard');
-    root.innerHTML = `<nav class="stepper" id="stepper" aria-label="Passaggi"></nav><section class="wz-panel" id="panel" aria-live="polite"></section><aside class="summary" id="summary"></aside>`;
+    root.innerHTML = `<nav class="stepper" id="stepper" aria-label="Passaggi"></nav><div class="wz-main"><div class="mini-sum" id="mini-sum"></div><section class="wz-panel" id="panel" aria-live="polite"></section></div><aside class="summary" id="summary"></aside>`;
 
     function stepper() {
       $('#stepper').innerHTML = STEPS.map((s, i) => `<button type="button" data-i="${i}" class="${i === o.step ? 'on' : i < o.step ? 'done' : ''}" ${i > o.step || o.step === 7 ? 'disabled' : ''}><span class="i">${i < o.step ? I.check : i + 1}</span><span><b>${s.t}</b><small>${s.s}</small></span></button>`).join('') +
@@ -77,21 +77,24 @@
 
     function summary() {
       const a = car(); const p = P(); const c = codeInfo();
+      $('#mini-sum').innerHTML = `<div class="l"><img src="${LF.img(a, '', '-sm')}" alt=""><span>${a.marca} ${a.modello} · ${durTxt()}</span></div><b>€${eur(dovutoOggi())}</b>`;
       $('#summary').innerHTML = `<div class="media stage">${LF.carShot(a, '-sm')}</div><div class="body">
-        <div><span class="mono dim">${a.marca}</span><div style="font-size:24px;font-weight:500;letter-spacing:-.03em">${a.modello}</div><span class="muted" style="font-size:13px">${a.versione}</span></div>
+        <div><span class="tiny">${a.marca}</span><div style="font-size:24px;font-weight:500;letter-spacing:-.03em">${a.modello}</div><span class="muted" style="font-size:13px">${a.versione}</span></div>
         <div class="row"><span>Formula</span><b>${LF.durate[o.tipo].nome}</b></div>
         <div class="row"><span>Durata</span><b>${durTxt()}</b></div>
         ${o.tipo === 'lungo' ? `<div class="row"><span>Anticipo</span><b>${o.anticipo ? '€' + eur(o.anticipo) : 'Zero'}</b></div>` : ''}
         <div class="row"><span>${o.tipo === 'breve' ? 'Tariffa' : 'Canone'}</span><b>${p.pct ? `<s class="dim" style="font-weight:400">€${eur(p.pieno)}</s> ` : ''}€${eur(p.unit)}${LF.durate[o.tipo].unita}</b></div>
         ${extraTot() ? `<div class="row"><span>Servizi extra</span><b>+€${eur(extraTot())}${LF.durate[o.tipo].unita}</b></div>` : ''}
+        ${consegnaCosto() ? `<div class="row"><span>Consegna a domicilio</span><b>+€${consegnaCosto()}</b></div>` : ''}
         ${o.del.giorno ? `<div class="row"><span>${o.del.modo === 'sede' ? 'Ritiro' : 'Consegna'}</span><b>${new Date(o.del.giorno).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })} · ${o.del.ora || '—'}</b></div>` : ''}
-        ${c ? `<div class="row"><span>Codice ${esc(o.pay.codice.toUpperCase())}</span><b style="color:#F4F5F7">${c.t}</b></div>` : ''}
-        <div class="tot"><div><span class="mono dim">${o.tipo === 'breve' ? 'Totale' : 'Primo canone'}</span><br><span class="muted" style="font-size:12px">IVA inclusa</span></div><b>€${eur(dovutoOggi())}</b></div>
+        ${c ? `<div class="row"><span>Codice ${esc(o.pay.codice.toUpperCase())}</span><b style="color:var(--blue)">${c.t}</b></div>` : ''}
+        <div class="tot"><div><span class="tiny">${o.tipo === 'breve' ? 'Totale' : 'Primo canone'}</span><br><span class="muted" style="font-size:12px">IVA inclusa</span></div><b>€${eur(dovutoOggi())}</b></div>
         ${p.pct ? `<span class="badge badge-red" style="justify-self:start">${LF.promo.nome} −${Math.round(p.pct * 100)}% applicato</span>` : ''}
       </div>`;
     }
 
-    const nav = (nextLabel = 'Continua', opts = {}) => `<div class="wz-actions">${o.step > 0 && o.step < 7 ? `<button class="btn btn-line" type="button" data-back>${I.arrowL} Indietro</button>` : '<span></span>'}${opts.extra || ''}<button class="btn btn-primary" type="button" data-next ${opts.disabled ? 'disabled' : ''}>${nextLabel} ${I.arrow}</button></div>`;
+    const nav = (nextLabel = 'Continua', opts = {}) => `<div class="wz-actions">${o.step > 0 && o.step < 7 ? `<button class="btn btn-grey" type="button" data-back>${I.arrowL} Indietro</button>` : '<span></span>'}${opts.extra || ''}<button class="btn btn-primary" type="button" data-next ${opts.disabled ? 'disabled' : ''}>${nextLabel} ${I.arrow}</button></div>`;
+    const demo = (b) => `<div class="demo-tools">Modalità presentazione · ${b}</div>`;
     const head = (k, t, l) => `<div class="wz-progress"><i style="width:${((o.step + 1) / STEPS.length) * 100}%"></i></div><span class="kicker">Passaggio ${o.step + 1} di ${STEPS.length} · ${k}</span><h2 style="margin-top:14px">${t}</h2><p class="lead">${l}</p>`;
 
     const views = {
@@ -108,7 +111,7 @@
       },
       dati() {
         const d = o.d;
-        return head('Dati personali', 'Chi guiderà l’auto?', 'Servono per il contratto. Dal codice fiscale ricaviamo da soli data di nascita e sesso.') + `
+        return demo('<button type="button" data-demo-dati>Compila con dati di esempio</button>') + head('Dati personali', 'Chi guiderà l’auto?', 'Servono per il contratto. Dal codice fiscale ricaviamo da soli data di nascita e sesso.') + `
           <div class="choices">${[['privato', 'Privato', 'user'], ['piva', 'Libero professionista', 'doc'], ['azienda', 'Azienda', 'building']].map(([v, t, ic]) => `<label class="choice"><input type="radio" name="cliente" value="${v}" ${o.cliente === v ? 'checked' : ''}>${I[ic]}<b>${t}</b></label>`).join('')}</div>
           <form class="form" id="w-form" style="margin-top:24px" autocomplete="on" novalidate>
             ${o.cliente === 'azienda' ? `<div class="row2"><label>Ragione sociale<input name="rag" value="${esc(d.rag)}" required></label><label>Partita IVA<input name="piva" value="${esc(d.piva)}" inputmode="numeric" pattern="\\d{11}" required></label></div>` : ''}
@@ -117,20 +120,19 @@
             <div class="row2"><label>Codice fiscale<input name="cf" value="${esc(d.cf)}" maxlength="16" style="text-transform:uppercase" required><span class="hint" id="cf-hint">16 caratteri</span></label><label>Data di nascita<input name="nascita" type="date" value="${esc(d.nascita)}" required></label></div>
             <div class="row2"><label>Email<input name="email" type="email" value="${esc(d.email)}" autocomplete="email" required></label><label>Cellulare<input name="tel" type="tel" value="${esc(d.tel)}" autocomplete="tel" required><span class="hint">Riceverai qui il codice per firmare</span></label></div>
             <div class="row3"><label>Indirizzo di residenza<input name="ind" value="${esc(d.ind)}" autocomplete="street-address" required></label><label>CAP<input name="cap" value="${esc(d.cap)}" inputmode="numeric" maxlength="5" required></label><label>Città<input name="citta" value="${esc(d.citta)}" autocomplete="address-level2" required></label></div>
-          </form>` + nav('Continua', { extra: '<button class="btn btn-line" type="button" data-demo-dati>Compila con dati demo</button>' });
+          </form>` + nav('Continua');
       },
       doc() {
         const need = [['patenteF', 'Patente · fronte', 'id'], ['patenteR', 'Patente · retro', 'id'], ['identita', 'Carta d’identità', 'user'], ['cf', 'Tessera sanitaria', 'card']];
         if (o.tipo === 'lungo' && o.cliente === 'privato') need.push(['reddito', 'Documento di reddito', 'doc']);
         if (o.cliente !== 'privato') need.push(['visura', o.cliente === 'azienda' ? 'Visura camerale' : 'Certificato di attribuzione P.IVA', 'building']);
         o._need = need.map((n) => n[0]);
-        return head('Documenti', 'Carica i documenti.', 'Scatta una foto o caricali dal telefono: leggiamo i dati in automatico. Formati JPG, PNG o PDF.') + `
+        return demo('<button type="button" data-demo-doc>Usa documenti di esempio</button>') + head('Documenti', 'Carica i documenti.', 'Scatta una foto o caricali dal telefono: leggiamo i dati in automatico. Formati JPG, PNG o PDF.') + `
           <div class="docs">${need.map(([k, t, ic]) => { const f = o.docs[k]; return `<div class="drop ${f ? 'ok' : ''}" data-doc="${k}">
             <input type="file" accept="image/*,.pdf" capture="environment" aria-label="Carica ${t}">
             <div class="head"><div><b>${t}</b><small>${f ? 'Verificato' : 'Obbligatorio'}</small></div><span class="ico">${f ? I.check : I[ic]}</span></div>
             ${f ? `<img class="thumb" src="${f.src}" alt=""><div class="ocr">${f.ocr}</div>` : `<span class="cta-u">${I.upload.replace('<svg', '<svg width="14" height="14"')} Trascina qui o tocca per caricare</span>`}
-          </div>`; }).join('')}</div>
-          <div class="doc-demo">${I.sparkle.replace('<svg', '<svg width="16" height="16"')} Per la presentazione: <button class="link" type="button" data-demo-doc style="border:0;padding:0">usa documenti di esempio</button></div>` + nav('Continua', { disabled: !o._need.every((k) => o.docs[k]) });
+          </div>`; }).join('')}</div>` + nav('Continua', { disabled: !o._need.every((k) => o.docs[k]) });
       },
       ver() {
         const lungo = o.tipo !== 'breve';
@@ -139,11 +141,11 @@
             <div class="cam ${o.ver ? 'ok' : ''}" id="cam"><svg class="silhouette" viewBox="0 0 100 120" fill="none" stroke="#fff" stroke-width="1.5"><circle cx="50" cy="42" r="22"/><path d="M12 118c4-26 20-40 38-40s34 14 38 40"/></svg><span class="oval"></span><span class="msg" id="cam-msg">${o.ver ? 'Identità verificata' : 'Posiziona il volto nell’ovale'}</span></div>
             <div class="checklist">
               ${[['doc', 'Documento autentico'], ['face', 'Corrispondenza del volto'], ['live', 'Controllo di vitalità'], ...(lungo ? [['crif', 'Valutazione di affidabilità']] : [['card', 'Verifica carta di pagamento']])].map(([k, t]) => `<div class="check-item ${o.ver ? 'ok' : ''}" data-ck="${k}"><span class="st">${I.check}</span>${t}</div>`).join('')}
-              ${lungo ? `<div class="score" style="grid-template-columns:120px 1fr;gap:18px;margin-top:6px"><div class="gauge" style="width:120px;height:120px"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,.08)" stroke-width="6" fill="none"/><circle id="g-arc" cx="50" cy="50" r="44" stroke="#F4F5F7" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="${o.ver ? 276.5 * (1 - 0.86) : 276.5}" style="transition:stroke-dashoffset 1.6s cubic-bezier(.2,.75,.15,1)"/></svg><div class="val"><b id="g-val" style="font-size:30px">${o.ver ? 86 : '—'}</b><small>score</small></div></div><p class="muted" style="font-size:13px">Valutazione automatica su dati di reddito e storico creditizio. Nessun impatto sul tuo punteggio.</p></div>` : ''}
+              ${lungo ? `<div class="score" style="grid-template-columns:120px 1fr;gap:18px;margin-top:6px"><div class="gauge" style="width:120px;height:120px"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" stroke="#E8E8ED" stroke-width="6" fill="none"/><circle id="g-arc" cx="50" cy="50" r="44" stroke="#1F57D6" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="${o.ver ? 276.5 * (1 - 0.86) : 276.5}" style="transition:stroke-dashoffset 1.6s cubic-bezier(.2,.75,.15,1)"/></svg><div class="val"><b id="g-val" style="font-size:30px">${o.ver ? 86 : '—'}</b><small>score</small></div></div><p class="muted" style="font-size:13px">Valutazione automatica su dati di reddito e storico creditizio. Nessun impatto sul tuo punteggio.</p></div>` : ''}
               <div class="approved ${o.ver ? 'show' : ''}" id="approved"><span class="ok">${I.check}</span><div><b style="font-weight:500">Approvato</b><br><span class="muted" style="font-size:13px">${lungo ? 'Noleggio approvato senza garanzie aggiuntive.' : 'Puoi procedere con la firma.'}</span></div></div>
             </div>
           </div>
-          ${o.ver ? '' : `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><button class="btn btn-primary" type="button" data-selfie>${I.camera} Avvia il selfie</button><button class="spid" type="button" data-spid>Entra con <b>SPID</b></button><button class="btn btn-line" type="button" data-selfie-sim>Simula senza fotocamera</button></div>`}` + nav('Continua', { disabled: !o.ver });
+          ${o.ver ? '' : `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px"><button class="btn btn-primary" type="button" data-selfie>${I.camera} Avvia il selfie</button><button class="spid" type="button" data-spid>Entra con <b>SPID</b></button><button class="btn btn-grey" type="button" data-selfie-sim>Simula senza fotocamera</button></div>`}` + nav('Continua', { disabled: !o.ver });
       },
       firma() {
         const a = car(); const d = o.d; const p = P();
@@ -155,7 +157,7 @@
             <div><div class="opt-label">Firma</div><div class="pad"><canvas id="pad"></canvas><span class="hint">Firma qui</span><button class="clear" type="button" data-clear>Cancella</button></div></div>
             <div><div class="opt-label">Conferma via SMS</div>
               ${o.otp ? `<div class="approved show" style="margin-top:0"><span class="ok">${I.check}</span><div><b style="font-weight:500">Contratto firmato</b><br><span class="muted" style="font-size:13px">Firma elettronica avanzata · ${new Date().toLocaleString('it-IT')}</span></div></div>` : `
-              <div id="sms-zone"><button class="btn btn-line btn-block" type="button" data-sms>${I.smartphone} Invia il codice a ${esc(d.tel || 'il tuo cellulare')}</button></div>`}
+              <div id="sms-zone"><button class="btn btn-grey btn-block" type="button" data-sms>${I.smartphone} Invia il codice a ${esc(d.tel || 'il tuo cellulare')}</button></div>`}
             </div>
           </div>` + nav('Continua', { disabled: !o.otp });
       },
@@ -172,12 +174,12 @@
             </div>
             <div>
               <div class="opt-label">Codice promozionale</div>
-              <div style="display:flex;gap:8px"><input class="select" style="flex:1;background-image:none;padding-right:14px;text-transform:uppercase;border-radius:14px;height:48px" id="promo-code" value="${esc(o.pay.codice)}" placeholder="BLACK26"><button class="btn btn-line" type="button" data-apply>Applica</button></div>
-              <div class="mono" style="font-size:11px;margin-top:8px;color:${c ? '#F4F5F7' : 'var(--muted-2)'}" id="code-msg">${c ? '✓ ' + c.t : o.pay.codice ? 'Codice non valido per questa formula' : 'Prova BLACK26, WEEKEND20 o BENVENUTO'}</div>
+              <div style="display:flex;gap:8px"><input class="select" style="flex:1;background-image:none;padding-right:14px;text-transform:uppercase;border-radius:14px;height:48px" id="promo-code" value="${esc(o.pay.codice)}" placeholder="BLACK26"><button class="btn btn-grey" type="button" data-apply>Applica</button></div>
+              <div class="mono" style="font-size:11px;margin-top:8px;color:${c ? 'var(--blue)' : 'var(--muted)'}" id="code-msg">${c ? '✓ ' + c.t : o.pay.codice ? 'Codice non valido per questa formula' : 'Prova BLACK26, WEEKEND20 o BENVENUTO'}</div>
               <div class="breakdown">
                 <div class="row"><span>${o.tipo === 'breve' ? `Noleggio ${durTxt()}` : 'Primo canone'}</span><b>€${eur(o.tipo === 'breve' ? P().tot : P().unit)}</b></div>
                 ${extraTot() ? `<div class="row"><span>Servizi extra</span><b>€${eur(o.tipo === 'breve' ? extraTot() * o.giorni : extraTot())}</b></div>` : ''}
-                ${c && c.pct ? `<div class="row"><span>Sconto ${esc(o.pay.codice.toUpperCase())}</span><b style="color:#F4F5F7">−€${eur((o.tipo === 'breve' ? P().tot + extraTot() * o.giorni : unitTot()) * c.pct)}</b></div>` : ''}
+                ${c && c.pct ? `<div class="row"><span>Sconto ${esc(o.pay.codice.toUpperCase())}</span><b style="color:var(--blue)">−€${eur((o.tipo === 'breve' ? P().tot + extraTot() * o.giorni : unitTot()) * c.pct)}</b></div>` : ''}
                 <div class="row"><span>Consegna</span><b>${consegnaCosto() ? '€' + consegnaCosto() : 'Gratuita'}</b></div>
                 ${o.tipo === 'breve' ? '<div class="row"><span>Cauzione (pre-autorizzata)</span><b>€300</b></div>' : `<div class="row"><span>Canoni successivi</span><b>€${eur(unitTot())}/mese · SEPA</b></div>`}
                 <div class="row tot"><span>Paghi oggi</span><b style="font-size:22px;font-weight:500">€${eur(dovutoOggi())}</b></div>
@@ -213,7 +215,7 @@
             <div class="tl now"><small>Entro 2 ore</small><b>Preparazione dell’auto</b><p>Lavaggio, controlli e pieno. Ti avvisiamo su WhatsApp quando è pronta.</p></div>
             <div class="tl"><small>${fmtDate(g)}</small><b>${o.del.modo === 'sede' ? 'Ritiro in sede' : 'Consegna a domicilio'}</b><p>Il driver ti mostra l’auto, firmi il verbale digitale e parti.</p></div>
           </div>
-          <div class="wz-actions"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-line" type="button" data-pdf>${I.download} Contratto</button><button class="btn btn-line" type="button" data-ics>${I.calendar} Aggiungi al calendario</button></div><a class="btn btn-primary" href="area.html">Vai all’area personale ${I.arrow}</a></div>`;
+          <div class="wz-actions"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-grey" type="button" data-pdf>${I.download} Contratto</button><button class="btn btn-grey" type="button" data-ics>${I.calendar} Aggiungi al calendario</button></div><a class="btn btn-primary" href="area.html">Vai all’area personale ${I.arrow}</a></div>`;
       },
     };
 
@@ -267,7 +269,7 @@
       if (o.pay.metodo === 'sepa') { const ib = ($('#iban').value || '').replace(/\s/g, ''); if (ib.length < 15) { $('#iban').style.borderColor = 'var(--red)'; return; } o.pay.iban = $('#iban').value; }
       const btn = $('#panel [data-next]'); btn.disabled = true; btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;border-color:rgba(0,0,0,.2);border-top-color:#07080A"></span> Autorizzazione in corso';
       const sheet = document.createElement('div'); sheet.className = 'modal open';
-      sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:400px;text-align:center"><span class="mono dim">${o.pay.metodo === 'apple' ? 'Apple Pay' : o.pay.metodo === 'sepa' ? 'Mandato SEPA' : '3D Secure · La tua banca'}</span><h2 style="font-size:26px;margin-top:14px">Conferma il pagamento</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())} a LocaFit Rent S.r.l.</p><div style="margin:26px auto 6px" class="spinner"></div><p class="mono dim" style="font-size:11px;margin-top:14px">Demo · nessun addebito reale</p></div>`;
+      sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:400px;text-align:center"><span class="tiny">${o.pay.metodo === 'apple' ? 'Apple Pay' : o.pay.metodo === 'sepa' ? 'Mandato SEPA' : '3D Secure · La tua banca'}</span><h2 style="font-size:26px;margin-top:14px">Conferma il pagamento</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())} a LocaFit Rent S.r.l.</p><div style="margin:26px auto 6px" class="spinner"></div><p class="tiny" style="font-size:11px;margin-top:14px">Demo · nessun addebito reale</p></div>`;
       document.body.appendChild(sheet);
       setTimeout(() => { $('.modal-box', sheet).innerHTML = `<div class="done-hero" style="padding:8px 0"><span class="ok">${I.check}</span><h2 style="font-size:26px;margin-top:18px">Pagamento autorizzato</h2><p class="muted" style="margin-top:8px">€${eur(dovutoOggi())}</p></div>`; }, 1700);
       setTimeout(() => { sheet.remove(); o.pay.ok = true; o.step++; render(); scrollTo({ top: 0, behavior: 'smooth' }); }, 2700);
@@ -291,7 +293,7 @@
         const f = $('#w-form');
         f.addEventListener('input', (e) => {
           collect();
-          if (e.target.name === 'cf') { const r = parseCF(e.target.value); $('#cf-hint').innerHTML = r ? `<span style="color:#F4F5F7">✓ Nato/a il ${r.nascita.toLocaleDateString('it-IT')} · ${r.sesso === 'F' ? 'Femmina' : 'Maschio'}</span>` : '16 caratteri'; if (r) { const n = f.nascita; n.value = new Date(r.nascita.getTime() - r.nascita.getTimezoneOffset() * 60000).toISOString().slice(0, 10); collect(); } e.target.classList.toggle('ok-field', !!r); }
+          if (e.target.name === 'cf') { const r = parseCF(e.target.value); $('#cf-hint').innerHTML = r ? `<span style="color:var(--blue)">✓ Nato/a il ${r.nascita.toLocaleDateString('it-IT')} · ${r.sesso === 'F' ? 'Femmina' : 'Maschio'}</span>` : '16 caratteri'; if (r) { const n = f.nascita; n.value = new Date(r.nascita.getTime() - r.nascita.getTimezoneOffset() * 60000).toISOString().slice(0, 10); collect(); } e.target.classList.toggle('ok-field', !!r); }
         });
         $('[data-demo-dati]').addEventListener('click', () => {
           Object.assign(o.d, { nome: 'Marco', cognome: 'Rossi', cf: 'RSSMRC88M14H501T', nascita: '1988-08-14', email: 'marco.rossi@example.com', tel: '+39 333 123 4567', ind: 'Viale Parioli 40', cap: '00197', citta: 'Roma', rag: 'Rossi Consulting S.r.l.', piva: '01234567890' });
@@ -342,7 +344,7 @@
         $('[data-selfie-sim]').addEventListener('click', () => run(false));
         $('[data-spid]').addEventListener('click', () => {
           const sheet = document.createElement('div'); sheet.className = 'modal open';
-          sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:420px"><span class="mono dim">SPID · Sistema Pubblico di Identità Digitale</span><h2 style="font-size:26px;margin-top:14px">Scegli il tuo provider</h2><div style="display:grid;gap:8px;margin-top:20px">${['Poste ID', 'Aruba ID', 'InfoCert ID', 'Namirial ID', 'Sielte ID'].map((p) => `<button class="btn btn-line btn-block" data-p="${p}" style="justify-content:flex-start">${p}</button>`).join('')}</div><p class="mono dim" style="font-size:11px;margin-top:16px">Demo · accesso simulato</p></div>`;
+          sheet.innerHTML = `<div class="modal-bg"></div><div class="modal-box" style="max-width:420px"><span class="tiny">SPID · Sistema Pubblico di Identità Digitale</span><h2 style="font-size:26px;margin-top:14px">Scegli il tuo provider</h2><div style="display:grid;gap:8px;margin-top:20px">${['Poste ID', 'Aruba ID', 'InfoCert ID', 'Namirial ID', 'Sielte ID'].map((p) => `<button class="btn btn-grey btn-block" data-p="${p}" style="justify-content:flex-start">${p}</button>`).join('')}</div><p class="tiny" style="font-size:11px;margin-top:16px">Demo · accesso simulato</p></div>`;
           document.body.appendChild(sheet);
           sheet.addEventListener('click', (e) => { const b = e.target.closest('[data-p]'); if (b) { $('.modal-box', sheet).innerHTML = `<div style="text-align:center;padding:20px"><div class="spinner" style="margin:0 auto"></div><p class="muted" style="margin-top:16px">Autenticazione con ${b.dataset.p}…</p></div>`; setTimeout(() => { sheet.remove(); run(false); }, 1600); } if (e.target.classList.contains('modal-bg')) sheet.remove(); });
         });
@@ -364,7 +366,7 @@
           if (!drawn) { LF.toast('Prima firma nel riquadro'); return; }
           if (!$('#acc1').checked || !$('#acc2').checked) { LF.toast('Accetta le condizioni per proseguire'); return; }
           const code = String(Math.floor(100000 + Math.random() * 900000));
-          $('#sms-zone').innerHTML = `<div class="sms"><span class="ic">${I.chat}</span><div><span class="mono dim" style="font-size:10.5px">SMS · LocaFit · adesso</span><br>Il tuo codice per firmare il contratto è <b>${code}</b>. Non condividerlo con nessuno.</div></div>
+          $('#sms-zone').innerHTML = `<div class="sms"><span class="ic">${I.chat}</span><div><span class="tiny" style="font-size:10.5px">SMS · LocaFit · adesso</span><br>Il tuo codice per firmare il contratto è <b>${code}</b>. Non condividerlo con nessuno.</div></div>
             <div class="otp" id="otp">${Array.from({ length: 6 }, () => '<input inputmode="numeric" maxlength="1" aria-label="Cifra">').join('')}</div><span class="hint mono" style="font-size:11px;color:var(--muted-2);display:block;margin-top:8px">Demo: il codice è mostrato qui sopra</span>`;
           const ins = $$('#otp input'); ins[0].focus();
           ins.forEach((inp, i) => {
@@ -440,7 +442,7 @@
         <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:20px"><div><span class="kicker">Area personale</span><h1 style="font-size:clamp(36px,4vw,56px);margin-top:12px">Ciao, ${o.d.nome || 'Marco'}.</h1></div><a class="btn btn-primary" href="flotta.html">Nuovo noleggio</a></div>
         <div class="acc-grid" id="panoramica">
           <div class="acc-card acc-car"><div class="stage">${LF.carShot(a)}</div><div>
-            <h3>Il tuo noleggio <span class="badge ${consegnata ? 'badge-ok' : 'badge-amber'}">${consegnata ? '<span class="dot"></span>Attivo' : 'In preparazione'}</span></h3>
+            <h3>Il tuo noleggio <span class="badge ${consegnata ? 'badge-dark' : 'badge-grey'}">${consegnata ? '<span class="dot"></span>Attivo' : 'In preparazione'}</span></h3>
             <div class="big">${a.marca} ${a.modello}</div><p class="muted" style="margin-top:6px">${a.versione} · ${LF.durate[o.tipo].nome}</p>
             <div class="list-rows" style="margin-top:14px"><div class="r"><span class="muted">Contratto</span><span class="mono">${o.numero}</span></div><div class="r"><span class="muted">${consegnata ? 'Iniziato' : (o.del.modo === 'sede' ? 'Ritiro' : 'Consegna')}</span><span>${fmtDate(start)} · ${o.del.ora}</span></div><div class="r"><span class="muted">Scadenza</span><span>${fmtDate(fine)}</span></div></div></div></div>
           <div class="acc-card span-acc-2"><h3>Stato</h3><div class="timeline" style="margin-top:20px">
@@ -450,10 +452,10 @@
             <div class="tl ${consegnata ? 'now' : ''}" style="padding-bottom:0"><small>${fmtDate(fine)}</small><b>Fine noleggio</b></div></div></div>
           <div class="acc-card span-acc-2"><h3>Chilometri ${I.gauge.replace('<svg', '<svg width="16" height="16"')}</h3><div class="big" style="font-size:40px;font-weight:500;letter-spacing:-.05em;margin-top:18px">${eur(kmFatti)}<span class="muted" style="font-size:16px;letter-spacing:0"> / ${eur(kmTot)} km</span></div><div class="meter"><div class="bar"><i style="width:${Math.max(2, (kmFatti / kmTot) * 100)}%"></i></div><div class="lbl" style="margin-top:8px"><span>In linea con il piano</span><span>${Math.round((kmFatti / kmTot) * 100)}%</span></div></div></div>
           <div class="acc-card span-acc-2"><h3>Prossimo addebito ${I.calendar.replace('<svg', '<svg width="16" height="16"')}</h3><div class="big" style="font-size:40px;font-weight:500;letter-spacing:-.05em;margin-top:18px">€${eur(o.unit || 0)}</div><p class="muted" style="margin-top:8px">${o.tipo === 'breve' ? 'Nessun addebito: noleggio già saldato' : 'Il ' + fmtDate(((d) => { d.setMonth(d.getMonth() + 1); return d; })(new Date(pagamenti[0]))) + ' · SEPA'}</p></div>
-          <div class="acc-card span-acc-2"><h3>Assistenza 24/7 ${I.phone.replace('<svg', '<svg width="16" height="16"')}</h3><p class="muted" style="margin-top:18px">Guasto, incidente o una domanda? Siamo raggiungibili sempre.</p><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><a class="btn btn-sm btn-primary" href="tel:+390645217780">Chiama</a><a class="btn btn-sm btn-wa" data-wa="Ciao LocaFit, sono ${esc(nome)} (contratto ${o.numero})." href="#">${I.wa}WhatsApp</a></div></div>
-          <div class="acc-card span-acc-3" id="documenti"><h3>Documenti <span class="badge badge-ok">${docs.length + 1} verificati</span></h3><div class="list-rows">
+          <div class="acc-card span-acc-2"><h3>Assistenza 24/7 ${I.phone.replace('<svg', '<svg width="16" height="16"')}</h3><p class="muted" style="margin-top:18px">Guasto, incidente o una domanda? Siamo raggiungibili sempre.</p><div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap"><a class="btn btn-sm btn-primary" href="tel:+390645217780">Chiama</a><a class="btn btn-sm btn-grey" data-wa="Ciao LocaFit, sono ${esc(nome)} (contratto ${o.numero})." href="#">${I.wa}WhatsApp</a></div></div>
+          <div class="acc-card span-acc-3" id="documenti"><h3>Documenti <span class="badge badge-grey">${docs.length + 1} verificati</span></h3><div class="list-rows">
             <div class="r"><div class="l"><span class="fi">${I.pen}</span><div>Contratto di noleggio<small>Firmato digitalmente · PDF</small></div></div><button class="icon-btn" data-dl aria-label="Scarica contratto">${I.download}</button></div>
-            ${docs.map(([, t]) => `<div class="r"><div class="l"><span class="fi">${I.id}</span><div>${t}<small>Verificato il ${fmtDate(new Date(o.quando))}</small></div></div><span class="badge badge-ok">${I.check.replace('<svg', '<svg width="11" height="11"')}OK</span></div>`).join('')}</div></div>
+            ${docs.map(([, t]) => `<div class="r"><div class="l"><span class="fi">${I.id}</span><div>${t}<small>Verificato il ${fmtDate(new Date(o.quando))}</small></div></div><span class="badge badge-grey">${I.check.replace('<svg', '<svg width="11" height="11"')}OK</span></div>`).join('')}</div></div>
           <div class="acc-card span-acc-3" id="pagamenti"><h3>Pagamenti</h3><div class="list-rows">${pagamenti.map((d, i) => `<div class="r"><div class="l"><span class="fi">${I.euro}</span><div>${i === pagamenti.length - 1 ? (o.tipo === 'breve' ? 'Noleggio' : 'Primo canone') : 'Canone mensile'}<small>${fmtDate(d)} · ${i === pagamenti.length - 1 ? 'Carta' : 'SEPA'}</small></div></div><div style="display:flex;gap:10px;align-items:center"><b style="font-weight:500">€${eur(i === pagamenti.length - 1 && o.dovuto ? o.dovuto : o.unit)}</b><button class="icon-btn" data-dl aria-label="Scarica fattura">${I.download}</button></div></div>`).join('')}</div></div>
           <div class="acc-card span-acc-6" id="assistenza"><h3>Gestisci il noleggio</h3><div class="choices" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
             ${[['calendar', 'Prolunga il noleggio', 'Aggiungi giorni o mesi'], ['swap', 'Cambia auto', 'Passa a un altro modello'], ['alert', 'Segnala un guasto', 'Soccorso in 60 minuti'], ['shield', 'Denuncia sinistro', 'Modulo CAI digitale'], ['wrench', 'Prenota tagliando', 'Ritiro e riconsegna a casa']].map(([ic, t, s]) => `<button class="choice" type="button" style="text-align:left" data-act="${t}">${I[ic]}<b>${t}</b><small>${s}</small></button>`).join('')}</div></div>
