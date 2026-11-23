@@ -51,6 +51,7 @@ LF.codici = [
   prezzi: breve €/giorno · medio €/mese · lungo €/mese (36 mesi, 15.000 km/anno, anticipo 0)
   promo: sconto applicato (prezzo barrato = prezzo pieno)
   consegna: ore entro cui è disponibile (0 = pronta oggi)
+  arrivo: vedi LF.arrivi più sotto (veicolo non ancora noleggiabile)
 */
 const A = (id, marca, modello, versione, categoria, alim, cambio, cv, acc, prezzi, consegna, sedi, extra = {}) =>
   ({ id, img: id, marca, modello, versione, categoria, alim, cambio, cv, acc, prezzi, consegna, sedi, posti: 5, ...extra });
@@ -114,6 +115,22 @@ LF.auto = [
   A('honda-xadv', 'Honda', 'X-ADV', '750 DCT', 'moto', 'Benzina', 'Automatico', 59, null, { breve: 79, medio: 590, lungo: 299 }, 0, RC, { posti: 2, patente: 'A' }),
   A('bmw-r1300gs', 'BMW', 'R 1300 GS', 'Trophy', 'moto', 'Benzina', 'Manuale', 145, null, { breve: 119, medio: 890, lungo: 449 }, 0, R, { posti: 2, patente: 'A' }),
 ];
+
+/*
+  Veicoli in arrivo: li decide il noleggio.
+  Chiave = id del veicolo, valore = da quando sarà disponibile.
+  Sul sito il veicolo resta visibile, con "Avvisami" al posto di "Noleggia":
+  il cliente lascia nome e telefono e viene richiamato quando arriva.
+  Per renderlo di nuovo noleggiabile basta togliere la riga.
+*/
+LF.arrivi = {
+  'mini-cooper': '20 dicembre',
+  'kia-sportage': '12 dicembre',
+  'bmw-x3': '15 dicembre',
+  'tesla-model-3': '9 dicembre',
+  'honda-xadv': '1 marzo',
+};
+LF.auto.forEach((a) => { if (LF.arrivi[a.id]) a.arrivo = LF.arrivi[a.id]; });
 
 LF.inclusi = [
   { t: 'RCA e Kasko', d: 'Copertura totale, franchigia ridotta', i: 'shield' },

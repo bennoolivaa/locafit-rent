@@ -156,3 +156,11 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
 | 50 | Sul telefono ogni sezione è una colonna lunga: home 18.500 px, Flotta 27.800 px | Fino a 734 px, riquadri, auto, passaggi, servizi inclusi, recensioni, sedi e codici sconto diventano righe da scorrere a destra e sinistra. La scheda successiva si vede in parte e una barra sottile indica il punto della riga. Home 10.600 px, Flotta 7.200 px |
 | 51 | Flotta su telefono: 49 schede una sotto l'altra | Con "Tutti", una riga per categoria con "Vedi elenco". Con una categoria scelta, griglia a due colonne con schede compatte (modello, foto, prezzo, Noleggia) |
 | 52 | Cambiando categoria dalla barra la pagina restava a metà elenco | Torna all'inizio dei risultati, sotto la barra fissa |
+
+## v5.6 — Veicoli in arrivo e altre sedi
+
+| # | Richiesta | Soluzione |
+|---|---|---|
+| 53 | Il noleggio deve poter segnare un veicolo come "disponibile tra un po'" | Elenco `LF.arrivi` in `assets/js/data.js`: id del veicolo e data. Il veicolo resta visibile con "In arrivo dal…" e "Avvisami" al posto di "Noleggia", sta in fondo all'elenco ed è escluso dal filtro "pronta consegna" |
+| 54 | Chi vuole un veicolo in arrivo deve poter lasciare il numero | Modulo corto (nome, telefono, consenso) con "Avvisami quando arriva", anche dalla scheda auto |
+| 55 | Filtrando per sede, i veicoli delle altre sedi sparivano | In fondo ai risultati: "Altri N veicoli sono in altre sedi. Possiamo portarli in 2–3 giorni" con "Lasciaci il numero" |

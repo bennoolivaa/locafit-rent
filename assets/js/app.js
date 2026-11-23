@@ -46,7 +46,8 @@
   const photo = LF.photo = (k) => `assets/img/photo/${k}.webp`;
   const has = LF.has = (a, k) => !!(LF.foto && LF.foto[a.id] && LF.foto[a.id][k]);
   const consegnaLabel = LF.consegnaLabel = (h) => (h === 0 ? 'Pronta oggi' : `Pronta in ${h} ore`);
-  LF.status = (a) => `<span class="cc-eta ${a.consegna ? 'later' : ''}"><i></i>${consegnaLabel(a.consegna)}</span>`;
+  LF.disp = (a) => (a.arrivo ? `In arrivo dal ${a.arrivo}` : consegnaLabel(a.consegna));
+  LF.status = (a) => `<span class="cc-eta ${a.arrivo ? 'soon' : a.consegna ? 'later' : ''}"><i></i>${LF.disp(a)}</span>`;
   LF.carShot = (a, size = '', o = {}) => {
     const lz = size === '-sm' ? ' loading="lazy"' : '';
     const back = o.back && has(a, 'rear') ? `<img class="back" src="${img(a, 'rear', size)}" alt="" aria-hidden="true" loading="lazy" decoding="async">` : '';
@@ -196,7 +197,7 @@
       <div class="cc-specs"><div><b>${a.cv} CV</b><small>Potenza</small></div><div><b>${a.alim}</b><small>Motore</small></div><div><b>${a.cambio}</b><small>Cambio</small></div></div>
       <div class="cc-foot">
         <div class="price"><div class="row"><b class="${p.pct ? 'promo' : ''}">€${eur(p.unit)}</b><em>${LF.durate[tipo].unita}</em>${p.pct ? `<s>€${eur(p.pieno)}</s>` : ''}</div><small>${label}</small></div>
-        <a class="btn btn-primary btn-sm cc-go" href="prenota.html?id=${a.id}&tipo=${tipo}">Noleggia</a>
+        ${a.arrivo ? `<button type="button" class="btn btn-outline btn-sm cc-go" data-lead-open data-id="${a.id}" data-tipo="${tipo}">Avvisami</button>` : `<a class="btn btn-primary btn-sm cc-go" href="prenota.html?id=${a.id}&tipo=${tipo}">Noleggia</a>`}
       </div>
     </article>`;
   };
@@ -297,15 +298,19 @@
   const modal = $('#lead-modal'); let lastFocus;
   LF.openLead = function (opts = {}) {
     const a = opts.id ? byId(opts.id) : null; const tipo = opts.tipo || LF.durata;
-    $('.lead-content', modal).innerHTML = `<span class="eyebrow grey">${opts.kicker || LF.durate[tipo].nome}</span><h2 id="lead-title">${opts.title || 'Parla con un consulente'}</h2>
-      <p class="muted" style="margin-top:8px">Ti richiamiamo entro 30 minuti in orario d’ufficio.</p>
+    const soon = a && a.arrivo, sede = !a && opts.sede;
+    const kicker = soon ? 'In arrivo' : sede ? 'Da un’altra sede' : (opts.kicker || LF.durate[tipo].nome);
+    const title = soon ? `${a.marca} ${a.modello} arriva dal ${a.arrivo}.` : sede ? `Te lo portiamo a ${sedeNome(sede)}.` : (opts.title || 'Parla con un consulente');
+    const text = soon ? 'Lasciaci il numero: ti chiamiamo appena arriva e te lo teniamo da parte.' : sede ? 'Lasciaci il numero e dicci quale veicolo ti interessa: lo portiamo in sede in 2–3 giorni.' : 'Ti richiamiamo entro 30 minuti in orario d’ufficio.';
+    $('.lead-content', modal).innerHTML = `<span class="eyebrow grey">${kicker}</span><h2 id="lead-title">${title}</h2>
+      <p class="muted" style="margin-top:8px">${text}</p>
       <form class="form" data-lead style="margin-top:22px">
         <div class="row2"><label>Nome e cognome<input required name="nome" autocomplete="name"></label><label>Telefono<input required name="tel" type="tel" autocomplete="tel"></label></div>
-        <label>Email<input required name="email" type="email" autocomplete="email"></label>
-        <label>Messaggio<textarea name="msg" placeholder="${a ? `Mi interessa ${a.marca} ${a.modello}…` : 'Quante auto, per quanto tempo, che tipo…'}"></textarea></label>
+        ${soon || sede ? '' : '<label>Email<input required name="email" type="email" autocomplete="email"></label>'}
+        ${soon ? '' : `<label>Messaggio<textarea name="msg" placeholder="${a ? `Mi interessa ${a.marca} ${a.modello}…` : sede ? 'Quale veicolo, per quando…' : 'Quante auto, per quanto tempo, che tipo…'}"></textarea></label>`}
         <label class="check"><input type="checkbox" required> Acconsento a essere ricontattato secondo l’informativa privacy.</label>
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Invia richiesta</button>
-        ${a ? `<a class="btn btn-outline btn-block" href="prenota.html?id=${a.id}&tipo=${tipo}">Oppure noleggia online</a>` : ''}
+        <button class="btn btn-primary btn-block btn-lg" type="submit">${soon ? 'Avvisami quando arriva' : sede ? 'Richiamatemi' : 'Invia richiesta'}</button>
+        ${a && !soon ? `<a class="btn btn-outline btn-block" href="prenota.html?id=${a.id}&tipo=${tipo}">Oppure noleggia online</a>` : ''}
       </form>`;
     lastFocus = document.activeElement; modal.classList.add('open'); document.body.style.overflow = 'hidden'; setTimeout(() => $('input', modal).focus(), 50);
   };
@@ -317,7 +322,7 @@
     const nome = (new FormData(f).get('nome') || '').toString().split(' ')[0];
     f.outerHTML = `<div class="done-hero" style="padding:28px 0"><span class="ok">${I.check}</span><h2 style="font-size:30px">Grazie${nome ? ', ' + nome : ''}.</h2><p class="muted" style="margin-top:10px">Richiesta ricevuta: un consulente ti contatta a breve.<br><small>Demo · nessun dato è stato inviato.</small></p></div>`;
   });
-  document.addEventListener('click', (e) => { const b = e.target.closest('[data-lead-open]'); if (!b) return; e.preventDefault(); LF.openLead({ id: b.dataset.id, tipo: b.dataset.tipo, title: b.dataset.title, kicker: b.dataset.kicker }); });
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-lead-open]'); if (!b) return; e.preventDefault(); LF.openLead({ id: b.dataset.id, tipo: b.dataset.tipo, title: b.dataset.title, kicker: b.dataset.kicker, sede: b.dataset.sede }); });
 
   /* ---------- Blocchi ripetuti ---------- */
   $$('[data-inclusi]').forEach((el) => { el.innerHTML = LF.inclusi.map((x) => `<div class="incluso"><span class="ico">${I[x.i]}</span><b>${x.t}</b><small>${x.d}</small></div>`).join(''); });
@@ -365,7 +370,7 @@
       const draw = () => {
         const a = list[i]; const p = LF.prezzo(a, 'lungo');
         $('#hero-name').textContent = `${a.marca} ${a.modello}`;
-        $('#hero-meta').innerHTML = `<span>da <b>€${eur(p.unit)}/mese</b>${p.pct ? ` <s>€${eur(p.pieno)}</s>` : ''}</span><span class="sep"></span><span>${consegnaLabel(a.consegna)}</span><span class="sep"></span><span><a class="link" href="auto.html?id=${a.id}">Scopri ${a.modello}</a></span>`;
+        $('#hero-meta').innerHTML = `<span>da <b>€${eur(p.unit)}/mese</b>${p.pct ? ` <s>€${eur(p.pieno)}</s>` : ''}</span><span class="sep"></span><span>${LF.disp(a)}</span><span class="sep"></span><span><a class="link" href="auto.html?id=${a.id}">Scopri ${a.modello}</a></span>`;
         $$('.hero-model').forEach((t, k) => t.classList.toggle('on', k === i));
       };
       const show = (n) => { i = n; car.classList.add('swap'); setTimeout(() => { car.innerHTML = LF.carShot(list[i]); car.classList.remove('swap'); draw(); }, 180); };
@@ -433,9 +438,10 @@
         setRange(); draw();
       });
       function draw() {
-        const l = LF.auto.filter((a) => (!st.cat || a.categoria === st.cat) && (!st.sede || a.sedi.includes(st.sede)) && (!st.pronta || a.consegna === 0) && (!st.promo || a.promo) && (!st.d3 || LF.modelli3d[a.id]) && (!st.alim || a.alim === st.alim) && (!st.cambio || a.cambio === st.cambio) && (!st.max || LF.prezzo(a, st.tipo).unit <= st.max));
+        const l = LF.auto.filter((a) => (!st.cat || a.categoria === st.cat) && (!st.sede || a.sedi.includes(st.sede)) && (!st.pronta || (a.consegna === 0 && !a.arrivo)) && (!st.promo || a.promo) && (!st.d3 || LF.modelli3d[a.id]) && (!st.alim || a.alim === st.alim) && (!st.cambio || a.cambio === st.cambio) && (!st.max || LF.prezzo(a, st.tipo).unit <= st.max));
         const P = (a) => LF.prezzo(a, st.tipo).unit;
         l.sort(st.ord === 'prezzo-desc' ? (x, y) => P(y) - P(x) : st.ord === 'consegna' ? (x, y) => x.consegna - y.consegna || P(x) - P(y) : st.ord === 'potenza' ? (x, y) => y.cv - x.cv : (x, y) => P(x) - P(y));
+        l.sort((x, y) => (x.arrivo ? 1 : 0) - (y.arrivo ? 1 : 0));
         const n = `${l.length} ${st.cat === 'moto' ? (l.length === 1 ? 'moto' : 'moto e scooter') : st.cat === 'furgone' ? (l.length === 1 ? 'furgone' : 'furgoni') : st.cat ? 'auto' : (l.length === 1 ? 'veicolo' : 'veicoli')}`;
         const h1 = $('.page-head h1'); if (h1) h1.textContent = st.cat === 'moto' ? 'Scegli la tua moto.' : st.cat === 'furgone' ? 'Scegli il tuo furgone.' : st.cat ? 'Scegli la tua auto.' : 'Scegli il tuo veicolo.';
         $('#fleet-count').textContent = n; $('#sheet-count').textContent = `Mostra ${n}`;
@@ -448,6 +454,10 @@
         const rows = phone.matches && !st.cat && grp.filter((g) => g[1].length).length > 1;
         $('#fleet-grid').classList.toggle('rows', rows);
         LF.renderGrid($('#fleet-grid'), l, st.tipo, { tiles: !st.cat && !active, groups: st.cat ? null : grp, rows, noSwipe: true });
+        if (st.sede) {
+          const altrove = LF.auto.filter((a) => !a.sedi.includes(st.sede) && (!st.cat || a.categoria === st.cat)).length;
+          if (altrove) $('#fleet-grid').insertAdjacentHTML('beforeend', `<div class="fleet-more"><div><b>Altri ${altrove} ${altrove === 1 ? 'veicolo è' : 'veicoli sono'} in altre sedi.</b><p>Possiamo portarli a ${sedeNome(st.sede)} in 2–3 giorni. Lasciaci il numero, ti chiamiamo noi.</p></div><button type="button" class="btn btn-dark btn-sm" data-lead-open data-sede="${st.sede}">Lasciaci il numero</button></div>`);
+        }
         $('#f-reset').hidden = !active;
         const u = new URLSearchParams({ tipo: st.tipo }); if (st.cat) u.set('cat', st.cat); if (st.sede) u.set('sede', st.sede); if (st.pronta) u.set('pronta', '1'); if (st.promo) u.set('promo', '1');
         history.replaceState(null, '', '?' + u);
@@ -462,8 +472,8 @@
       $('#d-marca').textContent = `${a.marca} · ${catNome(a.categoria)}`;
       $('#d-modello').textContent = a.modello; $('#d-versione').textContent = a.versione;
       $('#d-badges').innerHTML = `${a.promo ? `<span class="badge badge-red">${LF.promo.nome} −${Math.round(a.promo * 100)}%</span>` : ''}${LF.modelli3d[a.id] ? '<span class="badge badge-grey">Tour 3D</span>' : ''}`;
-      $('.disp').innerHTML = `${LF.status(a)}<span>· ${a.consegna === 0 ? `in sede a ${a.sedi.map(sedeNome).join(', ')}` : 'consegna anche a domicilio'}</span>`;
-      $('#d-specs').innerHTML = [['Potenza', a.cv + ' CV'], (a.categoria === 'moto' ? ['Patente', a.patente] : ['0–100 km/h', String(a.acc).replace('.', ',') + ' s']), ['Alimentazione', a.alim], ['Cambio', a.cambio], ['Posti', a.posti], ['Disponibile a', a.sedi.map(sedeNome).join(', ')], ['Consegna', consegnaLabel(a.consegna)], ['Km inclusi', '15.000/anno']].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('');
+      $('.disp').innerHTML = `${LF.status(a)}<span>· ${a.arrivo ? 'lasciaci il numero, ti chiamiamo noi' : a.consegna === 0 ? `in sede a ${a.sedi.map(sedeNome).join(', ')}` : 'consegna anche a domicilio'}</span>`;
+      $('#d-specs').innerHTML = [['Potenza', a.cv + ' CV'], (a.categoria === 'moto' ? ['Patente', a.patente] : ['0–100 km/h', String(a.acc).replace('.', ',') + ' s']), ['Alimentazione', a.alim], ['Cambio', a.cambio], ['Posti', a.posti], ['Disponibile a', a.sedi.map(sedeNome).join(', ')], ['Consegna', LF.disp(a)], ['Km inclusi', '15.000/anno']].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('');
       LF.gallery($('#d-gallery'), a);
       const st = { tipo: LF.durata, giorni: 3, mesi: 3, durata: 36, km: 15, anticipo: 0 };
       const box = $('#cfg-opts');
@@ -485,12 +495,13 @@
         $('#cfg-promo').style.display = p.pct ? '' : 'none';
         if (p.pct) $('#cfg-promo').innerHTML = `<span>${LF.promo.nome}: risparmi <b>€${eur(p.pieno - p.unit)}</b>${d.unita}</span><span class="code" style="padding:4px 8px;font-size:12px">${LF.promo.codice}</span>`;
         const href = 'prenota.html?' + new URLSearchParams({ id: a.id, tipo: st.tipo, giorni: st.giorni, mesi: st.mesi, durata: st.durata, km: st.km, anticipo: st.anticipo });
-        $('#cfg-go').href = href; $('#bar-go').href = href;
+        if (!a.arrivo) { $('#cfg-go').href = href; $('#bar-go').href = href; }
         $('#bar-price').innerHTML = `<b>€${eur(p.unit)}</b><span class="muted" style="font-size:14px">${d.unita}</span><small>${a.marca} ${a.modello} · ${d.nome}</small>`;
         $('#cfg-wa').href = LF.waLink(`Ciao LocaFit Rent! Mi interessa ${a.marca} ${a.modello} a noleggio ${d.nome.toLowerCase()} a €${eur(p.unit)}${d.unita}. È disponibile?`);
       }
       $('#cfg-lead').addEventListener('click', () => LF.openLead({ id: a.id, tipo: st.tipo, title: `${a.marca} ${a.modello}`, kicker: 'Parla con un consulente' }));
       opts(); calc();
+      if (a.arrivo) [['#cfg-go', 'Avvisami quando arriva'], ['#bar-go', 'Avvisami']].forEach(([s, t]) => { const b = $(s); b.textContent = t; b.dataset.leadOpen = ''; b.dataset.id = a.id; b.setAttribute('role', 'button'); b.removeAttribute('href'); b.tabIndex = 0; b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); } }); });
       // barra fissa in basso quando il pulsante del configuratore non è visibile (telefono/tablet)
       const bar = $('#order-bar'); const go = $('#cfg-go');
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { const show = !e.isIntersecting && innerWidth < 1024; bar.classList.toggle('show', show); document.body.classList.toggle('has-bar', show); }).observe(go);
