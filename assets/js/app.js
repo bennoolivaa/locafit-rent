@@ -74,7 +74,7 @@
   const noleggio = [['breve-termine.html', 'Breve termine', 'Da 1 a 30 giorni', 'breve'], ['medio-termine.html', 'Medio termine', 'Da 1 a 12 mesi', 'medio'], ['lungo-termine.html', 'Lungo termine', 'Da 24 a 60 mesi', 'lungo']];
   const header = $('#site-header');
   if (header) {
-    if (!document.body.dataset.noRibbon) header.insertAdjacentHTML('beforebegin', `<a class="ribbon" href="offerte.html"><b>${LF.promo.nome}.</b> Fino al −20% sul canone con il codice ${LF.promo.codice}, fino al 30 novembre. <u>Scopri le offerte</u></a>`);
+    if (!document.body.dataset.noRibbon) header.insertAdjacentHTML('beforebegin', `<a class="ribbon" href="offerte.html"><b>${LF.promo.nome}.</b> Fino al −20%<span class="rb-long"> sul canone con il codice ${LF.promo.codice}, fino al 30 novembre</span>. <u>Scopri le offerte</u></a>`);
     header.className = 'site-header';
     header.innerHTML = `<div class="wrap-wide">
       <a href="index.html" class="brand" aria-label="LocaFit Rent, home">${markSVG()}<span class="brand-name">LocaFit<span>Rent</span></span></a>

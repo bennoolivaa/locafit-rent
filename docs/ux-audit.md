@@ -106,3 +106,19 @@ Richiesta del cliente: i colori Mercedes al posto di quelli Apple. Valori letti 
 
 Il logo LocaFit sull'header nero usa la freccia bianca al posto del blu notte.
 Corretto anche il menu su telefono: la prima voce finiva sotto l'header quando la barra promo era visibile.
+
+## Revisione critica v5.1
+
+| # | Dove | Difetto | Correzione |
+|---|---|---|---|
+| 33 | Aziende, Chi siamo, Come funziona, formule | Titolo poco leggibile sulle foto chiare o affollate | Velatura più scura dietro il testo |
+| 34 | Aziende, formule | Quattro riquadri grigi con testo piccolo, aspetto da modello pronto | Numeri grandi in serif su una linea sottile |
+| 35 | Aziende, Chi siamo, Come funziona | Tre riquadri con icona | Stesso stile a linee di "Sempre incluso" |
+| 36 | Scheda auto | Dati tecnici in otto riquadri grigi | Righe sottili, più leggere |
+| 37 | Sedi | Nome della città e orari illeggibili sulle foto | Sfumatura più forte e nome in serif |
+| 38 | Header | "Offerte" più chiaro delle altre voci: sembrava la pagina attiva | Stesso colore delle altre voci |
+| 39 | Titoli | Parole sole a capo ("Mercedes-Benz Classe / A") | Righe bilanciate su tutti i titoli |
+| 40 | Offerte | Riquadro promozione più stretto della griglia sotto | Stessa larghezza |
+| 41 | Telefono | Barra promo su tre righe | Una riga: "Fino al −20%. Scopri le offerte" |
+| 42 | Scheda auto (telefono) | Pulsante WhatsApp sopra la barra "Noleggia"; "24 mesi" spezzato su due righe; dati tecnici larghi solo tre quarti | WhatsApp nascosto (c'è già nel configuratore), testo su una riga, larghezza piena |
+| 43 | Galleria | Con due sole foto le miniature erano sparse sulla riga | Larghezza fissa, allineate a sinistra |

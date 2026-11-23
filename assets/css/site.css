@@ -962,3 +962,59 @@ h1, h2, h3 { color: var(--ink); }
 .nav .promo { font-weight: 400; }
 .mobile-nav > a.btn { font-size: 17px; letter-spacing: normal; justify-content: center; padding: 0 22px; border-bottom: 0; color: #fff; }
 .mobile-nav > a small { font-family: var(--font); }
+
+/* =========================================================
+   v5.1 — revisione critica dopo la palette Mercedes
+   ========================================================= */
+/* Titoli: righe bilanciate, niente parole orfane ("Classe / A") */
+h1, h2, h3, .big-quote { text-wrap: balance; }
+
+/* Header: "Offerte" non deve sembrare la pagina attiva */
+.nav .promo { color: rgba(255,255,255,.78); }
+.nav .promo:hover, .nav .promo.active { color: #fff; }
+
+/* Barra promo: su telefono una riga sola */
+@media (max-width: 734px) { .rb-long { display: none; } .ribbon { font-size: 13px; padding: 9px 16px; } }
+
+/* Testate con foto: testo leggibile anche su foto chiare o affollate */
+.page-hero::before { background: linear-gradient(180deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.55) 38%, rgba(0,0,0,.18) 68%, rgba(0,0,0,.5) 100%); }
+.page-hero h1, .page-hero .sub, .tile.photo h2, .tile.photo .sub, .full h2 { text-shadow: 0 1px 24px rgba(0,0,0,.35); }
+
+/* Numeri chiave: niente riquadri grigi, numeri grandi su linea sottile */
+.kv { gap: 0 32px; }
+.kv div, .kv > div { background: none; border-radius: 0; padding: 18px 0 0; border-top: 1px solid var(--ink); }
+.kv small { font-size: 13px; color: var(--muted); }
+.kv b { font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 2.2vw, 32px); letter-spacing: -.01em; margin-top: 8px; line-height: 1.15; }
+@media (max-width: 900px) { .kv { grid-template-columns: 1fr 1fr; row-gap: 28px; } }
+.acc-card .kv div { border-top-color: var(--line-2); }
+.acc-card .kv b { font-family: var(--font); font-weight: 600; font-size: 17px; }
+
+/* Vantaggi: stesso linguaggio a linee di "Sempre incluso" */
+.values { column-gap: 40px; row-gap: 36px; }
+.value, .bg-alt .value { background: none; border-radius: 0; padding: 22px 0 0; border-top: 1px solid var(--line); }
+.value .ico svg { width: 28px; height: 28px; stroke-width: 1.5; }
+.value h3 { margin-top: 16px; font-size: 21px; }
+.value p { font-size: 16px; }
+@media (max-width: 900px) { .values { grid-template-columns: 1fr; } }
+
+/* Sedi: nome in serif, testo leggibile sulla foto */
+.sede::before { background: linear-gradient(180deg, rgba(0,0,0,.05) 25%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.88)); }
+.sede h3 { font-family: var(--serif); font-weight: 400; font-size: 40px; letter-spacing: -.01em; color: #fff; }
+.sede .tag { font-size: 13px; color: rgba(255,255,255,.9); }
+.sede { border-radius: 8px; }
+
+/* Scheda auto su telefono: il pulsante WhatsApp non si sovrappone alla barra "Noleggia" */
+@media (max-width: 1023px) { body:has(.order-bar) .wa-float { display: none; } }
+/* Selettori durata e km: testo su una riga */
+.pill { white-space: nowrap; }
+@media (max-width: 420px) { .pill { min-width: 0; padding: 0 4px; font-size: 13px; } }
+
+/* Flotta su telefono: nota sotto il numero di auto */
+@media (max-width: 734px) { #fleet-note { display: block; margin: 4px 0 0 !important; } }
+/* Dati tecnici in scheda: righe sottili invece di riquadri grigi */
+.spec-grid { column-gap: 28px; row-gap: 22px; }
+.spec-grid div { background: none; border-radius: 0; padding: 14px 0 0; border-top: 1px solid var(--line); }
+/* Miniature: larghezza massima fissa, allineate a sinistra anche quando sono solo due */
+.gallery-thumbs { grid-auto-columns: minmax(48px, 112px); justify-content: start; }
+@media (max-width: 1023px) { .detail > div:first-child > * { width: 100%; } }
+@media (max-width: 360px) { .configurator { padding-left: 16px; padding-right: 16px; } .pill { font-size: 12px; padding: 0 2px; } }
