@@ -164,3 +164,9 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
 | 53 | Il noleggio deve poter segnare un veicolo come "disponibile tra un po'" | Elenco `LF.arrivi` in `assets/js/data.js`: id del veicolo e data. Il veicolo resta visibile con "In arrivo dal…" e "Avvisami" al posto di "Noleggia", sta in fondo all'elenco ed è escluso dal filtro "pronta consegna" |
 | 54 | Chi vuole un veicolo in arrivo deve poter lasciare il numero | Modulo corto (nome, telefono, consenso) con "Avvisami quando arriva", anche dalla scheda auto |
 | 55 | Filtrando per sede, i veicoli delle altre sedi sparivano | In fondo ai risultati: "Altri N veicoli sono in altre sedi. Possiamo portarli in 2–3 giorni" con "Lasciaci il numero" |
+
+## v5.7 — Sfondo della home
+
+| # | Difetto | Correzione |
+|---|---|---|
+| 56 | Hero della home su nero pieno, piatto | Sfondo animato a pennellate (stessa tecnica dell'hero di Aedify) in nero, grafite, argento e un filo di blu. Velature per leggere il testo e sfumare nel nero del cercatore. Foto notturna sotto se WebGL manca; un solo fotogramma con "riduci movimento"; pausa quando non è visibile. File `assets/js/hero-bg.js`, caricato solo in home |

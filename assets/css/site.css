@@ -1244,3 +1244,16 @@ h1, h2, h3, .big-quote { text-wrap: balance; }
 .fleet-more p { margin-top: 4px; font-size: 15px; color: var(--muted); }
 .fleet-more .btn { flex: none; }
 @media (max-width: 734px) { .fleet-more { flex-direction: column; align-items: stretch; margin-top: 28px; padding: 20px; } }
+
+/* =========================================================
+   v5.7 — sfondo della home: pennellate animate (come Aedify) al posto del nero pieno
+   ========================================================= */
+.hero { position: relative; isolation: isolate; }
+.hero-photo, .hero-bg, .hero-veil { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hero-photo { z-index: -3; background: #000 url(../img/photo/notte.webp) center / cover no-repeat; filter: grayscale(.6) brightness(.35); }
+.hero-bg { z-index: -2; opacity: 0; transition: opacity 1.6s ease; }
+.hero-bg.on { opacity: 1; }
+.hero-veil { z-index: -1; background:
+  radial-gradient(ellipse 55% 30% at 50% 64%, rgba(0,0,0,.4), rgba(0,0,0,0) 70%),
+  linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 18%, rgba(0,0,0,0) 76%, #000 100%); }
+.hero-model.on { background: rgba(31,31,31,.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
