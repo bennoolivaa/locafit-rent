@@ -176,3 +176,9 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
 | # | Difetto | Correzione |
 |---|---|---|
 | 57 | Marchio provvisorio, troppo vicino al logo di Fausto; scritta in sans generica | Tre marchi nuovi disegnati da zero nello stile di Fausto (pennello, blu, rosso, punto verde, movimento in avanti), a confronto in `proposte-logo.html` (non collegata, noindex). Sul sito la proposta 1, "Freccia a due tratti": scritta LocaFit in serif e RENT spaziato. Nuovi favicon e icona app (`assets/img/logo/`) |
+
+## v5.9 — Home su computer
+
+| # | Difetto | Correzione |
+|---|---|---|
+| 58 | Su un portatile (finestra alta 650–800 px) l'auto della home finiva sotto il bordo dello schermo, tagliata | Sui computer la larghezza dell'auto dipende dall'altezza della finestra; sotto i 900 px di altezza il titolo va su una riga e gli spazi si stringono. Provato da 800×600 a 2560×1300: auto, nome e dati sempre nella prima schermata. Telefono invariato |
