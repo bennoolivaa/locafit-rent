@@ -58,3 +58,18 @@ Gravità: **Alta** = blocca o fa perdere clienti · **Media** = rallenta o confo
 - **Revel**: card con prezzo barrato, tempi di consegna e badge offerta; filtri a chip con icone.
 - **Font**: Inter (con dimensione ottica), il più vicino libero a SF Pro e Universal Sans.
 - **Colore**: un solo blu d’azione, rosso solo per le promozioni, nessun altro colore.
+
+## Revisione critica v4.1
+
+| # | Dove | Difetto | Correzione |
+|---|---|---|---|
+| 13 | Flotta | Titolo e breadcrumb attaccati al bordo sinistro (margine azzerato) | Margini ripristinati |
+| 14 | Tutte le foto | Contorni scontornati frastagliati, aloni verdi e grigi | Bordo rifinito su 88 immagini |
+| 15 | Hero | Auto attaccata ai pulsanti e sospesa nel vuoto | Più aria e ombra a terra |
+| 16 | Card auto | Sette righe di testo piccolo grigio | Quattro righe: nome, versione, prezzo con disponibilità, azioni |
+| 17 | Card auto | Auto alte (500, furgoni) tagliate in alto | Foto contenute nel riquadro, appoggiate in basso |
+| 18 | Galleria | Retro di colore o generazione diversa su 6 modelli | Retro rimossi su X3, 500, Transit Custom, GLA, GLC, Macan |
+| 19 | Home | 911 ripetuta nella hero e nel riquadro Breve termine | Mini Cooper nel riquadro |
+| 20 | Fondi neri | Pulsante contorno azzurro poco leggibile | Contorno bianco |
+| 21 | Passaggi | Cinque riquadri con icone, aspetto da modello pronto | Linea del tempo con numeri grandi |
+| 22 | Footer | Più stretto della griglia sopra | Stessa larghezza del contenuto |

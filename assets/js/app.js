@@ -100,7 +100,7 @@
   const footer = $('#site-footer');
   if (footer) {
     footer.className = 'site-footer';
-    footer.innerHTML = `<div class="wrap">
+    footer.innerHTML = `<div class="wrap-wide">
       <div class="footer-notes"><p>Prezzi IVA inclusa per privati. Canoni del lungo termine calcolati su 36 mesi e 15.000 km/anno con anticipo zero. Le promozioni ${LF.promo.nome} sono valide fino al 30 novembre 2026 sui modelli indicati.</p><p>Sito dimostrativo: prezzi, recensioni e contatti sono di esempio. Foto da Wikimedia Commons (CC), modelli 3D da Sketchfab.</p></div>
       <div class="footer-top">
         <div><h4>Noleggio</h4><ul><li><a href="flotta.html">Flotta</a></li><li><a href="offerte.html">Offerte</a></li>${noleggio.map(([h, t]) => `<li><a href="${h}">${t}</a></li>`).join('')}</ul></div>
@@ -123,10 +123,8 @@
       <div class="cc-stage">${LF.carShot(a, '-sm', { back: true })}</div>
       <div class="cc-body">
         <div class="cc-name"><small>${a.marca}</small><h3><a class="card-link" href="${href}">${a.modello}</a></h3><p>${a.versione}</p></div>
-        <div class="cc-meta"><span>${a.alim}</span><span>${a.cambio}</span><span>${a.cv} CV</span></div>
         <div class="cc-foot">
-          ${LF.status(a)}
-          <div class="price"><small>${tipo === 'lungo' ? 'Canone mensile, anticipo zero' : tipo === 'medio' ? 'Canone mensile' : 'Al giorno'}</small><div class="row">${p.pct ? `<s>€${eur(p.pieno)}</s>` : ''}<b class="${p.pct ? 'promo' : ''}">€${eur(p.unit)}</b><em>${LF.durate[tipo].unita}</em></div></div>
+          <div class="cc-price"><div class="price"><div class="row">${p.pct ? `<s>€${eur(p.pieno)}</s>` : ''}<b class="${p.pct ? 'promo' : ''}">€${eur(p.unit)}</b><em>${LF.durate[tipo].unita}</em></div><small>${tipo === 'lungo' ? 'Anticipo zero, IVA inclusa' : tipo === 'medio' ? 'Recesso con 30 giorni' : '250 km al giorno inclusi'}</small></div>${LF.status(a)}</div>
           <div class="cc-actions"><a class="btn btn-primary" href="prenota.html?id=${a.id}&tipo=${tipo}">Noleggia</a><a class="btn btn-outline" href="${href}">Scopri</a></div>
         </div>
       </div></article>`;
