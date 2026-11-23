@@ -95,7 +95,7 @@
     mob.innerHTML = `<a href="flotta.html">Flotta</a><a href="offerte.html">Offerte <small>${LF.promo.nome}</small></a><div class="sub-links">${noleggio.map(([h, t]) => `<a href="${h}">${t.split(' ')[0]}</a>`).join('')}</div><a href="aziende.html">Aziende</a><a href="come-funziona.html">Come funziona</a><a href="contatti.html">Assistenza</a><a href="faq.html">Domande frequenti</a><a href="area.html">Area personale</a><a class="btn btn-primary btn-lg" href="flotta.html">Scegli l’auto</a>`;
     document.body.appendChild(mob);
     const mb = $('.menu-btn', header);
-    mb.addEventListener('click', () => { const o = mob.classList.toggle('open'); mb.setAttribute('aria-expanded', o); mb.innerHTML = o ? I.close : I.menu; document.body.style.overflow = o ? 'hidden' : ''; });
+    mb.addEventListener('click', () => { mob.style.top = Math.max(0, header.getBoundingClientRect().bottom) + 'px'; const o = mob.classList.toggle('open'); mb.setAttribute('aria-expanded', o); mb.innerHTML = o ? I.close : I.menu; document.body.style.overflow = o ? 'hidden' : ''; });
   }
   const footer = $('#site-footer');
   if (footer) {

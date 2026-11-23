@@ -51,7 +51,7 @@ Gravità: **Alta** = blocca o fa perdere clienti · **Media** = rallenta o confo
 | Prenotazione | Continua | Indietro |
 | Promozioni | Scegli l’auto in offerta | Copia codice |
 
-## Linee guida visive (Apple + Tesla + Revel)
+## Linee guida visive (v4, sostituite dalla palette Mercedes in v5)
 
 - **Apple**: fondo bianco e grigio #F5F5F7, titoli centrati e grandi, prodotto scontornato al centro, due pulsanti a pillola (pieno + contorno).
 - **Tesla**: foto a tutto schermo dell’auto in ambiente reale, titolo centrato in alto, due pulsanti affiancati, barra d’ordine fissa.
@@ -88,3 +88,21 @@ Gravità: **Alta** = blocca o fa perdere clienti · **Media** = rallenta o confo
 | 30 | Inclusi | Otto riquadri con icone, aspetto da modello pronto | Stesso stile a linee della sezione "Tutto online" |
 | 31 | Galleria | Miniature tagliate a destra (5 non entravano) | Miniature a larghezza uguale, sempre tutte visibili |
 | 32 | Telefono | Il pulsante WhatsApp copriva "Noleggia" nelle card | Si nasconde mentre scorri verso il basso e torna quando risali |
+
+## v5 — palette Mercedes
+
+Richiesta del cliente: i colori Mercedes al posto di quelli Apple. Valori letti da mercedes-benz.it (novembre 2026).
+
+| Elemento | Prima (Apple) | Ora (Mercedes) |
+|---|---|---|
+| Pulsante principale | Blu #1F57D6 | Blu #0078D6, scuro al passaggio #006ABC |
+| Pulsante secondario | Contorno blu | Contorno argento #9F9F9F, testo #333 |
+| Testo | #1D1D1F | #333333, titoli in nero |
+| Grigi | #F5F5F7, #E8E8ED | #F4F4F4, #E8E8E8, argento #9F9F9F |
+| Header, hero, footer | Chiari, vetro sfocato | Neri |
+| Titoli | Inter seminegretto | Serif sottile (Source Serif 4, il libero più vicino a MB Corpo Title) |
+| Angoli | 14–28 px | 4–8 px; pulsanti a pillola come Mercedes |
+| Rosso | Solo promozioni | Invariato |
+
+Il logo LocaFit sull'header nero usa la freccia bianca al posto del blu notte.
+Corretto anche il menu su telefono: la prima voce finiva sotto l'header quando la barra promo era visibile.
