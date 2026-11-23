@@ -207,9 +207,17 @@
   ];
   LF.renderGrid = function (el, list, tipo, opt = {}) {
     if (!list.length) { el.innerHTML = '<div class="empty"><b>Nessuna auto con questi filtri.</b><br>Prova a cambiare sede o categoria, oppure scrivici: la troviamo noi.</div>'; return; }
-    const html = list.map((a) => LF.card(a, tipo));
-    if (opt.tiles) { [3, 11, 19].forEach((p, t) => { if (html.length > p && tiles[t]) { const x = tiles[t]; html.splice(p, 0, `<div class="tile-photo"><img src="${photo(x.k)}" alt="" loading="lazy"><span class="eyebrow">${x.e}</span><h3>${x.t}</h3><p>${x.d}</p><a class="btn btn-light btn-sm" href="${x.href}">${x.l}</a></div>`); } }); }
-    el.innerHTML = html.join('');
+    const cards = (l, withTiles) => {
+      const html = l.map((a) => LF.card(a, tipo));
+      if (withTiles) { [3, 11, 19].forEach((p, t) => { if (html.length > p && tiles[t]) { const x = tiles[t]; html.splice(p, 0, `<div class="tile-photo"><img src="${photo(x.k)}" alt="" loading="lazy"><span class="eyebrow">${x.e}</span><h3>${x.t}</h3><p>${x.d}</p><a class="btn btn-light btn-sm" href="${x.href}">${x.l}</a></div>`); } }); }
+      return html.join('');
+    };
+    if (opt.groups) {
+      const gs = opt.groups.filter((g) => g[1].length);
+      el.innerHTML = gs.map(([t, l], i) => `${gs.length > 1 ? `<h2 class="grid-h${i ? '' : ' first'}">${t}<span>${l.length}</span></h2>` : ''}${cards(l, i === 0 && opt.tiles)}`).join('');
+      return;
+    }
+    el.innerHTML = cards(list, opt.tiles);
   };
   LF.segDurata = function (el, current, onChange) {
     el.innerHTML = Object.entries(LF.durate).map(([k, v]) => `<button type="button" data-v="${k}" class="${k === current ? 'on' : ''}" aria-pressed="${k === current}">${v.breve}</button>`).join('');
@@ -373,8 +381,10 @@
       const st = { tipo: LF.durata, cat: q.get('cat') || '', sede: q.get('sede') || '', pronta: q.get('pronta') === '1', promo: q.get('promo') === '1', d3: false, ord: 'prezzo', alim: '', cambio: '', max: 0 };
       LF.segDurata($('#fleet-seg'), st.tipo, (t) => { st.tipo = t; store.set('lf-durata', t); setRange(); draw(); });
       const chips = $('#fleet-chips');
-      chips.innerHTML = [['', 'Tutte', 'car', LF.auto.length], ...LF.categorie.map((c) => [c.id, c.nome, c.icon, LF.auto.filter((a) => a.categoria === c.id).length])].map(([v, t, ic, n]) => `<button class="chip ${v === st.cat ? 'on' : ''}" data-v="${v}">${I[ic]}${t}<span class="n">${n}</span></button>`).join('');
-      chips.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; st.cat = b.dataset.v; $$('.chip', chips).forEach((c) => c.classList.toggle('on', c === b)); draw(); });
+      chips.className = 'catbar';
+      chips.innerHTML = `<button class="cb ${st.cat ? '' : 'on'}" data-v="" aria-pressed="${!st.cat}"><span class="cb-img cb-all">${LF.auto.length}</span><b>Tutti</b></button>` + catInfo().map((c) => `<button class="cb ${c.id === st.cat ? 'on' : ''}" data-v="${c.id}" aria-pressed="${c.id === st.cat}"><span class="cb-img"><img src="assets/img/car/${c.img}-sm.webp" alt="" loading="lazy"></span><b>${c.nome}</b><small>${c.n}</small></button>`).join('');
+      chips.addEventListener('click', (e) => { const b = e.target.closest('.cb'); if (!b) return; st.cat = b.dataset.v; $$('.cb', chips).forEach((c) => { c.classList.toggle('on', c === b); c.setAttribute('aria-pressed', c === b); }); draw(); scrollTo({ top: Math.min(scrollY, $('.toolbar').offsetTop - 60), behavior: 'smooth' }); });
+      { const on = $('.cb.on', chips); if (on && on.offsetLeft > chips.clientWidth - 120) chips.scrollLeft = on.offsetLeft - 24; }
       const opts = (el, key, values) => {
         el.innerHTML = values.map(([v, t]) => `<div class="opt ${st[key] === v ? 'on' : ''}" data-v="${v}" role="button" tabindex="0">${t}<span class="n">${v ? LF.auto.filter((a) => (key === 'sede' ? a.sedi.includes(v) : a[key] === v)).length : LF.auto.length}</span></div>`).join('');
         el.addEventListener('click', (e) => { const o = e.target.closest('.opt'); if (!o) return; st[key] = o.dataset.v; $$('.opt', el).forEach((x) => x.classList.toggle('on', x === o)); draw(); });
@@ -394,6 +404,12 @@
       const closeSheet = () => { side.classList.remove('sheet'); if (bg) bg.remove(); document.body.style.overflow = ''; };
       $('#filter-open').addEventListener('click', openSheet);
       $$('[data-sheet-close]').forEach((b) => b.addEventListener('click', closeSheet));
+      $('#f-reset').addEventListener('click', () => {
+        Object.assign(st, { sede: '', pronta: false, promo: false, d3: false, alim: '', cambio: '' });
+        ['#fleet-pronta', '#fleet-promo', '#fleet-3d'].forEach((s) => { $(s).checked = false; });
+        $$('.fleet-side .opts').forEach((o) => $$('.opt', o).forEach((x, i) => x.classList.toggle('on', i === 0)));
+        setRange(); draw();
+      });
       function draw() {
         const l = LF.auto.filter((a) => (!st.cat || a.categoria === st.cat) && (!st.sede || a.sedi.includes(st.sede)) && (!st.pronta || a.consegna === 0) && (!st.promo || a.promo) && (!st.d3 || LF.modelli3d[a.id]) && (!st.alim || a.alim === st.alim) && (!st.cambio || a.cambio === st.cambio) && (!st.max || LF.prezzo(a, st.tipo).unit <= st.max));
         const P = (a) => LF.prezzo(a, st.tipo).unit;
@@ -404,7 +420,9 @@
         const active = ['sede', 'alim', 'cambio', 'pronta', 'promo', 'd3', 'max'].filter((k) => st[k]).length;
         $('#filter-open').innerHTML = `${I.filter}Filtri${active ? ` (${active})` : ''}`;
         $('#fleet-note').textContent = st.tipo === 'lungo' ? 'Canoni IVA inclusa · 36 mesi · 15.000 km/anno · anticipo zero' : st.tipo === 'medio' ? 'Canoni IVA inclusa · 2.500 km/mese · tutto incluso' : 'Tariffe IVA inclusa · 250 km/giorno · tutto incluso';
-        LF.renderGrid($('#fleet-grid'), l, st.tipo, { tiles: !st.cat && !st.sede && !st.pronta && !st.promo && !st.d3 && !st.alim && !st.cambio && !st.max });
+        const grp = [['Auto', l.filter((a) => !['furgone', 'moto'].includes(a.categoria))], ['Furgoni', l.filter((a) => a.categoria === 'furgone')], ['Moto e scooter', l.filter((a) => a.categoria === 'moto')]];
+        LF.renderGrid($('#fleet-grid'), l, st.tipo, { tiles: !st.cat && !active, groups: st.cat ? null : grp });
+        $('#f-reset').hidden = !active;
         const u = new URLSearchParams({ tipo: st.tipo }); if (st.cat) u.set('cat', st.cat); if (st.sede) u.set('sede', st.sede); if (st.pronta) u.set('pronta', '1'); if (st.promo) u.set('promo', '1');
         history.replaceState(null, '', '?' + u);
       }

@@ -138,3 +138,13 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
   - Nella scheda compare la patente richiesta al posto dello 0–100.
   - Nella prenotazione, caschi e bauletto prendono il posto di seggiolino e kit neve.
 - **Testi della Flotta:** titolo e conteggio seguono la categoria scelta ("Scegli la tua moto", "4 moto e scooter").
+
+## v5.4 — Flotta
+
+| # | Difetto | Correzione |
+|---|---|---|
+| 45 | Con "Tutte" e ordine per prezzo, Vespa e scooter in testa prima delle auto | Risultati divisi in gruppi con titolo: Auto, Furgoni, Moto e scooter |
+| 46 | Nove pillole con icone minuscole, "Moto" tagliata a destra | Barra categorie con la foto di ogni tipo, linea sotto la scelta attiva, sfumatura sul bordo per far capire che scorre |
+| 47 | Filtri come liste grigie senza struttura | Pannello bianco fisso con sezioni separate, righe a pallino, cursore sottile e "Azzera" quando un filtro è attivo |
+| 48 | Testo bianco del riquadro "Firmi dal telefono" su foto chiara | Velatura più scura e titolo in serif |
+| 49 | Numero di risultati piccolo | Conteggio grande in serif ("49 veicoli") |
