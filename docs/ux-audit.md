@@ -170,3 +170,9 @@ Richiesta del cliente: al posto della riga di voci in alto, un menu vero da cui 
 | # | Difetto | Correzione |
 |---|---|---|
 | 56 | Hero della home su nero pieno, piatto | Sfondo animato a pennellate (stessa tecnica dell'hero di Aedify) in nero, grafite, argento e un filo di blu. Velature per leggere il testo e sfumare nel nero del cercatore. Foto notturna sotto se WebGL manca; un solo fotogramma con "riduci movimento"; pausa quando non è visibile. File `assets/js/hero-bg.js`, caricato solo in home |
+
+## v5.8 — Logo
+
+| # | Difetto | Correzione |
+|---|---|---|
+| 57 | Marchio provvisorio, troppo vicino al logo di Fausto; scritta in sans generica | Tre marchi nuovi disegnati da zero nello stile di Fausto (pennello, blu, rosso, punto verde, movimento in avanti), a confronto in `proposte-logo.html` (non collegata, noindex). Sul sito la proposta 1, "Freccia a due tratti": scritta LocaFit in serif e RENT spaziato. Nuovi favicon e icona app (`assets/img/logo/`) |
