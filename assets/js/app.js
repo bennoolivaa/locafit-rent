@@ -364,18 +364,35 @@
   const init = {
     home() {
       const list = ['porsche-911', 'mercedes-glc', 'bmw-x5', 'tesla-model-y', 'audi-q5', 'mercedes-a', 'cupra-formentor', 'fiat-panda'].map(byId).filter(Boolean);
+      // altezza reale in metri: le auto restano in scala tra loro (la più alta riempie il riquadro)
+      const alt = { 'porsche-911': 1.30, 'mercedes-glc': 1.64, 'bmw-x5': 1.75, 'tesla-model-y': 1.62, 'audi-q5': 1.66, 'mercedes-a': 1.44, 'cupra-formentor': 1.51, 'fiat-panda': 1.57 };
+      const hMax = Math.max(...list.map((a) => alt[a.id] || 1.5));
       let i = 0;
       const car = $('#hero-car');
+      car.innerHTML = `<button class="hero-arrow prev" type="button" aria-label="Auto precedente">‹</button><div class="hero-track" tabindex="0" aria-label="Modelli: scorri per cambiare auto">${list.map((a, k) => `<div class="hero-slide" style="--k:${((alt[a.id] || 1.5) / hMax).toFixed(3)}"><img ${k ? 'data-src' : 'src'}="${img(a)}" alt="${a.marca} ${a.modello}" draggable="false" decoding="async"></div>`).join('')}</div><button class="hero-arrow next" type="button" aria-label="Auto successiva">›</button>`;
+      const track = $('.hero-track', car);
+      // la prima auto arriva subito, le altre appena dopo (così scorrendo non c'è mai un vuoto)
+      const rest = () => $$('img[data-src]', track).forEach((im) => { im.src = im.dataset.src; im.removeAttribute('data-src'); });
+      const first = $('img', track); if (first.complete) rest(); else { first.addEventListener('load', rest, { once: true }); first.addEventListener('error', rest, { once: true }); }
       $('#hero-models').innerHTML = list.map((a, k) => `<button class="hero-model ${k === 0 ? 'on' : ''}" data-k="${k}" type="button" aria-label="${a.marca} ${a.modello}"><img src="${img(a, '', '-sm')}" alt="">${a.modello}</button>`).join('');
       const draw = () => {
         const a = list[i]; const p = LF.prezzo(a, 'lungo');
         $('#hero-name').textContent = `${a.marca} ${a.modello}`;
         $('#hero-meta').innerHTML = `<span>da <b>€${eur(p.unit)}/mese</b>${p.pct ? ` <s>€${eur(p.pieno)}</s>` : ''}</span><span class="sep"></span><span>${LF.disp(a)}</span><span class="sep"></span><span><a class="link" href="auto.html?id=${a.id}">Scopri ${a.modello}</a></span>`;
         $$('.hero-model').forEach((t, k) => t.classList.toggle('on', k === i));
+        $('.prev', car).disabled = i === 0; $('.next', car).disabled = i === list.length - 1;
       };
-      const show = (n) => { i = n; car.classList.add('swap'); setTimeout(() => { car.innerHTML = LF.carShot(list[i]); car.classList.remove('swap'); draw(); }, 180); };
+      const show = (n) => { n = Math.max(0, Math.min(list.length - 1, n)); track.scrollTo({ left: n * track.clientWidth, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+      track.addEventListener('scroll', () => { const n = Math.round(track.scrollLeft / track.clientWidth); if (n !== i && list[n]) { i = n; draw(); } }, { passive: true });
+      addEventListener('resize', () => { track.scrollLeft = i * track.clientWidth; });
+      // col mouse: trascina l'auto a destra o a sinistra
+      let x0 = null;
+      track.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse' && e.button === 0) { x0 = e.clientX; e.preventDefault(); } });
+      addEventListener('pointerup', (e) => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1)); });
+      $('.prev', car).addEventListener('click', () => show(i - 1));
+      $('.next', car).addEventListener('click', () => show(i + 1));
       $('#hero-models').addEventListener('click', (e) => { const b = e.target.closest('.hero-model'); if (b) show(+b.dataset.k); });
-      car.innerHTML = LF.carShot(list[0]); draw();
+      draw();
       // ricerca
       let fTipo = 'lungo';
       LF.segDurata($('#finder-seg'), fTipo, (t) => { fTipo = t; });
