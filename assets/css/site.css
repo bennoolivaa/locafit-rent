@@ -1303,3 +1303,16 @@ h1, h2, h3, .big-quote { text-wrap: balance; }
 @media (min-width: 735px) and (max-height: 900px) {
   .hero-car { width: clamp(420px, calc((100svh - 400px) * 2 + 40px), min(940px, 100%)); }
 }
+
+/* Mobile: niente scroll orizzontale.
+   L'header su schermi ≤ 390px superava la larghezza del viewport; inoltre su iOS
+   overflow-x:hidden solo sul body non blocca lo swipe laterale. "clip" su html e body
+   taglia l'eccedenza senza creare un contenitore di scroll (lo sticky header resta ok). */
+html, body { overflow-x: hidden; }
+@supports (overflow: clip) { html, body { overflow-x: clip; } }
+@media (max-width: 480px) {
+  .site-header .wrap-wide { gap: 8px; padding: 0 14px; }
+  .header-cta { gap: 0; }
+  .header-cta .btn { margin-left: 4px; }
+  .menu-btn { width: 36px; flex: none; }
+}
