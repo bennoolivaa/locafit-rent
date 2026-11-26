@@ -58,50 +58,82 @@
   const yy = T.slice(0, 4);
   const fmtP = (d) => (d.slice(0, 4) === yy ? fmtD(d) : fmtD(d, { day: 'numeric', month: 'short', year: '2-digit' }));
   const periodo = (c) => `${fmtP(c.start)} → ${fmtP(c.end)}`;
-  const durata = (c) => (c.tipo === 'breve' ? `${c.len} ${c.len === 1 ? 'giorno' : 'giorni'}` : `${c.len} mesi`);
+  const durata = (c) => (c.tipo === 'breve' ? `${c.len} ${c.len === 1 ? 'giorno' : 'giorni'}` : `${c.len} ${c.len === 1 ? 'mese' : 'mesi'}`);
   const S = () => G.S;
 
   /* ---------- Toast, drawer, modali ---------- */
-  G.toast = (m) => { let t = $('.toast'); if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); } t.innerHTML = I.check + esc(m); t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2600); };
+  G.toast = (m, undo) => {
+    let t = $('.toast'); if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.innerHTML = I.check + `<span>${esc(m)}</span>` + (undo ? '<button type="button">Annulla</button>' : '');
+    t.classList.toggle('has-act', !!undo);
+    if (undo) $('button', t).onclick = () => { t.classList.remove('show'); undo(); };
+    t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), undo ? 6000 : 2600);
+  };
   let scrim, drawer, modal, current = null, lastFocus = null;
+  /* Pannelli aperti: il tasto Indietro del telefono li chiude invece di uscire dalla pagina */
+  let dOpen = false, mOpen = false, sOpen = false, pushed = false, ignorePop = 0;
+  function syncHistory() {
+    const o = dOpen || mOpen || sOpen;
+    if (o && !pushed) { history.pushState({ lfo: 1 }, ''); pushed = true; } else if (!o && pushed) { pushed = false; ignorePop++; history.back(); }
+  }
+  addEventListener('popstate', () => {
+    if (ignorePop) { ignorePop--; return; }
+    if (!pushed) return;
+    pushed = false;
+    if (mOpen) closeModal(); else if (dOpen) closeDrawer(); else if (sOpen) closeSide();
+  });
+  function closeSide() { const sd = $('.side'); if (!sd || !sOpen) return; sOpen = false; sd.classList.remove('open'); hideScrim(); syncHistory(); }
+  /* Chiude tutto senza toccare la cronologia (per la navigazione tra pagine) */
+  function closeAllQuiet() { pushed = false; closeModal(); closeDrawer(); closeSide(); }
   function ensureLayers() {
     if (scrim) return;
     scrim = document.createElement('div'); scrim.className = 'scrim'; scrim.hidden = true;
     drawer = document.createElement('aside'); drawer.className = 'drawer'; drawer.setAttribute('role', 'dialog'); drawer.setAttribute('aria-modal', 'true'); drawer.hidden = true;
     modal = document.createElement('div'); modal.className = 'modal'; modal.hidden = true;
     document.body.append(scrim, drawer, modal);
-    scrim.addEventListener('click', () => { if (!modal.hidden) closeModal(); else { closeDrawer(); $('.side') && $('.side').classList.remove('open'); } });
+    scrim.addEventListener('click', () => { if (mOpen) closeModal(); else if (dOpen) closeDrawer(); else closeSide(); });
   }
   const showScrim = () => { scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add('open')); };
   const hideScrim = () => { if (!drawer.hidden || !modal.hidden || ($('.side') && $('.side').classList.contains('open'))) return; scrim.classList.remove('open'); setTimeout(() => { if (!scrim.classList.contains('open')) scrim.hidden = true; }, 200); };
   function openDrawer(html) {
     ensureLayers(); if (drawer.hidden) lastFocus = document.activeElement;
+    dOpen = true; syncHistory();
     const keep = !drawer.hidden && $('.dr-b', drawer) ? $('.dr-b', drawer).scrollTop : 0;
     drawer.innerHTML = html; drawer.hidden = false; showScrim();
     if (keep) $('.dr-b', drawer).scrollTop = keep;
     requestAnimationFrame(() => { drawer.classList.add('open'); const f = $('.x', drawer); f && f.focus({ preventScroll: true }); });
   }
-  function closeDrawer() { if (!drawer || drawer.hidden) return; drawer.classList.remove('open'); current = null; setTimeout(() => { if (!drawer.classList.contains('open')) { drawer.hidden = true; hideScrim(); } }, 250); lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); }
+  function closeDrawer() { if (!drawer || !dOpen) return; dOpen = false; syncHistory(); drawer.classList.remove('open'); current = null; setTimeout(() => { if (!drawer.classList.contains('open')) { drawer.hidden = true; hideScrim(); } }, 250); lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); }
   const drH = (kick, title, extra = '') => `<div class="dr-h"><div><small>${kick}</small><h2>${title}</h2>${extra}</div><button class="x" data-act="closeDrawer" aria-label="Chiudi">${I.x}</button></div>`;
   function openModal(title, body, onSubmit, opt = {}) {
     ensureLayers();
     modal.innerHTML = `<form novalidate>${drH(opt.kick || 'LOCAFIT Rent', esc(title))}<div class="dr-b">${body}</div><div class="dr-f"><button type="submit" class="btn ${opt.danger ? 'btn-danger' : 'btn-primary'}">${esc(opt.ok || 'Salva')}</button><button type="button" class="btn btn-line" data-act="closeModal">Annulla</button></div></form>`;
     $('.x', modal).dataset.act = 'closeModal';
-    modal.hidden = false; showScrim(); requestAnimationFrame(() => modal.classList.add('open'));
+    modal.hidden = false; mOpen = true; syncHistory(); showScrim(); requestAnimationFrame(() => modal.classList.add('open'));
     const f = $('form', modal);
     setTimeout(() => { const el = $('input:not([type=hidden]):not([type=radio]):not([type=checkbox]), select, textarea', f); el && el.focus(); }, 60);
-    f.addEventListener('submit', (e) => { e.preventDefault(); const fd = Object.fromEntries(new FormData(f)); const r = onSubmit(fd, f); if (r !== false) closeModal(); });
+    f.addEventListener('submit', (e) => {
+      e.preventDefault(); const fd = Object.fromEntries(new FormData(f));
+      snap = JSON.stringify(G.S);
+      // chiudo prima la finestra (così un pannello aperto dal salvataggio resta), poi salvo
+      const r = onSubmit(fd, f);
+      if (r === false) { snap = null; return; }
+      if (mOpen && modal.contains(f)) closeModal();
+    });
     opt.bind && opt.bind(f);
   }
-  function closeModal() { if (!modal || modal.hidden) return; modal.classList.remove('open'); setTimeout(() => { modal.hidden = true; modal.innerHTML = ''; hideScrim(); }, 200); }
+  function closeModal() { if (!modal || !mOpen) return; mOpen = false; syncHistory(); modal.classList.remove('open'); setTimeout(() => { if (mOpen) return; modal.hidden = true; modal.innerHTML = ''; hideScrim(); }, 200); }
   G.confirm = (title, text, ok, cb, danger = true) => openModal(title, `<p>${text}</p>`, () => { cb(); }, { ok, danger });
   const fail = (f, msg) => { let n = $('.note.bad', f); if (!n) { n = document.createElement('div'); n.className = 'note bad'; $('.dr-b', f).prepend(n); } n.textContent = msg; $('.dr-b', f).scrollTop = 0; return false; };
 
   /* Dopo ogni modifica: salva, ridisegna la vista e il pannello aperto */
+  let snap = null;
+  const UNDOABLE = new Set(['conferma', 'incassa', 'sollecita', 'rinnova', 'docsOk', 'leadStato', 'chiudiInt', 'chiudiMulta', 'sinStato', 'addebitaFranchigia', 'rinotifica', 'quickConferma']);
+  function reopen() { if (!current || !dOpen) return; const c = current; current = null; OPEN[c.t](c.id, true); if (!current) closeDrawer(); }
   function refresh(msg) {
-    G.save(); renderNav(); renderView(true);
-    if (current && drawer && !drawer.hidden) OPEN[current.t](current.id, true);
-    if (msg) G.toast(msg);
+    const prev = snap; snap = null;
+    G.save(); renderNav(); renderView(true); reopen();
+    if (msg) G.toast(msg, prev ? () => { G.S = JSON.parse(prev); G.save(); renderNav(); renderView(true); reopen(); G.toast('Modifica annullata'); } : null);
   }
 
   /* ---------- Navigazione ---------- */
@@ -135,16 +167,19 @@
       <div class="main">
         <header class="top">
           <button class="burger" data-act="burger" aria-label="Apri menu">${I.menu}</button>
+          <b class="top-title" id="ttl"></b>
           <div class="search search-top">${I.search}<input id="gsearch" type="search" placeholder="Cerca cliente, targa, contratto…" autocomplete="off" aria-label="Cerca nel gestionale"><div class="search-res" id="gres" hidden></div></div>
           <div class="top-r">
             <button class="icon-btn" data-act="mobileSearch" aria-label="Cerca" style="display:none" id="msearch">${I.search}</button>
-            <select class="sede-sel" id="sede" aria-label="Sede">${['', ...LF.sedi.map((s) => s.id)].map((s) => `<option value="${s}" ${S().sede === s ? 'selected' : ''}>${s ? esc(G.sedeNome(s)) : 'Tutte le sedi'}</option>`).join('')}</select>
+            <select class="sede-sel" id="sede" aria-label="Sede">${['', ...LF.sedi.map((s) => s.id)].map((s) => `<option value="${s}" ${S().sede === s ? 'selected' : ''}>${s ? esc(G.sedeNome(s)) : matchMedia('(max-width: 760px)').matches ? 'Tutte' : 'Tutte le sedi'}</option>`).join('')}</select>
             <button class="icon-btn" data-go="dashboard" aria-label="Cose da fare" id="bell">${I.bell}</button>
             <a class="btn btn-line" href="index.html" target="_blank" rel="noopener" title="Apri il sito pubblico" id="tosite">Sito</a>
           </div>
         </header>
         <main class="view" id="view"></main>
       </div>
+      <nav class="bnav" id="bnav" aria-label="Navigazione rapida"></nav>
+      <button class="fab" id="fab" data-act="fab" aria-label="Nuovo" hidden>${I.plus}</button>
     </div>`;
     const mq = matchMedia('(max-width: 760px)');
     const ms = () => { $('#msearch').style.display = mq.matches ? 'inline-grid' : 'none'; $('#tosite').style.display = mq.matches ? 'none' : ''; };
@@ -160,6 +195,9 @@
       const n = x[3] ? x[3]() : 0;
       return `<a href="#${x[0]}" class="${r === x[0] ? 'on' : ''}" ${r === x[0] ? 'aria-current="page"' : ''}>${x[2]}<span>${x[1]}</span>${n ? `<span class="cnt">${n}</span>` : ''}</a>`;
     }).join('');
+    const BN = [['dashboard', 'Home', I.dash], ['contratti', 'Contratti', I.doc], ['planning', 'Planning', I.plan], ['consegne', 'Consegne', I.truck]];
+    $('#bnav').innerHTML = BN.map(([k, l, ic]) => { const x = ROUTES.find((y) => y[0] === k); const n = x[3] ? x[3]() : 0; return `<a href="#${k}" class="${r === k ? 'on' : ''}" ${r === k ? 'aria-current="page"' : ''}>${ic}<span>${l}</span>${n ? `<i class="cnt">${n}</i>` : ''}</a>`; }).join('') +
+      `<button data-act="burger" class="${BN.some((b) => b[0] === r) ? '' : 'on'}">${I.menu}<span>Altro</span></button>`;
     const tot = contratti().filter((c) => c.stato === 'richiesta').length + jobs(T, T).filter((j) => !j.done).length + S().richieste.filter((r) => r.stato === 'nuova' && G.inSede(r.sede)).length;
     $('#bell').title = tot ? `${tot} cose da gestire oggi` : 'Niente di urgente'; $('#bell').innerHTML = I.bell + (tot ? `<span class="dot">${tot > 99 ? '99+' : tot}</span>` : '');
   }
@@ -232,7 +270,8 @@
   }
 
   /* ---------- Liste generiche (ricerca, filtri, schede, ordinamento, CSV) ---------- */
-  const UI = {}; const LISTS = {};
+  const UI = (() => { try { return JSON.parse(sessionStorage.getItem('lf-gest-ui')) || {}; } catch (e) { return {}; } })(); const LISTS = {};
+  const saveUI = () => { try { sessionStorage.setItem('lf-gest-ui', JSON.stringify(UI)); } catch (e) { /* ignora */ } };
   function list(id, cfg) {
     LISTS[id] = cfg;
     const st = UI[id] = UI[id] || { tab: cfg.tabs ? cfg.tabs[0][0] : '', q: '', f: {}, sort: cfg.sort || null, lim: 60 };
@@ -241,6 +280,7 @@
       ${cfg.tabs ? `<div class="seg" role="tablist" data-tabs="${id}"></div>` : ''}
       <div class="search">${I.search}<input type="search" data-q="${id}" value="${esc(st.q)}" placeholder="${esc(cfg.ph || 'Cerca…')}" aria-label="Cerca"></div>
       ${(cfg.filters || []).map((f) => `<select class="sel" data-f="${id}:${f.k}" aria-label="${esc(f.l)}"><option value="">${esc(f.l)}</option>${f.o.map(([v, l]) => `<option value="${esc(v)}" ${st.f[f.k] === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`).join('')}
+      <button class="btn btn-ghost btn-sm" data-act="clearF" data-id="${id}" id="clr-${id}" hidden>Azzera filtri</button>
       <span class="sp"></span>
       <button class="btn btn-line btn-sm" data-act="csv" data-id="${id}">${I.dl}Esporta CSV</button>
     </div><div id="lst-${id}"></div>`;
@@ -262,9 +302,12 @@
     if (st.sort) { const col = cfg.cols[st.sort.i]; if (col && col.s) r = [...r].sort((a, b) => { const x = col.s(a), y = col.s(b); return (x > y ? 1 : x < y ? -1 : 0) * st.sort.d; }); }
     const shown = r.slice(0, st.lim);
     box.innerHTML = `<div class="tbl-card"><div class="tbl-scroll"><table class="tbl"><thead><tr>${cfg.cols.map((c, i) => `<th class="${c.r ? 'r' : ''}" ${st.sort && st.sort.i === i ? `aria-sort="${st.sort.d > 0 ? 'ascending' : 'descending'}"` : ''}>${c.s ? `<button data-sort="${id}:${i}">${esc(c.l)}<span class="ar">${st.sort && st.sort.i === i ? (st.sort.d > 0 ? '▲' : '▼') : ''}</span></button>` : esc(c.l)}</th>`).join('')}</tr></thead>
-      <tbody>${shown.map((x) => `<tr data-open="${cfg.open(x)}" tabindex="0">${cfg.cols.map((c) => `<td data-l="${esc(c.l)}" class="${[c.r ? 'r' : '', c.main ? 'main' : '', c.hm ? 'hide-m' : ''].join(' ')}">${c.h(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+      <tbody>${shown.map((x) => `<tr data-open="${cfg.open(x)}" tabindex="0">${cfg.cols.map((c) => `<td data-l="${esc(c.l)}" class="${[c.r ? 'r' : '', c.main ? 'main' : '', c.hm ? 'hide-m' : '', c.st ? 'st' : '', c.act ? 'act' : ''].join(' ')}">${c.h(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
       ${shown.length ? '' : `<div class="empty">${esc(cfg.empty || 'Niente da mostrare con questi filtri.')}</div>`}
       <div class="tbl-foot"><span>${r.length} risultati${cfg.sum ? ' · ' + cfg.sum(r) : ''}</span>${r.length > st.lim ? `<button class="btn btn-ghost btn-sm" data-act="more" data-id="${id}">Mostra altri ${Math.min(60, r.length - st.lim)}</button>` : ''}</div></div>`;
+    const clr = $('#clr-' + id); if (clr) clr.hidden = !(st.q || Object.values(st.f).some(Boolean));
+    const on = $(`[data-tabs="${id}"] .on`); if (on) { const sg = on.parentElement; if (on.offsetLeft < sg.scrollLeft || on.offsetLeft + on.offsetWidth > sg.scrollLeft + sg.clientWidth) sg.scrollLeft = on.offsetLeft - 8; }
+    saveUI();
   }
   function csv(id) {
     const cfg = LISTS[id]; const r = rowsFor(id);
@@ -326,21 +369,25 @@
       <button class="kpi" data-go="richieste"><small>Da gestire</small><b>${daGest}</b><span>richieste e prenotazioni</span></button>
     </div>
     <div class="dash"><div>
-      <section class="card"><div class="card-h"><h2>Ricavi ultimi 12 mesi</h2><span class="muted small">${sedeLbl()}</span></div><div class="card-b">${chart}</div></section>
-      <section class="card"><div class="card-h"><h2>Consegne e ritiri · oggi e domani</h2><button class="btn btn-ghost btn-sm" data-go="consegne">Apri agenda</button></div><div class="card-b"><div class="list">${jt.length ? jt.slice(0, 8).map((j) => `<button class="li" data-open="c:${j.c.id}"><span class="li-ico ${j.k === 'consegna' ? 'info' : 'warn'}">${j.k === 'consegna' ? I.key : I.truck}</span><span class="li-m"><span class="li-t">${j.k === 'consegna' ? 'Consegna' : 'Ritiro'} · ${esc(G.vehNome(j.v))} ${j.v.targa ? '· ' + esc(j.v.targa) : ''}</span><span class="li-s">${esc(G.cliNome(G.cli(j.c.cli)))} · ${j.c.modo === 'domicilio' ? esc(j.c.ind || 'a domicilio') : 'in sede a ' + esc(G.sedeNome(j.v.sede))}</span></span><span class="li-r"><b>${j.ora}</b>${j.done ? 'fatto' : j.late ? '<span class="pill bad">In ritardo</span>' : j.d === T ? 'oggi' : 'domani'}</span></button>`).join('') : '<div class="empty">Nessuna consegna o ritiro in programma.</div>'}</div></div></section>
-      <section class="card"><div class="card-h"><h2>Ultime attività</h2></div><div class="card-b"><div class="list">${S().log.slice(0, 6).map((l) => `<div class="li"><span class="av lt">${ini(l.u)}</span><span class="li-m"><span class="li-t" style="font-weight:400"><b style="font-weight:600">${esc(l.u)}</b> ${esc(l.m)}</span></span><span class="li-r">${new Date(l.t).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span></div>`).join('')}</div></div></section>
+      <section class="card o3"><div class="card-h"><h2>Ricavi ultimi 12 mesi</h2><span class="muted small">${sedeLbl()}</span></div><div class="card-b">${chart}</div></section>
+      <section class="card o2"><div class="card-h"><h2>Consegne e ritiri · oggi e domani</h2><button class="btn btn-ghost btn-sm" data-go="consegne">Apri agenda</button></div><div class="card-b"><div class="list">${jt.length ? jt.slice(0, 8).map((j) => `<button class="li" data-open="c:${j.c.id}"><span class="li-ico ${j.k === 'consegna' ? 'info' : 'warn'}">${j.k === 'consegna' ? I.key : I.truck}</span><span class="li-m"><span class="li-t">${j.k === 'consegna' ? 'Consegna' : 'Ritiro'} · ${esc(G.vehNome(j.v))} ${j.v.targa ? '· ' + esc(j.v.targa) : ''}</span><span class="li-s">${esc(G.cliNome(G.cli(j.c.cli)))} · ${j.c.modo === 'domicilio' ? esc(j.c.ind || 'a domicilio') : 'in sede a ' + esc(G.sedeNome(j.v.sede))}</span></span><span class="li-r"><b>${j.ora}</b>${j.done ? 'fatto' : j.late ? '<span class="pill bad">In ritardo</span>' : j.d === T ? 'oggi' : 'domani'}</span></button>`).join('') : '<div class="empty">Nessuna consegna o ritiro in programma.</div>'}</div></div></section>
+      <section class="card o6"><div class="card-h"><h2>Ultime attività</h2></div><div class="card-b"><div class="list">${S().log.slice(0, 6).map((l) => `<div class="li"><span class="av lt">${ini(l.u)}</span><span class="li-m"><span class="li-t" style="font-weight:400"><b style="font-weight:600">${esc(l.u)}</b> ${esc(l.m)}</span></span><span class="li-r">${new Date(l.t).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span></div>`).join('')}</div></div></section>
     </div><div>
-      <section class="card"><div class="card-h"><h2>Da fare</h2></div><div class="card-b"><div class="list">${td.length ? td.map((t) => `<button class="li" data-go="${t.go}"><span class="li-ico ${t.cls}">${I[t.ico]}</span><span class="li-m"><span class="li-t">${esc(t.t)}</span><span class="li-s">${esc(t.s)}</span></span><span class="li-r">${I.chevR.replace('<svg', '<svg width="16" height="16"')}</span></button>`).join('') : '<div class="empty">Tutto in ordine.</div>'}</div></div></section>
-      <section class="card"><div class="card-h"><h2>Utilizzo per sede</h2></div><div class="card-b"><div class="hb">${sedi.map((x) => `<div class="hb-r" title="${x.n} noleggiati su ${x.t}"><span>${esc(x.s.citta)}</span><span class="tr"><i style="width:${x.p}%"></i></span><b>${x.p}%</b></div>`).join('')}</div><p class="muted small" style="margin-top:10px">Veicoli noleggiati sul totale della sede, oggi.</p></div></section>
-      <section class="card"><div class="card-h"><h2>Contratti in corso per formula</h2></div><div class="card-b"><div class="hb">${mix.map((m) => `<div class="hb-r" title="${eur(m.r)} al mese"><span>${G.FORMULE[m.t]}</span><span class="tr"><i style="width:${m.n / mixMax * 100}%"></i></span><b>${m.n}</b></div>`).join('')}</div><p class="muted small" style="margin-top:10px">Ricavo mensile ricorrente: <b style="color:var(--ink)">${eur(mix.reduce((s, m) => s + m.r, 0))}</b></p></div></section>
+      <section class="card o1"><div class="card-h"><h2>Da fare</h2></div><div class="card-b"><div class="list">${td.length ? td.map((t) => `<button class="li" data-go="${t.go}"><span class="li-ico ${t.cls}">${I[t.ico]}</span><span class="li-m"><span class="li-t">${esc(t.t)}</span><span class="li-s">${esc(t.s)}</span></span><span class="li-r">${I.chevR.replace('<svg', '<svg width="16" height="16"')}</span></button>`).join('') : '<div class="empty">Tutto in ordine.</div>'}</div></div></section>
+      <section class="card o4"><div class="card-h"><h2>Utilizzo per sede</h2></div><div class="card-b"><div class="hb">${sedi.map((x) => `<div class="hb-r" title="${x.n} noleggiati su ${x.t}"><span>${esc(x.s.citta)}</span><span class="tr"><i style="width:${x.p}%"></i></span><b>${x.p}%</b></div>`).join('')}</div><p class="muted small" style="margin-top:10px">Veicoli noleggiati sul totale della sede, oggi.</p></div></section>
+      <section class="card o5"><div class="card-h"><h2>Contratti in corso per formula</h2></div><div class="card-b"><div class="hb">${mix.map((m) => `<div class="hb-r" title="${eur(m.r)} al mese"><span>${G.FORMULE[m.t]}</span><span class="tr"><i style="width:${m.n / mixMax * 100}%"></i></span><b>${m.n}</b></div>`).join('')}</div><p class="muted small" style="margin-top:10px">Ricavo mensile ricorrente: <b style="color:var(--ink)">${eur(mix.reduce((s, m) => s + m.r, 0))}</b></p></div></section>
     </div></div>`;
   };
 
   /* ---------- Prenotazioni e contratti ---------- */
   V.contratti = (arg) => {
-    const tabs = [['tutti', 'Tutti', () => true], ['richiesta', 'Da confermare', (c) => c.stato === 'richiesta'], ['confermata', 'Confermate', (c) => c.stato === 'confermata'], ['attivo', 'In corso', (c) => c.stato === 'attivo'], ['chiuso', 'Chiusi', (c) => c.stato === 'chiuso'], ['annullato', 'Annullati', (c) => c.stato === 'annullato']];
+    const tabs = [['richiesta', 'Da confermare', (c) => c.stato === 'richiesta'], ['confermata', 'Confermate', (c) => c.stato === 'confermata'], ['attivo', 'In corso', (c) => c.stato === 'attivo'], ['chiuso', 'Chiusi', (c) => c.stato === 'chiuso'], ['annullato', 'Annullati', (c) => c.stato === 'annullato'], ['tutti', 'Tutti', () => true]];
+    const quick = (c) => (c.stato === 'richiesta' ? `<button class="btn btn-line btn-sm" data-act="quickConferma" data-id="${c.id}">${I.check}Conferma</button>`
+      : c.stato === 'confermata' && c.start <= T ? `<button class="btn btn-dark btn-sm" data-act="checkout" data-id="${c.id}">Consegna</button>`
+      : c.stato === 'attivo' && c.tipo !== 'lungo' && c.end <= T ? `<button class="btn btn-dark btn-sm" data-act="checkin" data-id="${c.id}">Ritiro</button>` : '');
+    const first = !UI.contratti && !arg ? (contratti().some((c) => c.stato === 'richiesta') ? 'richiesta' : 'attivo') : null;
     const html = head('Prenotazioni e contratti', 'Dalla richiesta alla riconsegna. Le prenotazioni fatte sul sito arrivano qui da confermare.', `<button class="btn btn-primary" data-act="newPren">${I.plus}Nuova prenotazione</button>`) + list('contratti', {
-      initTab: arg || null, tabs, ph: 'Cerca numero, cliente, targa…',
+      initTab: arg || first, tabs, ph: 'Cerca numero, cliente, targa…',
       rows: () => contratti().sort((a, b) => (b.nuovo ? 1 : 0) - (a.nuovo ? 1 : 0) || b.start.localeCompare(a.start)),
       text: (c) => { const v = G.veh(c.veh); return [c.num, G.cliNome(G.cli(c.cli)), v.targa, G.vehNome(v), c.canale].join(' '); },
       filters: [{ k: 'tipo', l: 'Tutte le formule', o: Object.entries(G.FORMULE), fn: (c, v) => c.tipo === v }, { k: 'canale', l: 'Tutti i canali', o: ['Sito', 'Telefono', 'WhatsApp', 'In sede'].map((x) => [x, x]), fn: (c, v) => c.canale === v }],
@@ -353,7 +400,8 @@
         { l: 'Periodo', h: (c) => `<span class="nowrap">${periodo(c)}</span>`, c: (c) => `${c.start} - ${c.end}`, s: (c) => c.start },
         { l: 'Canone', r: true, h: (c) => `<span class="num nowrap">${eur(c.unit)}${G.UNITA[c.tipo]}</span>`, c: (c) => c.unit, s: (c) => c.unit },
         { l: 'Sede', hm: true, h: (c) => esc(G.sedeNome(G.contrSede(c))) },
-        { l: 'Stato', h: (c) => pill('c', c.stato), c: (c) => P.c[c.stato][1], s: (c) => c.stato },
+        { l: 'Stato', st: true, h: (c) => pill('c', c.stato), c: (c) => P.c[c.stato][1], s: (c) => c.stato },
+        { l: '', act: true, r: true, h: quick, c: () => '' },
       ],
       sum: (r) => `valore ${eur(r.reduce((s, c) => s + c.tot, 0))}`,
     });
@@ -436,8 +484,8 @@
         { l: 'Veicolo', main: true, h: (v) => vehCell(v, esc(G.model(v.auto).versione)), c: (v) => `${G.vehNome(v)} ${G.model(v.auto).versione}`, s: (v) => G.vehNome(v) },
         { l: 'Targa', h: (v) => targa(v), c: (v) => v.targa, s: (v) => v.targa },
         { l: 'Sede', h: (v) => esc(G.sedeNome(v.sede)), s: (v) => v.sede },
-        { l: 'Km', r: true, h: (v) => `<span class="num">${v.arrivo ? '—' : num(v.km)}</span>`, c: (v) => v.km, s: (v) => v.km },
-        { l: 'Stato', h: (v) => pill('v', G.vehStato(v)), c: (v) => P.v[G.vehStato(v)][1], s: (v) => G.vehStato(v) },
+        { l: 'Km', r: true, hm: true, h: (v) => `<span class="num">${v.arrivo ? '—' : num(v.km)}</span>`, c: (v) => v.km, s: (v) => v.km },
+        { l: 'Stato', st: true, h: (v) => pill('v', G.vehStato(v)), c: (v) => P.v[G.vehStato(v)][1], s: (v) => G.vehStato(v) },
         { l: 'Prossima scadenza', h: (v) => { const s = G.scadenze(v)[0]; return v.arrivo ? `Dal ${esc(v.arrivo)}` : s ? `<span class="nowrap">${s.l} ${ggPill(s.gg)}</span>` : '—'; }, c: (v) => { const s = G.scadenze(v)[0]; return s ? `${s.l} ${s.data}` : ''; }, s: (v) => (G.scadenze(v)[0] || { gg: 9999 }).gg },
         { l: 'Tagliando', r: true, hm: true, h: (v) => { const k = G.kmTagliando(v); return k == null ? '—' : `<span class="num ${k < 1000 ? '' : 'muted'}" style="${k < 1000 ? 'color:var(--warn);font-weight:600' : ''}">tra ${num(k)} km</span>`; }, s: (v) => G.kmTagliando(v) ?? 1e9 },
       ],
@@ -458,7 +506,7 @@
         { l: 'Città', hm: true, h: (k) => esc(k.citta), s: (k) => k.citta },
         { l: 'Contratti aperti', r: true, h: (k) => String(S().contratti.filter((c) => c.cli === k.id && G.APERTI.includes(c.stato)).length), s: (k) => S().contratti.filter((c) => c.cli === k.id && G.APERTI.includes(c.stato)).length },
         { l: 'Insoluto', r: true, h: (k) => { const n = insoluto(k.id); return n ? `<b style="color:var(--bad)" class="num">${eur(n)}</b>` : '<span class="muted">—</span>'; }, c: (k) => insoluto(k.id), s: (k) => insoluto(k.id) },
-        { l: 'Documenti', h: (k) => pill('d', k.docs), c: (k) => P.d[k.docs][1], s: (k) => k.docs },
+        { l: 'Documenti', st: true, h: (k) => pill('d', k.docs), c: (k) => P.d[k.docs][1], s: (k) => k.docs },
       ],
     });
   };
@@ -499,8 +547,8 @@
         { l: 'Descrizione', h: (p) => t2(esc(p.desc), esc((G.contr(p.contr) || {}).num)), c: (p) => `${p.desc} ${(G.contr(p.contr) || {}).num}` },
         { l: 'Metodo', hm: true, h: (p) => esc(p.metodo) },
         { l: 'Importo', r: true, h: (p) => `<b class="num">${eur(p.imp, true)}</b>`, c: (p) => String(p.imp).replace('.', ','), s: (p) => p.imp },
-        { l: 'Stato', h: (p) => pill('p', G.pagStato(p)) + (p.solleciti ? ` <span class="tag">${p.solleciti} sollec.</span>` : ''), c: (p) => P.p[G.pagStato(p)][1] },
-        { l: '', r: true, h: (p) => (p.stato === 'pagato' ? `<span class="muted small">${fmtD(p.pagatoIl)}</span>` : `<span class="nowrap"><button class="btn btn-line btn-sm" data-act="incassa" data-id="${p.id}">Incassa</button>${G.pagStato(p) === 'scaduto' ? ` <button class="btn btn-ghost btn-sm" data-act="sollecita" data-id="${p.id}">Sollecita</button>` : ''}</span>`), c: () => '' },
+        { l: 'Stato', st: true, h: (p) => pill('p', G.pagStato(p)) + (p.solleciti ? ` <span class="tag">${p.solleciti} sollec.</span>` : ''), c: (p) => P.p[G.pagStato(p)][1] },
+        { l: '', act: true, r: true, h: (p) => (p.stato === 'pagato' ? `<span class="muted small">${fmtD(p.pagatoIl)}</span>` : `<span class="nowrap"><button class="btn btn-line btn-sm" data-act="incassa" data-id="${p.id}">Incassa</button>${G.pagStato(p) === 'scaduto' ? ` <button class="btn btn-ghost btn-sm" data-act="sollecita" data-id="${p.id}">Sollecita</button>` : ''}</span>`), c: () => '' },
       ],
       sum: (r) => `totale ${eur(r.reduce((s, p) => s + p.imp, 0))}`,
     });
@@ -523,7 +571,7 @@
           { l: 'Scadenza', h: (x) => esc(x.l) },
           { l: 'Quando', h: (x) => (x.k === 'tagl' ? `<span class="pill warn">Tra ${num(x.km)} km</span>` : `<span class="nowrap">${fmtDL(x.data)} ${ggPill(x.gg)}</span>`), c: (x) => x.data || `${x.km} km`, s: (x) => (x.gg != null ? x.gg : x.km / 100) },
           { l: 'Sede', hm: true, h: (x) => esc(G.sedeNome(x.v.sede)) },
-          { l: '', r: true, h: (x) => (x.k === 'tagl' ? `<button class="btn btn-line btn-sm" data-act="newInt" data-v="${x.v.id}" data-t="Tagliando">Programma</button>` : `<button class="btn btn-line btn-sm" data-act="rinnova" data-id="${x.v.id}" data-k="${x.k}">Segna rinnovata</button>`), c: () => '' },
+          { l: '', act: true, r: true, h: (x) => (x.k === 'tagl' ? `<button class="btn btn-line btn-sm" data-act="newInt" data-v="${x.v.id}" data-t="Tagliando">Programma</button>` : `<button class="btn btn-line btn-sm" data-act="rinnova" data-id="${x.v.id}" data-k="${x.k}">Segna rinnovata</button>`), c: () => '' },
         ],
       });
     }
@@ -539,7 +587,7 @@
         { l: 'Aperto il', hm: true, h: (i) => fmtD(i.apertura), s: (i) => i.apertura },
         { l: chiuso ? 'Chiuso il' : 'Pronto il', h: (i) => `<span class="nowrap">${fmtD(i.fine)}${!chiuso && i.fine < T ? ' <span class="pill bad">In ritardo</span>' : ''}</span>`, s: (i) => i.fine },
         { l: 'Costo', r: true, h: (i) => `<span class="num">${eur(i.costo)}</span>`, c: (i) => i.costo, s: (i) => i.costo },
-        { l: 'Stato', h: (i) => pill('i', i.stato) },
+        { l: 'Stato', st: true, h: (i) => pill('i', i.stato) },
       ],
       sum: (r) => `costo ${eur(r.reduce((s, i) => s + i.costo, 0))}`,
     });
@@ -561,7 +609,7 @@
           { l: 'Cliente', h: (s) => esc(G.cliNome(G.cli((G.contr(s.contr) || {}).cli))) },
           { l: 'Stima danno', r: true, h: (s) => `<span class="num">${eur(s.stima)}</span>`, s: (s) => s.stima },
           { l: 'Franchigia', r: true, h: (s) => `<span class="num">${s.franchigia ? eur(s.franchigia) : '—'}</span>` },
-          { l: 'Stato', h: (s) => pill('s', s.stato) },
+          { l: 'Stato', st: true, h: (s) => pill('s', s.stato) },
         ],
       });
     }
@@ -577,7 +625,7 @@
         { l: 'Alla guida', h: (m) => { const c = G.contrAllaData(m.veh, m.data); return c ? t2(esc(G.cliNome(G.cli(c.cli))), esc(c.num)) : '<span class="pill warn">Non a noleggio</span>'; }, c: (m) => { const c = G.contrAllaData(m.veh, m.data); return c ? G.cliNome(G.cli(c.cli)) : ''; } },
         { l: 'Verbale', hm: true, h: (m) => esc(m.verbale) },
         { l: 'Importo', r: true, h: (m) => `<span class="num">${eur(m.importo)}</span>`, s: (m) => m.importo },
-        { l: 'Stato', h: (m) => pill('m', m.stato) + (m.stato === 'da rinotificare' && diff(m.ricevuta, T) > 45 ? ' <span class="pill bad">Termine vicino</span>' : '') },
+        { l: 'Stato', st: true, h: (m) => pill('m', m.stato) + (m.stato === 'da rinotificare' && diff(m.ricevuta, T) > 45 ? ' <span class="pill bad">Termine vicino</span>' : '') },
       ],
     });
   };
@@ -618,6 +666,7 @@
         <div class="note">Ripristinare i dati di esempio cancella tutte le modifiche fatte nel gestionale.</div>
         <div><button class="btn btn-danger" data-act="resetDemo">Ripristina dati di esempio</button></div>
       </div></section>
+      <section class="card"><div class="card-h"><h2>Usalo come app sul telefono</h2></div><div class="card-b"><p class="muted"><b style="color:var(--ink)">iPhone:</b> apri il gestionale in Safari → Condividi → <i>Aggiungi alla schermata Home</i>.<br><b style="color:var(--ink)">Android:</b> Chrome → menu ⋮ → <i>Installa app</i>.<br>Si apre a tutto schermo, con l’icona LOCAFIT.</p></div></section>
       <section class="card"><div class="card-h"><h2>Collegamento con il sito</h2></div><div class="card-b"><p class="muted">Quando un cliente completa il noleggio online su <a href="prenota.html" style="color:var(--blue-2)">prenota.html</a> da questo browser, la prenotazione compare qui in <b>Prenotazioni e contratti</b> come <span class="tag new">Nuovo dal sito</span>, da confermare.</p></div></section>
     </div></div>`;
 
@@ -636,7 +685,11 @@
     }
     if (name === 'impostazioni') $('#restore').addEventListener('change', restore);
     if (keepScroll) scrollTo(0, y); else scrollTo(0, 0);
-    document.title = `${(ROUTES.find((x) => x[0] === name) || [])[1] || 'Gestionale'} · Gestionale LOCAFIT Rent`;
+    const lbl = (ROUTES.find((x) => x[0] === name) || [])[1] || 'Gestionale';
+    document.title = `${lbl} · Gestionale LOCAFIT Rent`;
+    $('#ttl').textContent = lbl; document.body.dataset.view = name;
+    const fa = fabAct(); const fab = $('#fab'); fab.hidden = !fa; if (fa) { fab.setAttribute('aria-label', FAB_L[fa]); fab.title = FAB_L[fa] + ' (N)'; }
+    saveUI();
   }
 
   /* ======================= PANNELLI DI DETTAGLIO ======================= */
@@ -902,7 +955,12 @@
   const A = {};
   A.closeDrawer = () => closeDrawer();
   A.closeModal = () => closeModal();
-  A.burger = () => { ensureLayers(); $('.side').classList.add('open'); showScrim(); };
+  A.burger = () => { ensureLayers(); $('.side').classList.add('open'); sOpen = true; syncHistory(); showScrim(); };
+  const fabAct = () => ({ dashboard: 'newPren', contratti: 'newPren', planning: 'newPren', consegne: 'newPren', flotta: 'newVeh', clienti: 'newCli', richieste: 'newLead', officina: 'newInt', multe: UI.mul && UI.mul.t === 'sinistri' ? 'newSin' : 'newMulta', listino: 'newCode' })[route()];
+  const FAB_L = { newPren: 'Nuova prenotazione', newVeh: 'Aggiungi veicolo', newCli: 'Nuovo cliente', newLead: 'Nuova richiesta', newInt: 'Nuovo intervento', newMulta: 'Registra multa', newSin: 'Nuovo sinistro', newCode: 'Nuovo codice' };
+  A.fab = () => { const a = fabAct(); if (a) A[a]({ dataset: {} }); };
+  A.clearF = (el) => { const st = UI[el.dataset.id]; st.q = ''; st.f = {}; st.lim = 60; renderView(true); };
+  A.quickConferma = (el) => A.conferma(el);
   A.mobileSearch = () => {
     openModal('Cerca', `<div class="search" style="max-width:none">${I.search}<input id="msq" type="search" placeholder="Cliente, targa, contratto…" autocomplete="off"><div class="search-res" id="msr" hidden style="position:static;box-shadow:none;border:0;max-height:none;margin-top:8px"></div></div>`, () => false, { ok: 'Chiudi', bind: (f) => { bindSearch($('#msq', f), $('#msr', f)); $('#msr', f).addEventListener('click', (e) => { if (e.target.closest('[data-open]')) closeModal(); }); f.addEventListener('submit', () => closeModal()); } });
   };
@@ -954,13 +1012,13 @@
   A.sollecita = (el) => { const p = S().pagamenti.find((x) => x.id === el.dataset.id); const k = G.cli(p.cli); p.solleciti++; G.log(`ha sollecitato ${G.cliNome(k)} (${eur(p.imp, true)})`); refresh(`Sollecito registrato per ${G.cliNome(k)}`); window.open(`mailto:${encodeURIComponent(k.email)}?subject=${encodeURIComponent('LOCAFIT Rent · pagamento in sospeso')}&body=${encodeURIComponent(`Gentile ${k.nome},\n\nrisulta non ancora saldato il pagamento "${p.desc}" di ${eur(p.imp, true)} scaduto il ${fmtDL(p.due)} (contratto ${(G.contr(p.contr) || {}).num}).\nPuò saldarlo dalla sua area personale o rispondendo a questa email.\n\nGrazie,\nLOCAFIT Rent`)}`, '_self'); };
   A.sollecitaTutti = () => { const sc = pagamenti().filter((p) => G.pagStato(p) === 'scaduto'); const n = new Set(sc.map((p) => p.cli)).size; G.confirm('Sollecitare tutti gli scaduti?', `Registra un sollecito su ${sc.length} rate di ${n} clienti. In un gestionale collegato partirebbe un’email automatica a ciascuno.`, 'Registra solleciti', () => { sc.forEach((p) => p.solleciti++); G.log(`ha sollecitato ${n} clienti insolventi`); refresh(`${sc.length} solleciti registrati`); }, false); };
   A.docsOk = (el) => { const k = G.cli(el.dataset.id); k.docs = 'ok'; G.log(`ha verificato i documenti di ${G.cliNome(k)}`); refresh('Documenti verificati'); };
-  A.leadStato = (el) => { const r = S().richieste.find((x) => x.id === el.dataset.id); r.stato = el.dataset.s; if (!r.assegnata) r.assegnata = S().utente; G.log(`ha spostato la richiesta di ${r.azienda || r.nome} in "${P.l[r.stato][1]}"`); refresh(); };
+  A.leadStato = (el) => { const r = S().richieste.find((x) => x.id === el.dataset.id); r.stato = el.dataset.s; if (!r.assegnata) r.assegnata = S().utente; G.log(`ha spostato la richiesta di ${r.azienda || r.nome} in "${P.l[r.stato][1]}"`); refresh(`Richiesta: ${P.l[r.stato][1].toLowerCase()}`); };
   A.convertLead = (el) => { const r = S().richieste.find((x) => x.id === el.dataset.id); const [nome, ...cog] = r.nome.split(' '); const ex = S().clienti.find((k) => k.tel === r.tel); nuovaPren(ex ? { cli: ex.id, auto: r.auto, tipo: r.tipo, lead: r.id, canale: r.fonte.includes('WhatsApp') ? 'WhatsApp' : r.fonte.includes('Telefono') ? 'Telefono' : 'Sito' } : { newCli: true, nome, cognome: cog.join(' '), tel: r.tel, email: r.email, auto: G.model(r.auto).arrivo ? '' : r.auto, tipo: r.tipo, lead: r.id, canale: 'Sito' }); };
   A.chiudiInt = (el) => { const i = S().interventi.find((x) => x.id === el.dataset.id); i.stato = 'chiuso'; i.fine = T; const v = G.veh(i.veh); if (i.tipo === 'Tagliando') v.tagl = Math.ceil((v.km + 15000) / 1000) * 1000; if (i.tipo === 'Revisione') v.rev = addM(T, 24); G.log(`ha chiuso l’intervento “${i.tipo}” su ${G.vehNome(v)}`); refresh('Intervento chiuso, veicolo disponibile'); };
   A.rinnova = (el) => { const v = G.veh(el.dataset.id); const k = el.dataset.k; v[k] = k === 'rev' ? addM(v[k] > T ? v[k] : T, 24) : addM(v[k] > T ? v[k] : T, 12); G.log(`ha rinnovato ${k === 'ass' ? 'l’assicurazione' : k === 'rev' ? 'la revisione' : 'il bollo'} di ${G.vehNome(v)} ${v.targa}`); refresh('Scadenza aggiornata'); };
   A.rinotifica = (el) => { const m = S().multe.find((x) => x.id === el.dataset.id); const c = G.contrAllaData(m.veh, m.data); m.stato = 'rinotificata'; S().pagamenti.push({ id: G.uid('p'), contr: c.id, cli: c.cli, due: addD(T, 15), imp: m.spese, desc: `Spese gestione verbale ${m.verbale}`, metodo: 'Carta', stato: 'aperto', pagatoIl: null, solleciti: 0 }); G.log(`ha rinotificato la multa ${m.verbale} a ${G.cliNome(G.cli(c.cli))}`); refresh(`Multa rinotificata a ${G.cliNome(G.cli(c.cli))}, spese addebitate`); };
   A.chiudiMulta = (el) => { const m = S().multe.find((x) => x.id === el.dataset.id); m.stato = 'chiusa'; refresh('Multa chiusa'); };
-  A.sinStato = (el) => { const s = S().sinistri.find((x) => x.id === el.dataset.id); s.stato = el.dataset.s; refresh(); };
+  A.sinStato = (el) => { const s = S().sinistri.find((x) => x.id === el.dataset.id); s.stato = el.dataset.s; refresh(`Sinistro: ${P.s[s.stato][1].toLowerCase()}`); };
   A.addebitaFranchigia = (el) => { const s = S().sinistri.find((x) => x.id === el.dataset.id); const c = G.contr(s.contr); s.addebitato = true; S().pagamenti.push({ id: G.uid('p'), contr: c.id, cli: c.cli, due: addD(T, 10), imp: s.franchigia, desc: 'Franchigia danni', metodo: 'Carta', stato: 'aperto', pagatoIl: null, solleciti: 0 }); G.log(`ha addebitato la franchigia a ${G.cliNome(G.cli(c.cli))}`); refresh('Franchigia addebitata'); };
   A.arrivato = (el) => { const v = G.veh(el.dataset.id); openModal('Veicolo arrivato', `<div class="grid2"><label class="fld"><span>Targa</span><input class="in" name="targa" required style="text-transform:uppercase" placeholder="GH123AB"></label><label class="fld"><span>Km</span><input class="in num" type="number" name="km" value="10" min="0"></label></div>`, (fd, f) => { const t = fd.targa.replace(/\s/g, '').toUpperCase(); if (!/^[A-Z]{2}\d{3}[A-Z]{2}$/.test(t)) return fail(f, 'Targa non valida (formato AB123CD).'); v.targa = t; v.km = +fd.km || 0; v.arrivo = ''; v.imm = T; v.ass = addM(T, 12); v.bollo = addM(T, 12); v.rev = addM(T, 48); v.tagl = 15000; G.log(`ha messo in flotta ${G.vehNome(v)} ${t}`); refresh('Veicolo disponibile al noleggio'); }, { ok: 'Metti in flotta' }); };
   A.trasferisci = (el) => { const v = G.veh(el.dataset.id); openModal('Trasferisci sede', `<label class="fld"><span>Nuova sede</span><select class="sel" name="sede">${opt(LF.sedi.filter((s) => s.id !== v.sede).map((s) => [s.id, s.citta]))}</select></label>`, (fd) => { v.sede = fd.sede; G.log(`ha trasferito ${G.vehNome(v)} ${v.targa} a ${G.sedeNome(fd.sede)}`); refresh(`Trasferito a ${G.sedeNome(fd.sede)}`); }, { ok: 'Trasferisci' }); };
@@ -1015,19 +1073,24 @@
   document.addEventListener('click', (e) => {
     const t = e.target;
     const act = t.closest('[data-act]');
-    if (act && A[act.dataset.act]) { e.preventDefault(); A[act.dataset.act](act); return; }
+    if (act && A[act.dataset.act]) { e.preventDefault(); if (UNDOABLE.has(act.dataset.act)) snap = JSON.stringify(G.S); A[act.dataset.act](act); return; }
     const gol = t.closest('[data-go]');
-    if (gol) { e.preventDefault(); $('.side') && $('.side').classList.remove('open'); hideScrim(); go(gol.dataset.go); return; }
+    if (gol) { e.preventDefault(); navTo(gol.dataset.go); return; }
+    const sideLink = t.closest('.side nav a, .brand');
+    if (sideLink && sOpen) { e.preventDefault(); navTo(sideLink.getAttribute('href').replace('#', '')); return; }
     const tab = t.closest('[data-tab]');
     if (tab) { const [id, k] = tab.dataset.tab.split(':'); UI[id].tab = k; UI[id].lim = 60; renderList(id); return; }
     const so = t.closest('[data-sort]');
     if (so) { const [id, i] = so.dataset.sort.split(':'); const st = UI[id]; st.sort = st.sort && st.sort.i === +i ? { i: +i, d: -st.sort.d } : { i: +i, d: 1 }; renderList(id); return; }
     const op = t.closest('[data-open]');
     if (op && op.dataset.open && !t.closest('input, select, textarea, a')) { const [ty, id] = op.dataset.open.split(':'); if (OPEN[ty]) { if (!modal || modal.hidden) OPEN[ty](id); else { closeModal(); OPEN[ty](id); } } return; }
-    if (t.closest('.side nav a')) { $('.side').classList.remove('open'); hideScrim(); }
   });
+  function navTo(h) {
+    if (pushed) { closeAllQuiet(); history.replaceState(null, '', '#' + h); renderNav(); renderView(); } else { closeAllQuiet(); go(h); }
+  }
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { if (modal && !modal.hidden) closeModal(); else if (drawer && !drawer.hidden) closeDrawer(); else if ($('.side.open')) { $('.side').classList.remove('open'); hideScrim(); } }
+    if (e.key === 'Escape') { if (mOpen) closeModal(); else if (dOpen) closeDrawer(); else closeSide(); }
+    if (e.key === 'n' && !e.target.matches('input, textarea, select') && !e.metaKey && !e.ctrlKey && !e.altKey && !mOpen && !dOpen && $('#view')) { const a = fabAct(); if (a) { e.preventDefault(); A[a]({ dataset: {} }); } }
     if (e.key === 'Enter' && e.target.matches('tr[data-open]')) e.target.click();
     if (e.key === '/' && !e.target.matches('input, textarea, select') && $('#gsearch')) { e.preventDefault(); $('#gsearch').focus(); }
   });
@@ -1050,7 +1113,7 @@
     if (f.dataset.cliform) { e.preventDefault(); const k = G.cli(f.dataset.cliform); const fd = Object.fromEntries(new FormData(f)); Object.keys(fd).forEach((x) => { k[x] = fd[x].trim(); }); G.log(`ha aggiornato l’anagrafica di ${G.cliNome(k)}`); refresh('Anagrafica salvata'); }
     if (f.dataset.intform) { e.preventDefault(); const i = S().interventi.find((x) => x.id === f.dataset.intform); const fd = Object.fromEntries(new FormData(f)); Object.assign(i, fd, { costo: +fd.costo || 0 }); refresh('Intervento aggiornato'); }
   });
-  addEventListener('hashchange', () => { closeDrawer(); renderNav(); renderView(); });
+  addEventListener('hashchange', () => { closeAllQuiet(); renderNav(); renderView(); });
 
   /* ---------- Avvio ---------- */
   function login() {
@@ -1064,7 +1127,7 @@
     $('#lg').addEventListener('submit', (e) => { e.preventDefault(); const u = S().staff.find((x) => x.id === e.target.u.value); S().utente = u.id; S().sede = u.sede || ''; G.save(); boot(); });
   }
   function boot() {
-    scrim = drawer = modal = null; current = null;
+    scrim = drawer = modal = null; current = null; dOpen = mOpen = sOpen = false; pushed = false;
     if (!G.user()) return login();
     shell(); renderView();
   }
