@@ -23,6 +23,7 @@ oppure qualsiasi server statico nella cartella del progetto, poi apri `http://lo
 - `breve-termine.html`, `medio-termine.html`, `lungo-termine.html` — formule con calcolatore
 - `prenota.html` — noleggio online simulato in 8 passaggi (dati, documenti, verifica, firma OTP, pagamento, consegna)
 - `area.html` — area personale
+- `gestionale.html` — gestionale per lo staff (link "Area staff" nel footer): panoramica, prenotazioni e contratti, planning flotta, consegne e ritiri con check-in/check-out, flotta e scadenze, clienti, richieste, pagamenti e solleciti, officina, multe e sinistri, listino e codici sconto. Demo: i dati restano nel browser (localStorage); i noleggi completati su `prenota.html` arrivano qui da confermare.
 - `aziende.html`, `come-funziona.html`, `chi-siamo.html`, `faq.html`, `contatti.html`
 
 ## Dati
